@@ -22,11 +22,11 @@ void init_game(void) {
   load_tilesets();
   load_palettes();
   draw_hello_world();
-  init_noboru();
+  // init_noboru();
 }
 
 void game_loop(void) {
-  update_noboru();
+  // update_noboru();
 }
 
 void render(void) {

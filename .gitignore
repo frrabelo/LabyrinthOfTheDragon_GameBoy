@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Node Modules (for tools)
+node_modules/
+
+# OS Trash
+.DS_Store

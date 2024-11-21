@@ -1,5 +1,6 @@
-# GameBoyTemplate
-Project template for Game Boy / GBC games written using GBDK.
+# The Monster Manual (GBC)
+Pokemon, but darker... and with D&D Monsters!
+
 
 ## How to Build the ROM
 
@@ -7,11 +8,13 @@ Project template for Game Boy / GBC games written using GBDK.
 * [GBDK-2020](https://github.com/gbdk-2020/gbdk-2020) - The Game Boy Development
   kit. Includes the libraries and binaries for C development on the Game Boy.
 * [GNU Make](https://gnuwin32.sourceforge.net/packages/make.htm) - Build system
-tool (installation should only be required on Windows).
+  tool (installation should only be required on Windows).
+* [NodeJS](https://nodejs.org) - Used to run custom tools I made in the course
+  of developing the game.
 
 ### Use Make to Build the ROM
 Update the `MakeFile` or define a shell variable named `GBDK_HOME` pointing to
 the directory where you installed GBDK.
 
 Once the tools are installed and the home directory is defined, all you have
-to do is run `make` from the project's root directory:
+to do is run `make` from the project's root directory.

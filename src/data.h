@@ -7,8 +7,8 @@
 
 #include <gbdk/incbin.h>
 
-INCBIN_EXTERN(background_tile_data)
-INCBIN_EXTERN(sprite_tile_data)
+INCBIN_EXTERN(font_tiles)
+INCBIN_EXTERN(hero_tiles)
 
 /**
  * Loads graphics tiles into VRAM.

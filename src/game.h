@@ -11,14 +11,14 @@
 void draw_hello_world(void);
 
 /**
- * Initializes the Noboru character's state and sprites.
+ * Initializes the hero character's state and sprites.
  */
-void init_noboru(void);
+void init_hero(void);
 
 /**
- * Updates and animates the sprites for the Noboru character.
+ * Updates and animates the sprites for the hero character.
  */
-void update_noboru(void);
+void update_hero(void);
 
 /**
  * Initializes graphics, sound, and game state.

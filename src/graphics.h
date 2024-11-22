@@ -14,6 +14,10 @@
 #define RGB_NOBORU_PURPLE1  RGB8(135, 32, 216)
 #define RGB_NOBORU_PURPLE2  RGB8(126, 0, 125)
 
+#define RGB_HERO_WARRIOR_SKIN   RGB8(199, 172, 131)
+#define RGB_HERO_WARRIOR_LIGHT  RGB8(75, 150, 0)
+#define RGB_HERO_WARRIOR_DARK   RGB8(0, 60, 60)
+
 void load_palettes(void);
 
 #endif

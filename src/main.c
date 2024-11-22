@@ -17,7 +17,7 @@ uint8_t joypad_released;
 void main(void) {
   // Initialize the game state
   lcd_off();
-  LCDC_REG = LCDCF_OFF | LCDCF_OBJ16 | LCDCF_OBJON | LCDCF_BGON;
+  LCDC_REG = LCDCF_OFF | LCDCF_OBJON | LCDCF_BGON;
   init_game();
   lcd_on();
 

@@ -22,43 +22,52 @@ void init_game(void) {
   load_tilesets();
   load_palettes();
   draw_hello_world();
-  // init_noboru();
+  init_hero();
 }
 
 void game_loop(void) {
-  // update_noboru();
+  update_hero();
 }
 
 void render(void) {
 }
 
-void init_noboru(void) {
-  // Initialize the two 8x16 sprites for the character.
-  const uint8_t x = 56;
-  const uint8_t y = 70;
-  const uint8_t frame = walk_frame << 2;
+void init_hero(void) {
+  const uint8_t x = 0x48;
+  const uint8_t y = 0x4C;
+  const uint8_t offset = 0x00;
+  const uint8_t frame = (walk_frame << 1) + offset;
+
+  init_timer(walk_timer, 18);
 
   set_sprite_tile(0, frame);
   set_sprite_prop(0, 0);
   move_sprite(0, x, y);
 
-  set_sprite_tile(1, frame + 2);
+  set_sprite_tile(1, frame + 0x01);
   set_sprite_prop(1, 0);
   move_sprite(1, x + 8, y);
 
-  // Initialize the walking animation timer & state
-  init_timer(walk_timer, 12);
-  walk_frame = 0;
+  set_sprite_tile(2, frame + 0x10);
+  set_sprite_prop(2, 0);
+  move_sprite(2, x, y + 8);
+
+  set_sprite_tile(3, frame + 0x11);
+  set_sprite_prop(3, 0);
+  move_sprite(3, x + 8, y + 8);
 }
 
-void update_noboru(void) {
-  const uint8_t frame = walk_frame << 2;
+void update_hero(void) {
   if (update_timer(walk_timer)) {
-    walk_frame ^= 1;
     reset_timer(walk_timer);
+    walk_frame ^= 1;
   }
+  const uint8_t offset = 0x00;
+  const uint8_t frame = (walk_frame << 1) + offset;
   set_sprite_tile(0, frame);
-  set_sprite_tile(1, frame + 2);
+  set_sprite_tile(1, frame + 0x01);
+  set_sprite_tile(2, frame + 0x10);
+  set_sprite_tile(3, frame + 0x11);
 }
 
 void draw_hello_world(void) {
@@ -76,9 +85,11 @@ void draw_hello_world(void) {
   // data to the VRAM and incremented the VRAM address with each character
   // placed
   const char *hello = "HELLO WORLD!";
-  const uint8_t len = 12;
+
+  const char *cryptotherion = "Cryptotherion!";
+  const uint8_t len = 14;
   for (uint8_t k = 0; k < len; k++) {
-    uint8_t c = (uint8_t)hello[k];
+    uint8_t c = (uint8_t)cryptotherion[k];
     set_vram_byte(char_addr++, c);
   }
 }

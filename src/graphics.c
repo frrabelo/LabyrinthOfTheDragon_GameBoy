@@ -1,7 +1,7 @@
 #include "graphics.h"
 
 const uint16_t example_bg_palette[] = {
-  RGB_SKY_BLUE,
+  RGB_BLACK,
   RGB_DARKGRAY,
   RGB_LIGHTGRAY,
   RGB_WHITE
@@ -9,9 +9,9 @@ const uint16_t example_bg_palette[] = {
 
 const uint16_t example_fg_palette[] = {
   RGB_BLACK,
-  RGB_NOBORU_PURPLE2,
-  RGB_NOBORU_SKIN,
-  RGB_NOBORU_PURPLE1,
+  RGB_HERO_WARRIOR_SKIN,
+  RGB_HERO_WARRIOR_LIGHT,
+  RGB_HERO_WARRIOR_DARK
 };
 
 void load_palettes (void) {

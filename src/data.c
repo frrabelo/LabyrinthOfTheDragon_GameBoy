@@ -2,11 +2,10 @@
 #include "data.h"
 
 // Include binary tile data
-INCBIN(background_tile_data, "res/background_tile_data.bin")
-INCBIN(sprite_tile_data, "res/sprite_tile_data.bin")
+INCBIN(font_tiles, "res/tiles/font.bin")
+INCBIN(hero_tiles, "res/tiles/hero.bin")
 
 void load_tilesets(void) {
-  set_tile_data(0x00, 0x80, sprite_tile_data, 0x80);
-  set_tile_data(0x00, 0x80, background_tile_data + 128 * 16, 0x88);
-  set_tile_data(0x00, 0x80, background_tile_data, 0x90);
+  set_tile_data(0x00, 0x80, hero_tiles, 0x80);
+  set_tile_data(0x00, 0x80, font_tiles, 0x90);
 }

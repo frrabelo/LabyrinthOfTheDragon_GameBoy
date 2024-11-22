@@ -72,7 +72,7 @@ function getTileBytes(image, tx, ty) {
     let high = 0;
     row.forEach(c => {
       low = (low << 1) | (c & 1)
-      hight = (high << 1) | (c >> 1)
+      high = (high << 1) | (c >> 1)
     })
     bytes.push(low)
     bytes.push(high)

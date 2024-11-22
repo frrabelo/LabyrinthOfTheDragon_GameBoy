@@ -10,6 +10,7 @@ endif
 
 LCC = $(GBDK_HOME)bin/lcc
 LCCFLAGS = -Wm-yC
+PNG2BIN := ./tools/png2bin
 
 # GBDK_DEBUG = ON
 ifdef GBDK_DEBUG
@@ -23,7 +24,15 @@ BINS	    = $(PROJECTNAME).gb
 CSOURCES   := $(wildcard src/*.c)
 ASMSOURCES := $(wildcard src/*.s)
 
-all:	$(BINS)
+TILEPNG := $(wildcard assets/tiles/*.png)
+TILEBIN := $(subst assets/,res/,$(patsubst %.png,%.bin,$(TILEPNG)))
+
+# TILEBIN := $(patsubst asset/%.png,res/%.bin,$(TILEPNG))
+
+all: $(TILEBIN) $(BINS)
+
+res/tiles/%.bin: assets/tiles/%.png
+	$(PNG2BIN) $< $@
 
 compile.bat: Makefile
 	@echo "REM Automatically generated from Makefile" > compile.bat
@@ -35,3 +44,4 @@ $(BINS):	$(CSOURCES) $(ASMSOURCES)
 
 clean:
 	rm -f *.o *.lst *.map *.gb *.ihx *.sym *.cdb *.adb *.asm *.noi *.rst
+	rm -f res/tiles/*.bin

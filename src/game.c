@@ -77,10 +77,6 @@ void draw_hello_world(void) {
   // Initialize a VRAM address at the 2nd row and 3rd column.
   uint8_t *char_addr = (void *)(0x9800 + 0x10 * 2 + 3);
 
-  // Set the bank so that we're writing to background tile ids
-  VBK_REG = VBK_TILES;
-  // VBK_REG = VBK_ATTRIBUTES; // Use this to write tile attributes
-
   // Initialize a string constant, and step through the character writing
   // data to the VRAM and incremented the VRAM address with each character
   // placed
@@ -90,6 +86,10 @@ void draw_hello_world(void) {
   const uint8_t len = 14;
   for (uint8_t k = 0; k < len; k++) {
     uint8_t c = (uint8_t)cryptotherion[k];
-    set_vram_byte(char_addr++, c);
+    VBK_REG = VBK_TILES;
+    set_vram_byte(char_addr, c);
+    VBK_REG = VBK_ATTRIBUTES;
+    set_vram_byte(char_addr, 0b00001000);
+    char_addr++;
   }
 }

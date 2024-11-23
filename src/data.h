@@ -9,6 +9,8 @@
 
 INCBIN_EXTERN(font_tiles)
 INCBIN_EXTERN(hero_tiles)
+INCBIN_EXTERN(dungeon_tiles)
+INCBIN_EXTERN(world_map_tiles)
 
 /**
  * Loads graphics tiles into VRAM.

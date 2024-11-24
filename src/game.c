@@ -35,11 +35,6 @@ void init_game(void) {
   load_palettes();
   init_hero();
   init_text_box();
-
-  // VBK_REG = VBK_TILES;
-  // uint8_t *arrow_addr = set_win_tile_xy(18, 4, 0xFF);
-  // VBK_REG = VBK_ATTRIBUTES;
-  // set_vram_byte(arrow_addr, 0b00001111);
 }
 
 void game_loop(void) {

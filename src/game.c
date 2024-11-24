@@ -5,7 +5,20 @@
 #include "data.h"
 #include "game.h"
 #include "graphics.h"
+#include "joypad.h"
+#include "textbox.h"
 #include "util.h"
+
+typedef enum GameState {
+  WAITING,
+  TEXTBOX
+} GameState;
+
+GameState game_state = WAITING;
+
+
+const char *test_message = "Hello traveler\x60\x03This is the land\nof Athemis.\nA broken land.\x03Will you\x60?\nCould you\x60?\x03Please, help us\x60\0";
+
 
 /**
  * Timer used for Noboru's "Walking" animation.
@@ -17,19 +30,32 @@ Timer walk_timer;
  */
 uint8_t walk_frame;
 
-
 void init_game(void) {
   load_tilesets();
   load_palettes();
-  draw_hello_world();
   init_hero();
+  init_text_box();
+
+  // VBK_REG = VBK_TILES;
+  // uint8_t *arrow_addr = set_win_tile_xy(18, 4, 0xFF);
+  // VBK_REG = VBK_ATTRIBUTES;
+  // set_vram_byte(arrow_addr, 0b00001111);
 }
 
 void game_loop(void) {
   update_hero();
+  if (game_state == WAITING && was_pressed(J_A | J_B)) {
+    open_textbox(test_message);
+    game_state = TEXTBOX;
+  } else if (game_state == TEXTBOX && textbox_state == TEXTBOX_CLOSED) {
+    game_state = WAITING;
+  }
 }
 
 void render(void) {
+  if (game_state == TEXTBOX) {
+    update_textbox();
+  }
 }
 
 void init_hero(void) {
@@ -68,28 +94,4 @@ void update_hero(void) {
   set_sprite_tile(1, frame + 0x01);
   set_sprite_tile(2, frame + 0x10);
   set_sprite_tile(3, frame + 0x11);
-}
-
-void draw_hello_world(void) {
-  // Note: GBDK has methods for string printing (e.g. printf) but this example
-  // shows how to set pointers, write arbitrary data to the VRAM, etc.
-
-  // Initialize a VRAM address at the 2nd row and 3rd column.
-  uint8_t *char_addr = (void *)(0x9800 + 0x10 * 2 + 3);
-
-  // Initialize a string constant, and step through the character writing
-  // data to the VRAM and incremented the VRAM address with each character
-  // placed
-  const char *hello = "HELLO WORLD!";
-
-  const char *cryptotherion = "Cryptotherion!";
-  const uint8_t len = 14;
-  for (uint8_t k = 0; k < len; k++) {
-    uint8_t c = (uint8_t)cryptotherion[k] + 0x80;
-    VBK_REG = VBK_TILES;
-    set_vram_byte(char_addr, c);
-    VBK_REG = VBK_ATTRIBUTES;
-    set_vram_byte(char_addr, 0b00001000);
-    char_addr++;
-  }
 }

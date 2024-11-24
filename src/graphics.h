@@ -18,6 +18,11 @@
 #define RGB_HERO_WARRIOR_LIGHT  RGB8(75, 150, 0)
 #define RGB_HERO_WARRIOR_DARK   RGB8(0, 60, 60)
 
+#define RGB_TEXTBOX_0 RGB8(32, 32, 150)
+#define RGB_TEXTBOX_1 RGB8(200, 200, 200)
+#define RGB_TEXTBOX_2 RGB8(32, 32, 32)
+#define RGB_TEXTBOX_3 RGB8(255, 255, 255)
+
 void load_palettes(void);
 
 #endif

@@ -6,11 +6,6 @@
 #define _GAME_H
 
 /**
- * Draws the "HELLO WORLD!" message to the background.
- */
-void draw_hello_world(void);
-
-/**
  * Initializes the hero character's state and sprites.
  */
 void init_hero(void);
@@ -36,5 +31,8 @@ void game_loop(void);
  * updating VRAM before the vsync() call has any effect.
  */
 void render(void);
+
+void draw_text_box(void);
+void draw_text(const char *);
 
 #endif

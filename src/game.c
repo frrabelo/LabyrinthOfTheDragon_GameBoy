@@ -85,7 +85,7 @@ void draw_hello_world(void) {
   const char *cryptotherion = "Cryptotherion!";
   const uint8_t len = 14;
   for (uint8_t k = 0; k < len; k++) {
-    uint8_t c = (uint8_t)cryptotherion[k];
+    uint8_t c = (uint8_t)cryptotherion[k] + 0x80;
     VBK_REG = VBK_TILES;
     set_vram_byte(char_addr, c);
     VBK_REG = VBK_ATTRIBUTES;

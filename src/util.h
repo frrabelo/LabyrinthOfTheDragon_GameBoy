@@ -57,4 +57,11 @@ typedef struct Timer {
     enable_interrupts(); \
   } while (0)
 
+/**
+ * Defines a uint16_t* external for a binary include.
+ */
+#define INCBIN_EXTERN_16(VARNAME)  extern const uint16_t VARNAME[]; \
+  extern const void __size_ ## VARNAME; \
+  extern const void __bank_ ## VARNAME;
+
 #endif

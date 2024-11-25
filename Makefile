@@ -11,6 +11,7 @@ endif
 LCC = $(GBDK_HOME)bin/lcc
 LCCFLAGS = -Wm-yC
 PNG2BIN := ./tools/png2bin
+COLOR2BIN := ./tools/color2bin
 
 # GBDK_DEBUG = ON
 ifdef GBDK_DEBUG
@@ -27,12 +28,20 @@ ASMSOURCES := $(wildcard src/*.s)
 TILEPNG := $(wildcard assets/tiles/*.png)
 TILEBIN := $(subst assets/,res/,$(patsubst %.png,%.bin,$(TILEPNG)))
 
+COLORTBL_PNG := $(wildcard assets/color_tables/*.png)
+COLORTBL_BIN := $(subst assets/,res/,$(patsubst %.png,%.bin,$(COLORTBL_PNG)))
+
 # TILEBIN := $(patsubst asset/%.png,res/%.bin,$(TILEPNG))
 
-all: $(TILEBIN) $(BINS)
+all: assets $(BINS)
+
+assets: $(TILEBIN) $(COLORTBL_BIN)
 
 res/tiles/%.bin: assets/tiles/%.png
 	$(PNG2BIN) $< $@
+
+res/color_tables/%.bin: assets/color_tables/%.png
+	$(COLOR2BIN) $< $@
 
 compile.bat: Makefile
 	@echo "REM Automatically generated from Makefile" > compile.bat
@@ -44,4 +53,5 @@ $(BINS):	$(CSOURCES) $(ASMSOURCES)
 
 clean:
 	rm -f *.o *.lst *.map *.gb *.ihx *.sym *.cdb *.adb *.asm *.noi *.rst
-	rm -f res/tiles/*.bin
+	rm -f res/tiles/*.bin res/tiles/manifest.json
+	rm -f res/color_tables/*.bin res/color_tables/manifest.json

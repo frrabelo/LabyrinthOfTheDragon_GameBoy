@@ -16,7 +16,6 @@ RAM_BANKS=4
 LCC = $(GBDK_HOME)bin/lcc
 LCCFLAGS = -Wm-yC -Wm-yt0x1B -Wl-yo$(ROM_BANKS) -Wl-ya$(RAM_BANKS)
 PNG2BIN := ./tools/png2bin
-COLOR2BIN := ./tools/color2bin
 TABLES2C := ./tools/tables2c
 STRINGS2C := ./tools/strings2c
 
@@ -36,9 +35,6 @@ ASMSOURCES := $(wildcard src/*.s)
 TILEPNG := $(wildcard assets/tiles/*.png)
 TILEBIN := $(subst assets/,res/,$(patsubst %.png,%.bin,$(TILEPNG)))
 
-COLORTBL_PNG := $(wildcard assets/color_tables/*.png)
-COLORTBL_BIN := $(subst assets/,res/,$(patsubst %.png,%.bin,$(COLORTBL_PNG)))
-
 # TILEBIN := $(patsubst asset/%.png,res/%.bin,$(TILEPNG))
 
 all: assets $(BINS)
@@ -46,7 +42,7 @@ all: assets $(BINS)
 usage:
 	~/gbdk/bin/romusage $(BINS)
 
-assets: tables strings $(TILEBIN) $(COLORTBL_BIN)
+assets: tables strings $(TILEBIN)
 
 tables: assets/tables.csv
 	$(TABLES2C)
@@ -56,9 +52,6 @@ strings: assets/strings.js
 
 res/tiles/%.bin: assets/tiles/%.png
 	$(PNG2BIN) $< $@
-
-res/color_tables/%.bin: assets/color_tables/%.png
-	$(COLOR2BIN) $< $@
 
 compile.bat: Makefile
 	@echo "REM Automatically generated from Makefile" > compile.bat

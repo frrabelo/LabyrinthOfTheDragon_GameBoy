@@ -1167,8 +1167,9 @@ void update_battle(void) NONBANKED {
     move_cursor(BATTLE_CURSOR_MAIN_FIGHT);
     break;
   case BATTLE_SUCCESS:
-    // Calculate and display rewards
-    if (text_writer.state == TEXT_WRITER_PAGE_WAIT && was_pressed(J_A)) {
+    if (!was_pressed(J_A))
+      break;
+    if (text_writer.state == TEXT_WRITER_PAGE_WAIT) {
       text_writer.next_page();
     } else if (text_writer.state == TEXT_WRITER_DONE) {
       fade_out();
@@ -1186,8 +1187,6 @@ void update_battle(void) NONBANKED {
     status_effect_frame ^= 1;
     reset_timer(status_effect_timer);
   }
-
-  // TODO should this just always happen every frame?
   // redraw_player_status_effects();
   // redraw_monster_status_effects();
 }

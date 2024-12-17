@@ -435,20 +435,20 @@ void update_map_move(void) {
 
   on_move();
 
+  // Note: map state changes based on attribute must return from this switch
+  //       otherwise the state will be overwritten by `check_move` below.
   switch (get_tile_attribute()) {
   case MAP_EXIT:
-    if (on_exit()) {
+    if (on_exit() || handle_exit())
       return;
-    }
-    handle_exit();
     break;
   case MAP_SPECIAL:
-    if (on_special()) {
+    if (on_special())
       return;
-    }
     break;
   default:
   }
+
   // Immediately check for d-pad input to allow continuous movement.
   check_move();
 }

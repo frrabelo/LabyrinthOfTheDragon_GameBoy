@@ -1,6 +1,7 @@
 #pragma bank 5
 
 #include "stats.h"
+#include "player.h"
 
 uint16_t get_exp(uint8_t level) BANKED {
   return exp_by_level[level - 1];
@@ -62,10 +63,18 @@ uint16_t calc_damage(uint8_t d16_roll, uint16_t base_dmg) BANKED {
   return (damage_roll_modifier[d16_roll & 0x0F] * base_dmg) >> 4;
 }
 
-uint16_t calc_monster_exp(uint8_t plvl, uint8_t mlvl, PowerTier mtier) BANKED {
-  if (plvl + 8 <= mlvl)
+uint16_t calc_monster_exp(uint8_t level, PowerTier tier) BANKED {
+  // Monster is eight levels or more below the player's level.
+  if (level + 8 <= player.level)
     return 0;
-  if (mlvl >= 7 + plvl)
-    return get_monster_exp(mlvl, mtier) << 1;
-  return (xp_mod[plvl - mlvl + 8] * get_monster_exp(mlvl, mtier)) >> 4;
+
+  // Monster seven levels or higher tha n the player's level.
+  if (level >= player.level + 7)
+    return get_monster_exp(level, tier) << 1;
+
+  // Otherwise use the experience adjust calculator
+  const uint8_t index = player.level - level;
+  const uint16_t multipler = xp_mod[index];
+  const uint16_t exp = get_monster_exp(level, tier);
+  return (multipler * exp) >> 4;
 }

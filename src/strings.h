@@ -141,6 +141,11 @@ extern const char str_battle_player_hit_crit[];
 extern const char str_battle_victory[];
 
 /**
+ * "Victory! You gain no XP.\fMust have been too weak..."
+ */
+extern const char str_battle_victory_no_xp[];
+
+/**
  * "LEVEL UP! You reach %level!"
  */
 extern const char str_battle_level_up[];

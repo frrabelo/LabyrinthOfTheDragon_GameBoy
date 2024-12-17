@@ -243,11 +243,10 @@ uint16_t calc_damage(uint8_t d16_roll, uint16_t base_dmg) BANKED;
 
 /**
  * @return Experience awarded to a player of the given level from a monster.
- * @param plvl Level of the player.
- * @param mlvl Level of the monster.
- * @param mtier Power tier for the monster.
+ * @param level Level of the monster.
+ * @param tier Power tier for the monster.
  */
-uint16_t calc_monster_exp(uint8_t plvl, uint8_t mlvl, PowerTier mtier) BANKED;
+uint16_t calc_monster_exp(uint8_t level, PowerTier tier) BANKED;
 
 /**
  * @return A random d2 roll.

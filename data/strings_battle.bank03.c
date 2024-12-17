@@ -21,4 +21,5 @@ const char str_battle_player_hit_resist[] = "They resist your \nattack, only %u\
 const char str_battle_player_hit_vuln[] = "It's SUPER \nEFFECTIVE dealing\n %u damage!";
 const char str_battle_player_hit_crit[] = "CRITICAL HIT! You \ndeal %u damage!";
 const char str_battle_victory[] = "Victory! You gain \n%u XP!";
+const char str_battle_victory_no_xp[] = "Victory! You gain \nno XP.\fMust have \nbeen too weak\x60";
 const char str_battle_level_up[] = "LEVEL UP! You \nreach %u!";

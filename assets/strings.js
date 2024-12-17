@@ -58,6 +58,7 @@ addNamespace('battle', 3, {
   'player_hit_vuln': "It's SUPER EFFECTIVE dealing %damage damage!",
   'player_hit_crit': 'CRITICAL HIT! You deal %damage damage!',
   'victory': 'Victory! You gain %exp XP!',
+  'victory_no_xp': 'Victory! You gain no XP.\fMust have been too weak...',
   'level_up': 'LEVEL UP! You reach %level!',
 })
 

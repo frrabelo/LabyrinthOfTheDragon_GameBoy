@@ -1075,7 +1075,6 @@ void cleanup_monsters(void) {
     if (monster->hp == 0) {
       monster->active = false;
       encounter.xp_reward += calc_monster_exp(
-        player.level,
         monster->level,
         monster->exp_tier
       );
@@ -1086,10 +1085,16 @@ void cleanup_monsters(void) {
 }
 
 void battle_rewards(void) {
-  const uint8_t xp = encounter.xp_reward;
+  const uint16_t xp = encounter.xp_reward;
   player.exp += xp;
+
+  if (xp == 0) {
+    sprintf(rewards_buf, str_battle_victory_no_xp);
+  } else {
+    sprintf(rewards_buf, str_battle_victory, xp);
+  }
+
   // TODO level up
-  sprintf(rewards_buf, str_battle_victory, xp);
   text_writer.auto_page = AUTO_PAGE_OFF;
   text_writer.print(rewards_buf);
 }

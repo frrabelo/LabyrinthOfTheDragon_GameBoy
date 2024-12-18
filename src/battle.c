@@ -38,11 +38,12 @@ BattleAnimation battle_animation;
 Timer status_effect_timer;
 uint8_t status_effect_frame = 0;
 
+
 /**
- * Confirms that the player has chosen the default "fight" action and begins the
- * next round of combat.
+ * Finds the monster currently selected by the screen cursor.
+ * @return Monster intance for the selected monster.
  */
-void confirm_fight(void) {
+MonsterInstance *get_monster_at_cursor(void) {
   uint8_t monster_idx = 0;
   switch (battle_menu.screen_cursor) {
   case BATTLE_CURSOR_MONSTER_1:
@@ -55,8 +56,15 @@ void confirm_fight(void) {
     monster_idx = 2;
     break;
   }
-  MonsterInstance *target = get_monster(monster_idx);
-  set_player_fight(target);
+  return get_monster(monster_idx);
+}
+
+/**
+ * Confirms that the player has chosen the default "fight" action and begins the
+ * next round of combat.
+ */
+void confirm_fight(void) {
+  set_player_fight(get_monster_at_cursor());
   battle_state = BATTLE_ROLL_INITIATIVE;
 }
 
@@ -65,10 +73,11 @@ void confirm_fight(void) {
  * round of combat.
  */
 void confirm_ability(const Ability *ability) {
-  if (ability->id != 0) {
+  if (ability->target_type == TARGET_SINGLE)
+    set_player_ability(ability, get_monster_at_cursor());
+  else
     set_player_ability(ability, NULL);
-    battle_state = BATTLE_ROLL_INITIATIVE;
-  }
+  battle_state = BATTLE_ROLL_INITIATIVE;
 }
 
 /**
@@ -80,19 +89,13 @@ void confirm_item(void) {
 }
 
 /**
- * Confirms the player has chosen a summon and begins the next round of combat.
- */
-void confirm_summon(void) {
-  // battle_state = BATTLE_ROLL_INITIATIVE;
-}
-
-/**
  * Confirms that the player has selected the "flee" action from the main menu
  * and begins the next round of combat.
  */
 void confirm_flee(void) {
+  // set_player_flee();
+  // battle_state = BATTLE_ROLL_INITIATIVE;
 }
-
 
 /**
  * Determines the x position for the HP bar based on the given monster position
@@ -905,8 +908,6 @@ inline void update_battle_menu(void) {
       open_battle_menu(BATTLE_MENU_MAIN);
     else if (was_pressed(J_A) && battle_menu.entries > 0) {
       const Ability *ability = player_abilities[battle_menu.cursor];
-      if (!ability->id)
-        break;
 
       if (player.sp < ability->sp_cost) {
         // TODO Need a "error" sound to play here

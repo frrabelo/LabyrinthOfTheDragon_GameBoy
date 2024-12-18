@@ -150,12 +150,13 @@ void area0_on_chest(Chest *chest) {
 
 bool area0_on_special(void) {
   if (active_map->id == MAP_FLOOR1 && player_at(1, 9)) {
-    reset_encounter(MONSTER_LAYOUT_1);
+    reset_encounter(MONSTER_LAYOUT_2);
 
     MonsterInstance *monster = encounter.monsters;
-    kobold_generator(monster, 3, C_TIER);
-    monster->hp = monster->max_hp = 1;
+    kobold_generator(monster, player.level - 20, C_TIER);
     monster->id = 'A';
+    kobold_generator(++monster, player.level - 20, B_TIER);
+    monster->id = 'B';
 
     start_battle();
 

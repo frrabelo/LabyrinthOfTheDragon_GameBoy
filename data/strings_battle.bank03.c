@@ -6,6 +6,12 @@
 #pragma bank 3
 
 const char str_battle_poison_spray[] = "Poison gas erupts \nfrom your palm!";
+const char str_battle_cure_wounds[] = "You're enveloped \nin blue light\x60";
+const char str_battle_bark_skin[] = "Your skin grows \nhard as wood.";
+const char str_battle_lightning[] = "Bolts of lightings\n fall!";
+const char str_battle_heal[] = "Radiant blue light\n falls upon you\x60";
+const char str_battle_insect_plague[] = "Locusts swarm your\n enemies!";
+const char str_battle_regen[] = "You surge with \nvitality!";
 const char str_battle_monster_miss[] = "But they miss!";
 const char str_battle_monster_magic_miss[] = "But it has no \neffect!";
 const char str_battle_monster_hit[] = "You take %u \ndamage!";
@@ -21,6 +27,9 @@ const char str_battle_player_hit_immune[] = "They're completely\n immune!";
 const char str_battle_player_hit_resist[] = "They resist your \nattack, only %u\n damage\x60";
 const char str_battle_player_hit_vuln[] = "It's SUPER \nEFFECTIVE dealing\n %u damage!";
 const char str_battle_player_hit_crit[] = "CRITICAL HIT! You \ndeal %u damage!";
+const char str_battle_player_heal[] = "You heal %u HP.";
+const char str_battle_player_heal_crit[] = "CRITICAL! You heal\n a whopping %u \nHP!";
+const char str_battle_player_heal_fumble[] = "You only heal a \nmeasly %u HP.";
 const char str_battle_victory[] = "Victory! You gain \n%u XP!";
 const char str_battle_victory_no_xp[] = "Victory! You gain \nno XP.\fMust have \nbeen too weak\x60";
 const char str_battle_level_up[] = "LEVEL UP! You \nreach %u!";

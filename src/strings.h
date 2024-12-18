@@ -66,9 +66,9 @@ extern const char str_ability_druid_cure_wounds[];
 extern const char str_ability_druid_bark_skin[];
 
 /**
- * "Call Lit.    "
+ * "Lightning    "
  */
-extern const char str_ability_druid_call_ligtning[];
+extern const char str_ability_druid_ligtning[];
 
 /**
  * "Heal         "
@@ -89,6 +89,36 @@ extern const char str_ability_druid_regen[];
  * "Poison gas erupts from your palm!"
  */
 extern const char str_battle_poison_spray[];
+
+/**
+ * "You're enveloped in blue light..."
+ */
+extern const char str_battle_cure_wounds[];
+
+/**
+ * "Your skin grows hard as wood."
+ */
+extern const char str_battle_bark_skin[];
+
+/**
+ * "Bolts of lightings fall!"
+ */
+extern const char str_battle_lightning[];
+
+/**
+ * "Radiant blue light falls upon you..."
+ */
+extern const char str_battle_heal[];
+
+/**
+ * "Locusts swarm your enemies!"
+ */
+extern const char str_battle_insect_plague[];
+
+/**
+ * "You surge with vitality!"
+ */
+extern const char str_battle_regen[];
 
 /**
  * "But they miss!"
@@ -164,6 +194,21 @@ extern const char str_battle_player_hit_vuln[];
  * "CRITICAL HIT! You deal %damage damage!"
  */
 extern const char str_battle_player_hit_crit[];
+
+/**
+ * "You heal %damage HP."
+ */
+extern const char str_battle_player_heal[];
+
+/**
+ * "CRITICAL! You heal a whopping %damage HP!"
+ */
+extern const char str_battle_player_heal_crit[];
+
+/**
+ * "You only heal a measly %damage HP."
+ */
+extern const char str_battle_player_heal_fumble[];
 
 /**
  * "Victory! You gain %exp XP!"

@@ -51,6 +51,10 @@ uint16_t get_monster_dmg(uint8_t level, PowerTier tier) BANKED {
   return monster_dmg[tier][level - 1];
 }
 
+uint16_t get_player_heal(uint8_t level, PowerTier tier) BANKED {
+  return player_heal[tier][level - 1];
+}
+
 bool roll_attack(uint8_t atk, uint8_t def) BANKED {
   if (atk + 32 < def)
     return rand() < attack_roll_target[0];

@@ -258,6 +258,7 @@ typedef enum BattleMenuType {
   BATTLE_MENU_MAIN,
   BATTLE_MENU_FIGHT,
   BATTLE_MENU_ABILITY,
+  BATTLE_ABILITY_MONSTER_SELECT,
   BATTLE_MENU_ITEM,
 } BattleMenuType;
 
@@ -320,10 +321,12 @@ typedef enum BattleAnimation {
 typedef struct BattleMenu {
   BattleMenuType active_menu;
   BattleScreenCursor screen_cursor;
+  BattleScreenCursor last_ability_cursor;
   uint8_t entries;
   uint8_t cursor;
   uint8_t scroll;
   uint8_t max_scroll;
+  const Ability *active_ability;
   char ability_text[MAX_ABILITIES][18];
   char item_text[MAX_ITEMS][18];
 } BattleMenu;

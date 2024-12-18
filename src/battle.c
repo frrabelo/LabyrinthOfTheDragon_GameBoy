@@ -38,8 +38,6 @@ BattleAnimation battle_animation;
 Timer status_effect_timer;
 uint8_t status_effect_frame = 0;
 
-
-
 /**
  * Confirms that the player has chosen the default "fight" action and begins the
  * next round of combat.
@@ -66,8 +64,11 @@ void confirm_fight(void) {
  * Confirms that the player has chosen an ability action and begins the next
  * round of combat.
  */
-void confirm_ability(void) {
-  // battle_state = BATTLE_ROLL_INITIATIVE;
+void confirm_ability(const Ability *ability) {
+  if (ability->id != 0) {
+    set_player_ability(ability, NULL);
+    battle_state = BATTLE_ROLL_INITIATIVE;
+  }
 }
 
 /**
@@ -813,6 +814,7 @@ void open_battle_menu(BattleMenuType m) {
   case BATTLE_MENU_MAIN:
     move_screen_cursor(prev_menu - 1);
     break;
+  case BATTLE_ABILITY_MONSTER_SELECT:
   case BATTLE_MENU_FIGHT:
     MonsterInstance *monster = encounter.monsters;
     for (uint8_t pos = 0; pos < 3; pos++, monster++) {
@@ -834,6 +836,35 @@ void open_battle_menu(BattleMenuType m) {
   }
 }
 
+void main_menu_cursor_up(void) {
+  if (battle_menu.screen_cursor == BATTLE_CURSOR_MAIN_FIGHT)
+    return;
+  move_screen_cursor(battle_menu.screen_cursor - 1);
+}
+
+void main_menu_cursor_down(void) {
+  if (battle_menu.screen_cursor == BATTLE_CURSOR_MAIN_FLEE)
+    return;
+  move_screen_cursor(battle_menu.screen_cursor + 1);
+}
+
+void main_menu_cursor_commit(void) {
+  switch (battle_menu.screen_cursor) {
+  case BATTLE_CURSOR_MAIN_FIGHT:
+    open_battle_menu(BATTLE_MENU_FIGHT);
+    break;
+  case BATTLE_CURSOR_MAIN_ABILITY:
+    open_battle_menu(BATTLE_MENU_ABILITY);
+    break;
+  case BATTLE_CURSOR_MAIN_ITEM:
+    open_battle_menu(BATTLE_MENU_ITEM);
+    break;
+  case BATTLE_CURSOR_MAIN_FLEE:
+    confirm_flee();
+    break;
+  }
+}
+
 /**
  * Performs game logic for the battle menu.
  * @see `update_battle`
@@ -841,15 +872,12 @@ void open_battle_menu(BattleMenuType m) {
 inline void update_battle_menu(void) {
   switch (battle_menu.active_menu) {
   case BATTLE_MENU_MAIN:
-    if (was_pressed(J_UP) && battle_menu.screen_cursor != BATTLE_CURSOR_MAIN_FIGHT)
-      move_screen_cursor(battle_menu.screen_cursor - 1);
-    else if (was_pressed(J_DOWN) && battle_menu.screen_cursor != BATTLE_CURSOR_MAIN_FLEE)
-      move_screen_cursor(battle_menu.screen_cursor + 1);
-    else if (was_pressed(J_A) && battle_menu.screen_cursor != BATTLE_CURSOR_MAIN_FLEE) {
-      open_battle_menu(battle_menu.screen_cursor + 1);
-    } else if (was_pressed(J_A)) {
-      confirm_flee();
-    }
+    if (was_pressed(J_UP))
+      main_menu_cursor_up();
+    else if (was_pressed(J_DOWN))
+      main_menu_cursor_down();
+    else if (was_pressed(J_A))
+      main_menu_cursor_commit();
     break;
   case BATTLE_MENU_FIGHT:
     if (was_pressed(J_B))
@@ -861,12 +889,38 @@ inline void update_battle_menu(void) {
     else if (was_pressed(J_RIGHT))
       select_next_enemy();
     break;
+  case BATTLE_ABILITY_MONSTER_SELECT:
+    if (was_pressed(J_B)) {
+      battle_menu.active_menu = BATTLE_MENU_ABILITY;
+      move_screen_cursor(battle_menu.last_ability_cursor);
+    } else if (was_pressed(J_A))
+      confirm_ability(battle_menu.active_ability);
+    else if (was_pressed(J_LEFT))
+      select_prev_enemy();
+    else if (was_pressed(J_RIGHT))
+      select_next_enemy();
+    break;
   case BATTLE_MENU_ABILITY:
-    // Select an available tech
     if (was_pressed(J_B))
       open_battle_menu(BATTLE_MENU_MAIN);
-    else if (was_pressed(J_A) && battle_menu.entries > 0)
-      confirm_ability();
+    else if (was_pressed(J_A) && battle_menu.entries > 0) {
+      const Ability *ability = player_abilities[battle_menu.cursor];
+      if (!ability->id)
+        break;
+
+      if (player.sp < ability->sp_cost) {
+        // TODO Need a "error" sound to play here
+        break;
+      }
+
+      if (ability->target_type == TARGET_SINGLE) {
+        battle_menu.active_ability = ability;
+        battle_menu.last_ability_cursor = battle_menu.screen_cursor;
+        open_battle_menu(BATTLE_ABILITY_MONSTER_SELECT);
+      } else {
+        confirm_ability(ability);
+      }
+    }
     else if (was_pressed(J_UP))
       submenu_cursor_up();
     else if (was_pressed(J_DOWN))
@@ -926,7 +980,9 @@ inline bool animate_monster_hp_bars(void) {
   bool updated = false;
   MonsterInstance *monster = encounter.monsters;
   for (uint8_t pos = 0; pos < 3; pos++, monster++) {
-    if (!monster->active || monster->hp == monster->target_hp)
+    if (!monster->active)
+      continue;
+    if (monster->hp == monster->target_hp)
       continue;
     updated = true;
     monster->hp = tween_hp(monster->hp, monster->target_hp);

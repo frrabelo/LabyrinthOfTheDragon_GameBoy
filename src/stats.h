@@ -227,6 +227,13 @@ uint8_t get_monster_atk(uint8_t level, PowerTier tier) BANKED;
 uint16_t get_monster_dmg(uint8_t level, PowerTier tier) BANKED;
 
 /**
+ * @return Healing for a player healing ability.
+ * @param level Level of the player.
+ * @param tier Power tier for the ability.
+ */
+uint16_t get_player_heal(uint8_t level, PowerTier tier) BANKED;
+
+/**
  * Performs an attack roll.
  * @param atk Attacker's ATK score.
  * @param def Defender's DEF score.
@@ -316,6 +323,22 @@ inline uint8_t level_offset(uint8_t level, int8_t offset) {
   if ((int8_t)level + offset > 99)
     return 99;
   return level + offset;
+}
+
+/**
+ * @return `true` if the damage / healing roll is critical.
+ * @param d16_roll Result of a d16 roll.
+ */
+inline bool is_critical(uint8_t d16_roll) {
+  return d16_roll >= 14;
+}
+
+/**
+ * @return `true` if the damage / healing roll is a fumble.
+ * @param d16_roll Result of a d16 roll.
+ */
+inline bool is_fumble(uint8_t d16_roll) {
+  return d16_roll <= 1;
 }
 
 #endif

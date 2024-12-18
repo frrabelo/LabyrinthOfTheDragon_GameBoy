@@ -19,5 +19,6 @@ extern const uint16_t monster_hp[4][99];
 extern const uint8_t monster_def[4][99];
 extern const uint8_t monster_atk[4][99];
 extern const uint16_t monster_dmg[4][99];
+extern const uint16_t player_heal[4][99];
 
 #endif

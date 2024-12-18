@@ -96,13 +96,15 @@ inline void player_turn(void) {
   case PLAYER_ACTION_FIGHT:
     player_base_attack();
     break;
-  case PLAYER_ACTION_FLEE:
-    player_flee();
-    break;
   case PLAYER_ACTION_ABILITY:
+    // No sp bounds checking here, should be handled in battle UI
+    player.sp -= encounter.player_ability->sp_cost;
     encounter.player_ability->execute();
     break;
   case PLAYER_ACTION_ITEM:
+    break;
+  case PLAYER_ACTION_FLEE:
+    player_flee();
     break;
   }
 }
@@ -126,7 +128,7 @@ void set_player_fight(MonsterInstance *target) {
   encounter.target = target;
 }
 
-void set_player_ability(Ability *a, MonsterInstance *target) {
+void set_player_ability(const Ability *a, MonsterInstance *target) {
   encounter.player_action = PLAYER_ACTION_ABILITY;
   encounter.player_ability = a;
   encounter.target = target;
@@ -176,7 +178,7 @@ void damage_monster(uint16_t base_damage, DamageAspect type) {
 
   uint8_t roll = d16();
   uint16_t damage = calc_damage(roll, base_damage);
-  bool critical = roll >= 12;
+  bool critical = is_critical(roll);
 
   if (critical) {
     sprintf(battle_post_message, str_battle_player_hit_crit, damage);
@@ -219,6 +221,11 @@ void damage_all_monster(uint16_t base_damage, DamageAspect type) {
     else
       monster->target_hp -= d;
   }
+}
+
+void ability_placeholder(void) {
+  sprintf(battle_pre_message, "You try a thing.");
+  sprintf(battle_post_message, "It doesn't work.");
 }
 
 Encounter encounter = {

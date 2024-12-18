@@ -99,7 +99,7 @@ typedef struct Encounter {
   /**
    * If the player used an ability, this is the ability they chose.
    */
-  Ability *player_ability;
+  const Ability *player_ability;
   /**
    * If the player is targeting a monster, this is the index for that monster.
    */
@@ -127,7 +127,7 @@ void set_player_fight(MonsterInstance *target);
  * @param a Ability to use.
  * @param target Target for the ability (if applicable).
  */
-void set_player_ability(Ability *a, MonsterInstance *target);
+void set_player_ability(const Ability *a, MonsterInstance *target);
 
 /**
  * Sets the player's next action to fleeing.
@@ -188,5 +188,21 @@ void damage_all_monster(uint16_t base_damage, DamageAspect type);
 inline MonsterInstance *get_monster(uint8_t idx) {
   return encounter.monsters + idx;
 }
+
+/**
+ * Heals the player without going over max HP.
+ * @param hp Amount of HP to heal the player.
+ */
+inline void heal_player(uint16_t hp) {
+  if (player.hp + hp > player.max_hp)
+    player.hp = player.max_hp;
+  else
+    player.hp += hp;
+}
+
+/**
+ * Handles battle system calls for an ability that has yet to be implemented.
+ */
+void ability_placeholder(void);
 
 #endif

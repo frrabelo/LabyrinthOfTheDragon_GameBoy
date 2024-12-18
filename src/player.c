@@ -75,21 +75,39 @@ void druid_base_attack(void) {
 }
 
 void druid_cure_wounds(void) {
+  sprintf(battle_pre_message, str_battle_cure_wounds);
+  const uint16_t base_hp = get_player_heal(player.level, C_TIER);
+  const uint8_t roll = d16();
+  const uint16_t hp = calc_damage(roll, base_hp);
+
+  heal_player(hp);
+
+  if (is_critical(roll))
+    sprintf(battle_post_message, str_battle_player_heal_crit, hp);
+  else if (is_fumble(roll))
+    sprintf(battle_post_message, str_battle_player_heal_fumble, hp);
+  else
+    sprintf(battle_post_message, str_battle_player_heal, hp);
 }
 
 void druid_bark_skin(void) {
+  ability_placeholder();
 }
 
-void druid_call_lightning(void) {
+void druid_lightning(void) {
+  ability_placeholder();
 }
 
 void druid_heal(void) {
+  ability_placeholder();
 }
 
 void druid_insect_plague(void) {
+  ability_placeholder();
 }
 
 void druid_regen(void) {
+  ability_placeholder();
 }
 
 const Ability druid0 = {
@@ -103,8 +121,8 @@ const Ability druid1 = {
 };
 
 const Ability druid2 = {
-  3, str_ability_druid_call_ligtning,
-  TARGET_SINGLE, 18, druid_call_lightning,
+  3, str_ability_druid_ligtning,
+  TARGET_SINGLE, 18, druid_lightning,
 };
 
 const Ability druid3 = {
@@ -332,4 +350,3 @@ void player_base_attack(void) {
 void player_flee(void) {
   // TODO Implement me
 }
-

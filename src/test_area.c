@@ -3,6 +3,7 @@
 #include "core.h"
 #include "encounter.h"
 #include "map.h"
+#include "floors.h"
 
 // TODO Factor me out into a general flame class
 Timer flame_timer;
@@ -179,8 +180,6 @@ Chest area0_chests[] = {
   // id, map_id, col, row, flag_page, open_flag
   { CHEST_TORCH, MAP_FLOOR1, 9, 13, TEST_FLAGS, FLAG_HAS_TORCH }
 };
-
-Tileset dungeon_tileset = { 128, 12, tile_data_dungeon };
 
 Area area0 = {
   0,                    // Id

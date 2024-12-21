@@ -217,6 +217,25 @@ typedef struct Timer {
  * Enumeration of names for each page in the global game flags.
  */
 typedef enum FlagPage {
+  /**
+   * 8-bit bitfield of flags to use to determine if a chest is open.
+   */
+  FLAGS_CHEST_OPEN = 27,
+  /**
+   * Additional page of "chest open" flags.
+   */
+  FLAGS_CHEST_OPEN_B = 28,
+  /**
+   * 8-bit bitfield of flags to use to determine if a chest is locked.
+   */
+  FLAGS_CHEST_LOCKED = 29,
+  /**
+   * Additional page of "chest locked" flags.
+   */
+  FLAGS_CHEST_LOCKED_B = 30,
+  /**
+   * Uese these flags for testing.
+   */
   TEST_FLAGS = 31
 } FlagPage;
 

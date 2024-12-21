@@ -37,11 +37,6 @@ uint8_t hero_y = 0 + 16;
 Timer walk_timer;
 uint8_t walk_frame;
 
-// External area data references
-// Might want to just define the area list in this file, since I think they will
-// only be referenced here.
-extern Area area0;
-
 // TODO This is in core right now, perhaps pull data loading out into a factory?
 extern const uint8_t map_tile_lookup[];
 
@@ -533,11 +528,11 @@ void return_from_battle(void) NONBANKED {
   lcd_on();
 }
 
-void init_world_map(void) NONBANKED {
+void init_world_map(Area *area) NONBANKED {
   SWITCH_ROM(MAP_SYSTEM_BANK);
   lcd_off();
 
-  load_area(&area0);
+  load_area(area);
 
   textbox.init();
   core.load_font();

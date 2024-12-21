@@ -410,7 +410,7 @@ extern uint8_t hero_y;
 /**
  * Initialize the world map controller.
  */
-void init_world_map(void) NONBANKED;
+void init_world_map(Area *area) NONBANKED;
 
 /**
  * Update callback for the world map controller.
@@ -609,5 +609,8 @@ inline bool on_move(void) {
     return active_area->on_move();
   return false;
 }
+
+// External area data references
+extern Area area0;
 
 #endif

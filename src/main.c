@@ -21,7 +21,7 @@ uint8_t joypad_released;
  */
 void initialize_game(void) {
   init_player(CLASS_DRUID);
-  init_world_map();
+  init_world_map(&area0);
   game_state = GAME_STATE_WORLD_MAP;
 }
 
@@ -32,8 +32,8 @@ inline void initialize(void) {
   ENABLE_RAM;
   initarand(RANDOM_SEED);
   hide_window();
-  // initialize_game();
-  test_combat_general(MONSTER_LAYOUT_1, DUMMY_NORMAL);
+  initialize_game();
+  // test_combat_general(MONSTER_LAYOUT_1, DUMMY_NORMAL);
   // test_flee();
 }
 

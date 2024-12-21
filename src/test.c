@@ -100,7 +100,7 @@ void test_combat_general(MonsterLayout layout, TestDummyType type) {
 
 void test_flee(void) {
   init_test_player(20);
-  init_world_map();
+  init_world_map(&area0);
   game_state = GAME_STATE_WORLD_MAP;
 
   // update_world_map();

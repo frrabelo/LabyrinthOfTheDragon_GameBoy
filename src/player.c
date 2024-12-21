@@ -280,7 +280,9 @@ void test_class_ability1(void) {
 }
 
 void test_class_ability2(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, "SUPERKILL!!!");
+  skip_post_message = true;
+  damage_all(1000, 200, false, DAMAGE_PHYSICAL);
 }
 
 void test_class_ability3(void) {
@@ -304,7 +306,7 @@ const Ability test_class1 = {
 };
 
 const Ability test_class2 = {
-  3, "Test 3", TARGET_SELF, 0, test_class_ability2
+  3, "SUPERKILL", TARGET_SELF, 0, test_class_ability2
 };
 
 const Ability test_class3 = {
@@ -440,6 +442,24 @@ void set_player_level(uint8_t level) {
   player.next_level_exp = get_exp(player.level + 1);
   update_player_stats();
   full_heal_player();
+}
+
+bool level_up(uint16_t xp) {
+  bool level_up = false;
+  player.exp += xp;
+
+  while (player.exp > player.next_level_exp) {
+    level_up = true;
+    player.level++;
+    player.next_level_exp = get_exp(player.level + 1);
+  }
+
+  if (level_up) {
+    update_player_stats();
+    full_heal_player();
+  }
+
+  return level_up;
 }
 
 void player_base_attack(void) {

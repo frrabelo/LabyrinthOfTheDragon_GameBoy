@@ -93,6 +93,8 @@ void test_combat_general(MonsterLayout layout, TestDummyType type) {
   init_test_player(20);
   fill_inventory(3);
   test_setup_encounter(layout, type);
+  // player.exp = get_exp(player.level + 1) - 1;
+  // encounter.monsters->exp_tier = S_TIER;
   test_battle_init();
 }
 

@@ -310,6 +310,11 @@ void player_flee(void);
 void monster_flee(MonsterInstance *monster);
 
 /**
+ * Applies rewards after a successful encounter. Handles XP, leveling, etc.
+ */
+void apply_rewards(void);
+
+/**
  * @return Whether or not a slot is available for the given status effect.
  */
 bool has_effect_slot(

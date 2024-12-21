@@ -438,6 +438,25 @@ void set_player_item(ItemId item_id) {
   encounter.player_action = PLAYER_ACTION_ITEM;
 }
 
+void apply_rewards(void) {
+  if (encounter.xp_reward == 0) {
+    sprintf(rewards_buf, str_battle_victory_no_xp);
+    return;
+  }
+
+  uint8_t *debug = (void *)0xA000;
+    *debug++ = player.level;
+
+  if (level_up(encounter.xp_reward)) {
+    *debug++ = player.level;
+    const char *format = "LEVEL UP! Welcome\nto level %u!";
+    sprintf(rewards_buf, format, player.level);
+    return;
+  }
+
+  sprintf(rewards_buf, str_battle_victory, encounter.xp_reward);
+}
+
 /**
  * Resets a list of status effects.
  * @param effect List of status effects to reset.

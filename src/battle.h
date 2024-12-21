@@ -371,6 +371,11 @@ extern char battle_post_message[64];
 extern bool skip_post_message;
 
 /**
+ * Battle rewards message.
+ */
+extern char rewards_buf[64];
+
+/**
  * Animation to play prior to the results of a player or monster action.
  */
 extern BattleAnimation battle_action_effect;

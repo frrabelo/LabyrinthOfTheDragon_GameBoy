@@ -1219,7 +1219,6 @@ void initialize_battle(void) {
   move_screen_cursor(BATTLE_CURSOR_MAIN_FIGHT);
   battle_menu.active_menu = BATTLE_MENU_MAIN;
 
-
   // Initialize the encounter and player graphics
   battle_init_encounter();
 
@@ -1306,12 +1305,7 @@ void update_battle(void) NONBANKED {
     }
 
     if (encounter.victory) {
-      const uint16_t xp = encounter.xp_reward;
-      player.exp += xp;
-      if (xp == 0)
-        sprintf(rewards_buf, str_battle_victory_no_xp);
-      else
-        sprintf(rewards_buf, str_battle_victory, xp);
+      apply_rewards();
       battle_state = BATTLE_REWARDS;
       return;
     }

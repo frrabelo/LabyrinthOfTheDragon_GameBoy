@@ -281,6 +281,13 @@ void set_player_abilities(void);
 void player_base_attack(void);
 
 /**
+ * Adds the given experience points and performs a level up if applicable.
+ * @param xp Experience points to add.
+ * @return `true` if the player leveled up.
+ */
+bool level_up(uint16_t xp);
+
+/**
  * Full heals the player, setting HP and SP to their max values.
  */
 void full_heal_player(void);

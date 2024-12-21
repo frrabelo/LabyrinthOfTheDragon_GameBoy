@@ -49,6 +49,10 @@ const uint16_t floor1_palettes[] = {
 //------------------------------------------------------------------------------
 #define FLOOR1_NUM_CHESTS 0
 
+typedef enum Floor1Chests {
+  F1_CHEST_MyChesticles,
+} Floor1Chests;
+
 const Chest floor1_chests[] = {
   /*
   {
@@ -106,6 +110,10 @@ void floor1_on_enter(uint8_t from_id, uint8_t to_id) {
 }
 
 void floor1_on_chest(Chest *chest) {
+  switch (chest->id) {
+  case F1_CHEST_MyChesticles:
+    break;
+  }
 }
 
 bool floor1_on_special(void) {

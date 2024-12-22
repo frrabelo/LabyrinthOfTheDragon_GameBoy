@@ -309,6 +309,19 @@ void refresh_map_screen(void) {
 }
 
 /**
+ * Updates the local tiles state based on the current map position.
+ */
+void update_local_tiles(void) {
+  uint8_t x = map.x + HERO_X_OFFSET;
+  uint8_t y = map.y + HERO_Y_OFFSET;
+  get_map_tile(map.local_tiles + HERE, x, y);
+  get_map_tile(map.local_tiles + UP, x, y - 1);
+  get_map_tile(map.local_tiles + DOWN, x, y + 1);
+  get_map_tile(map.local_tiles + LEFT, x - 1, y);
+  get_map_tile(map.local_tiles + RIGHT, x + 1, y);
+}
+
+/**
  * Initiates a progressive screen reload based on the active exit being taken
  * by the player.
  */
@@ -385,19 +398,6 @@ void check_map_move(void) {
     start_move(LEFT);
   else if (is_down(J_RIGHT))
     start_move(RIGHT);
-}
-
-/**
- * Updates the local tiles state based on the current map position.
- */
-void update_local_tiles(void) {
-  uint8_t x = map.x + HERO_X_OFFSET;
-  uint8_t y = map.y + HERO_Y_OFFSET;
-  get_map_tile(map.local_tiles + HERE, x, y);
-  get_map_tile(map.local_tiles + UP, x, y - 1);
-  get_map_tile(map.local_tiles + DOWN, x, y + 1);
-  get_map_tile(map.local_tiles + LEFT, x - 1, y);
-  get_map_tile(map.local_tiles + RIGHT, x + 1, y);
 }
 
 /**

@@ -332,33 +332,17 @@ typedef struct Floor {
    */
   const palette_color_t *palettes;
   /**
-   * Number of maps.
-   */
-  uint8_t num_maps;
-  /**
    * List of all maps for the floor.
    */
   const Map *maps;
-  /**
-   * Number of exit entries for the floor.
-   */
-  uint8_t num_exits;
   /**
    * List of exits for all pages on the floor.
    */
   const Exit *exits;
   /**
-   * Number of chests in the area.
-   */
-  uint8_t num_chests;
-  /**
    * Array of treasure chests for the floor.
    */
   const Chest *chests;
-  /**
-   * Number of signs for the floor.
-   */
-  uint8_t num_signs;
   /**
    * Signs for the floor.
    */

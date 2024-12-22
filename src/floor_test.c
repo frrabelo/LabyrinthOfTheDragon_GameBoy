@@ -15,13 +15,12 @@
 // Maps
 //------------------------------------------------------------------------------
 
-#define FLOOR_TEST_NUM_MAPS 3
-
 const Map floor_test_maps[] = {
   // id, bank, data, width, height
   { MAP_A, BANK_9, floor_test_data, 32, 32 },
   { MAP_B, BANK_9, floor_test_mini, 8, 8 },
   { MAP_C, BANK_9, floor_test_17x12, 17, 12 },
+  { END },
 };
 
 //------------------------------------------------------------------------------
@@ -70,8 +69,6 @@ const uint16_t floor_test_palettes[] = {
 // Chests
 //------------------------------------------------------------------------------
 
-#define FLOOR_TEST_NUM_CHESTS 0
-
 typedef enum FLOOR_TEST_Chests {
   FLOOR_TEST_CHEST_0,
 } FLOOR_TEST_Chests;
@@ -86,14 +83,12 @@ const Chest floor_test_chests[] = {
     CHEST_FLAG_1          // Open flag (the bit determines if it's been opened)
   }
   */
-  { 0 }, // Remove me when you add your first chest (pointers amirite?)
+  { END },
 };
 
 //------------------------------------------------------------------------------
 // Exits
 //------------------------------------------------------------------------------
-
-#define FLOOR_TEST_NUM_EXITS 6
 
 const Exit floor_test_exits[] = {
   /*
@@ -108,21 +103,25 @@ const Exit floor_test_exits[] = {
   },
   */
 
- { MAP_A, 8, 1, MAP_B, 4, 1, DOWN, EXIT_STAIRS },
- { MAP_B, 4, 1, MAP_A, 8, 1, DOWN, EXIT_STAIRS },
+  { MAP_A, 8, 1, MAP_B, 4, 1, DOWN, EXIT_STAIRS },
+  { MAP_B, 4, 1, MAP_A, 8, 1, DOWN, EXIT_STAIRS },
 
- { MAP_A, 25, 27, MAP_B, 4, 5, DOWN, EXIT_STAIRS },
- { MAP_B, 4, 5, MAP_A, 25, 27, DOWN, EXIT_STAIRS },
+  { MAP_A, 25, 27, MAP_B, 4, 5, DOWN, EXIT_STAIRS },
+  { MAP_B, 4, 5, MAP_A, 25, 27, DOWN, EXIT_STAIRS },
 
- { MAP_A, 9, 27, MAP_C, 3, 3, DOWN, EXIT_STAIRS },
- { MAP_C, 3, 3, MAP_A, 9, 27, DOWN, EXIT_STAIRS },
+  { MAP_A, 9, 27, MAP_C, 3, 3, DOWN, EXIT_STAIRS },
+  { MAP_C, 3, 3, MAP_A, 9, 27, DOWN, EXIT_STAIRS },
+
+  { MAP_A, 14, 1, MAP_C, 4, 7, UP, EXIT_STAIRS },
+  { MAP_C, 4, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
+  { MAP_C, 3, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
+
+  { END },
 };
 
 //------------------------------------------------------------------------------
 // Exits
 //------------------------------------------------------------------------------
-
-#define FLOOR_TEST_NUM_SIGNS 2
 
 const Sign floor_test_signs[] = {
   /*
@@ -133,8 +132,10 @@ const Sign floor_test_signs[] = {
     "Hi there!" // The message to display
   }
   */
- { MAP_A, 4, 1, UP, "This skull\x60\nIs so metal." },
- { MAP_A, 7, 1, UP, "A pair of glowing\neyes peers back\x60" }
+  { MAP_A, 4, 1, UP, "This skull\x60\nIs so metal." },
+  { MAP_A, 7, 1, UP, "A pair of glowing\neyes peers back\x60" },
+
+  { END },
 };
 
 //------------------------------------------------------------------------------
@@ -206,10 +207,10 @@ const Floor floor_test = {
   FLOOR_TEST_DEFAULT_MAP,                     // Default Map
   FLOOR_TEST_DEFAULT_X, FLOOR_TEST_DEFAULT_Y, // Default Starting (x, y)
   floor_test_palettes,                        // Palettes
-  FLOOR_TEST_NUM_MAPS, floor_test_maps,       // # of maps, maps
-  FLOOR_TEST_NUM_EXITS, floor_test_exits,     // # of exits, exits
-  FLOOR_TEST_NUM_CHESTS, floor_test_chests,   // # of chests, chests
-  FLOOR_TEST_NUM_SIGNS, floor_test_signs,     // # signs, signs
+  floor_test_maps,
+  floor_test_exits,
+  floor_test_chests,
+  floor_test_signs,
   floor_test_on_init,
   floor_test_on_update,
   floor_test_on_draw,

@@ -318,6 +318,7 @@ void load_exit(void) {
   map.active_map = map.active_floor->maps + exit->to_map;
   map.hero_direction = exit->heading;
   set_hero_position(exit->to_col, exit->to_row);
+  update_local_tiles();
   refresh_map_screen();
   map_fade_in(MAP_STATE_EXIT_LOADED);
   lcd_on();
@@ -331,8 +332,10 @@ bool handle_exit(void) {
   uint8_t x = map.x + HERO_X_OFFSET;
   uint8_t y = map.y + HERO_Y_OFFSET;
 
-  Exit *exit = map.active_floor->exits;
-  for (uint8_t k = 0; k < map.active_floor->num_exits; k++, exit++) {
+  Exit *exit;
+  for (exit = map.active_floor->exits; exit->map_id != END; exit++) {
+    if (exit->map_id == 0xFF)
+      break;
     if (exit->map_id != map.active_map->id)
       continue;
     if (exit->col != x || exit->row != y)
@@ -471,8 +474,8 @@ bool check_signs(void) {
   uint8_t x = map.x + HERO_X_OFFSET;
   uint8_t y = map.y + HERO_Y_OFFSET;
 
-  Sign *sign = map.active_floor->signs;
-  for (uint8_t k = 0; k < map.active_floor->num_signs; k++, sign++) {
+  Sign *sign;
+  for (sign = map.active_floor->signs; sign->map_id != END; sign++) {
     if (sign->map_id != map.active_map->id)
       continue;
 

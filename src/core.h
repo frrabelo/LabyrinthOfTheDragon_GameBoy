@@ -191,6 +191,11 @@ typedef enum GameRomBank {
 #define hide_window() move_win(0, 144)
 
 /**
+ * Used to define an end of list: `{ END }`
+ */
+#define END 0xFF
+
+/**
  * Universal direction type.
  */
 typedef enum Direction {

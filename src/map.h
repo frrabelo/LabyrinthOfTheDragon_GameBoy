@@ -231,6 +231,10 @@ typedef struct Exit {
    * Type of exit.
    */
   ExitType exit;
+  /**
+   * Floor for the destination (optional).
+   */
+  struct Floor *to_floor;
 } Exit;
 
 /**

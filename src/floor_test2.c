@@ -6,20 +6,19 @@
 // Floorwide settings
 //------------------------------------------------------------------------------
 
-#define FLOOR_TEST_ID 99
-#define FLOOR_TEST_DEFAULT_X 4
-#define FLOOR_TEST_DEFAULT_Y 4
-#define FLOOR_TEST_DEFAULT_MAP MAP_A
+#define FLOOR_TEST2_ID 98
+#define FLOOR_TEST2_DEFAULT_X 2
+#define FLOOR_TEST2_DEFAULT_Y 14
+#define FLOOR_TEST2_DEFAULT_MAP MAP_A
 
 //------------------------------------------------------------------------------
 // Maps
 //------------------------------------------------------------------------------
 
-const Map floor_test_maps[] = {
+const Map floor_test2_maps[] = {
   // id, bank, data, width, height
-  { MAP_A, BANK_9, floor_test_data, 32, 32 },
-  { MAP_B, BANK_9, floor_test_mini, 8, 8 },
-  { MAP_C, BANK_9, floor_test_17x12, 17, 12 },
+  { MAP_A, BANK_8, map_example_0, 16, 16 },
+  { MAP_B, BANK_8, map_example_1, 16, 16 },
   { END },
 };
 
@@ -27,7 +26,7 @@ const Map floor_test_maps[] = {
 // Palette Colors
 //------------------------------------------------------------------------------
 
-const uint16_t floor_test_palettes[] = {
+const uint16_t floor_test2_palettes[] = {
   // Palette 1 - Core background tiles
   RGB8(190, 200, 190),
   RGB8(100, 100, 140),
@@ -69,14 +68,14 @@ const uint16_t floor_test_palettes[] = {
 // Chests
 //------------------------------------------------------------------------------
 
-typedef enum FLOOR_TEST_Chests {
-  FLOOR_TEST_CHEST_0,
-} FLOOR_TEST_Chests;
+typedef enum FLOOR_TEST2_Chests {
+  FLOOR_TEST2_CHEST_0,
+} FLOOR_TEST2_Chests;
 
-const Chest floor_test_chests[] = {
+const Chest floor_test2_chests[] = {
   /*
   {
-    FLOOR_TEST_CHEST_0,   // id (use the enum above to define these)
+    FLOOR_TEST2_CHEST_0,   // id (use the enum above to define these)
     MAP_A,                // Map where the chest is at
     0, 0,                 // Column & row in that map
     FLAGS_CHEST_OPEN,     // Global flag page for the open/closed flag.
@@ -90,34 +89,22 @@ const Chest floor_test_chests[] = {
 // Exits
 //------------------------------------------------------------------------------
 
-const Exit floor_test_exits[] = {
+const Exit floor_test2_exits[] = {
   /*
   {
     MAP_A,        // Map the exit is on
     0, 0,         // Column and row on that map for the exit
-    FLOOR_TEST_ID,    // Floor to which the exit leads (last door, basically)
+    FLOOR_TEST2_ID,    // Floor to which the exit leads (last door, basically)
     DEST_MAP      // Id of the destination map
     0, 0,         // Column and row
     UP,           // Way the player should be facing leaving the exit
     EXIT_STAIRS   // Type of exit (not sure if we'll use this yet)
   },
   */
-
-  { MAP_A, 8, 1, MAP_B, 4, 1, DOWN, EXIT_STAIRS },
-  { MAP_B, 4, 1, MAP_A, 8, 1, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 25, 27, MAP_B, 4, 5, DOWN, EXIT_STAIRS },
-  { MAP_B, 4, 5, MAP_A, 25, 27, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 9, 27, MAP_C, 3, 3, DOWN, EXIT_STAIRS },
-  { MAP_C, 3, 3, MAP_A, 9, 27, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 14, 1, MAP_C, 4, 7, UP, EXIT_STAIRS },
-  { MAP_C, 4, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
-  { MAP_C, 3, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &floor_test2 },
-
+  { MAP_A, 2, 2, MAP_B, 2, 2, DOWN, EXIT_STAIRS },
+  { MAP_B, 2, 2, MAP_A, 2, 2, DOWN, EXIT_STAIRS },
+  { MAP_B, 9, 9, MAP_A, 9, 9, DOWN, EXIT_STAIRS },
+  { MAP_A, 9, 9, MAP_B, 9, 9, DOWN, EXIT_STAIRS },
   { END },
 };
 
@@ -125,7 +112,7 @@ const Exit floor_test_exits[] = {
 // Exits
 //------------------------------------------------------------------------------
 
-const Sign floor_test_signs[] = {
+const Sign floor_test2_signs[] = {
   /*
   {
     MAP_A,      // Id of the map
@@ -134,9 +121,8 @@ const Sign floor_test_signs[] = {
     "Hi there!" // The message to display
   }
   */
-  { MAP_A, 4, 1, UP, "This skull\x60\nIs so metal." },
-  { MAP_A, 7, 1, UP, "A pair of glowing\neyes peers back\x60" },
-
+  { MAP_A, 2, 15, DOWN, "You can't return\x60" },
+  { MAP_A, 3, 15, DOWN, "You can't return\x60" },
   { END },
 };
 
@@ -144,84 +130,73 @@ const Sign floor_test_signs[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
-void floor_test_on_init(void) {
+void floor_test2_on_init(void) {
 }
 
-void floor_test_on_update(void) {
+void floor_test2_on_update(void) {
 }
 
-void floor_test_on_draw(void) {
+void floor_test2_on_draw(void) {
 }
 
-bool floor_test_on_action(void) {
+bool floor_test2_on_action(void) {
   return false;
 }
 
-bool floor_test_before_chest(Chest *chest) {
+bool floor_test2_before_chest(Chest *chest) {
   return false;
 }
 
-void floor_test_on_enter(uint8_t from_id, uint8_t to_id) {
+void floor_test2_on_enter(uint8_t from_id, uint8_t to_id) {
 }
 
-void floor_test_on_chest(Chest *chest) {
-  switch (chest->id) {
-  default:
-  case FLOOR_TEST_CHEST_0:
-    // ...
-    break;
-  }
+void floor_test2_on_chest(Chest *chest) {
+  // switch (chest->id) {
+  // default:
+  // case FLOOR_TEST2_CHEST_0:
+  //   // ...
+  //   break;
+  // }
 }
 
-bool floor_test_on_special(void) {
-  switch (map.active_map->id) {
-  case MAP_A:
-    if (player_at(3, 8)) {
-      MonsterInstance *monster = encounter.monsters;
-      reset_encounter(MONSTER_LAYOUT_3S);
-      dummy_generator(monster, player.level, DUMMY_COWARD);
-      monster->id = 'A';
-      dummy_generator(++monster, player.level, DUMMY_COWARD);
-      monster->id = 'B';
-      dummy_generator(++monster, player.level, DUMMY_COWARD);
-      monster->id = 'C';
-      start_battle();
-      return true;
-    }
-    break;
-  }
+bool floor_test2_on_special(void) {
+  // switch (map.active_map->id) {
+  // case MAP_A:
+  //   break;
+  // }
   return false;
 }
 
-bool floor_test_on_exit(void) {
+bool floor_test2_on_exit(void) {
   return false;
 }
 
-bool floor_test_on_move(void) {
+bool floor_test2_on_move(void) {
   return false;
 }
 
 //------------------------------------------------------------------------------
 // Area Definition (shouldn't have to touch this)
 //------------------------------------------------------------------------------
-const Floor floor_test = {
-  FLOOR_TEST_ID,                              // Id
-  FLOOR_TEST_DEFAULT_MAP,                     // Default Map
-  FLOOR_TEST_DEFAULT_X, FLOOR_TEST_DEFAULT_Y, // Default Starting (x, y)
-  floor_test_palettes,                        // Palettes
-  floor_test_maps,
-  floor_test_exits,
-  floor_test_chests,
-  floor_test_signs,
-  floor_test_on_init,
-  floor_test_on_update,
-  floor_test_on_draw,
-  floor_test_on_action,
-  floor_test_before_chest,
-  floor_test_on_chest,
-  floor_test_on_enter,
-  floor_test_on_special,
-  floor_test_on_exit,
-  floor_test_on_move,
+const Floor floor_test2 = {
+  FLOOR_TEST2_ID,
+  FLOOR_TEST2_DEFAULT_MAP,
+  FLOOR_TEST2_DEFAULT_X, FLOOR_TEST2_DEFAULT_Y,
+  floor_test2_palettes,
+  floor_test2_maps,
+  floor_test2_exits,
+  floor_test2_chests,
+  floor_test2_signs,
+  floor_test2_on_init,
+  floor_test2_on_update,
+  floor_test2_on_draw,
+  floor_test2_on_action,
+  floor_test2_before_chest,
+  floor_test2_on_chest,
+  floor_test2_on_enter,
+  floor_test2_on_special,
+  floor_test2_on_exit,
+  floor_test2_on_move,
 };
+
 

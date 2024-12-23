@@ -11,8 +11,6 @@
 #include "floor.h"
 #include "map.h"
 
-uint8_t *debug = (void *)0xA000;
-
 MapSystem map = { MAP_STATE_WAITING };
 
 /**
@@ -328,8 +326,12 @@ void update_local_tiles(void) {
 void load_exit(void) {
   lcd_off();
   const Exit *exit = map.active_exit;
+
+  if (exit->to_floor)
+    set_active_floor(exit->to_floor);
   map.active_map = map.active_floor->maps + exit->to_map;
   map.hero_direction = exit->heading;
+
   set_hero_position(exit->to_col, exit->to_row);
   update_local_tiles();
   refresh_map_screen();
@@ -353,9 +355,6 @@ bool handle_exit(void) {
       continue;
     if (exit->col != x || exit->row != y)
       continue;
-
-    *debug++ = 0xAC;
-    *debug++ = 0xDC;
 
     map.active_exit = exit;
     map_fade_out(MAP_STATE_LOAD_EXIT);
@@ -536,6 +535,7 @@ void set_active_floor(Floor *floor) BANKED {
   map.active_floor = floor;
   map.active_map = &floor->maps[floor->default_map];
   set_hero_position(floor->default_x, floor->default_y);
+  core.load_bg_palette(map.active_floor->palettes, 0, 7);
 }
 
 /**

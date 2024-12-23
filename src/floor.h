@@ -28,4 +28,7 @@ extern const Item chest_item_2pot_1eth[];
 // Chest contents: one haste potion
 extern const Item chest_item_haste_pot[];
 
+// Chest contents: one regen potion
+extern const Item chest_item_regen_pot[];
+
 #endif

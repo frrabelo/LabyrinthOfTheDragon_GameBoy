@@ -121,6 +121,16 @@ extern const char str_maps_chest_unlock_key[];
 extern const char str_maps_get_magic_key[];
 
 /**
+ * "It's stuck!"
+ */
+extern const char str_maps_lever_stuck[];
+
+/**
+ * "Seems this lever was one and done."
+ */
+extern const char str_maps_lever_one_way[];
+
+/**
  * "You get 2 potions and an ether!"
  */
 extern const char str_chest_item_2pot_1eth[];
@@ -129,6 +139,11 @@ extern const char str_chest_item_2pot_1eth[];
  * "You get a haste potion!"
  */
 extern const char str_chest_item_haste_pot[];
+
+/**
+ * "You get a regen potion!"
+ */
+extern const char str_chest_item_regen_pot[];
 
 /**
  * "%damage HP healed!"

@@ -5,7 +5,7 @@
 // Add custom chest handlers here
 
 bool chest_add_key(Chest *chest) {
-  if (is_chest_locked(chest)) {
+  if (is_chest_locked(chest->id)) {
     map_textbox(str_maps_chest_locked);
     return false;
   } else {
@@ -26,4 +26,9 @@ const Item chest_item_2pot_1eth[] = {
 const Item chest_item_haste_pot[] = {
   { ITEM_HASTE, 1 },
   { END }
+};
+
+extern const Item chest_item_regen_pot[] = {
+  { ITEM_REGEN, 1 },
+  { END },
 };

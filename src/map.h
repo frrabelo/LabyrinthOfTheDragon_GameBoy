@@ -102,6 +102,10 @@ typedef struct MapTile {
    * If the tile contains a chest, this will point to it.
    */
   const struct Chest *chest;
+  /**
+   * If the tile contains a lever, this will point to it.
+   */
+  const struct Lever *lever;
 } MapTile;
 
 /**
@@ -376,11 +380,11 @@ typedef struct Lever {
   /**
    * Column for the lever.
    */
-  uint8_t col;
+  int8_t col;
   /**
    * Row for the lever.
    */
-  uint8_t row;
+  int8_t row;
   /**
    * Set this to true if the lever can only be pulled once.
    */
@@ -392,8 +396,9 @@ typedef struct Lever {
   bool stuck;
   /**
    * Custom callback to execute when the lever is pulled.
+   * @param lever The lever being pulled.
    */
-  const void (*on_pull)(struct Lever *lever);
+  const void (*on_pull)(const struct Lever *lever);
 } Lever;
 
 /**
@@ -416,8 +421,8 @@ typedef enum DoorId {
 typedef struct Door {
   DoorId id;
   MapId map_id;
-  uint8_t col;
-  uint8_t row;
+  int8_t col;
+  int8_t row;
 } Door;
 
 /**
@@ -444,8 +449,8 @@ typedef enum SconceId {
 typedef struct Sconce {
   SconceId id;
   MapId map_id;
-  uint8_t col;
-  uint8_t row;
+  int8_t col;
+  int8_t row;
 } Sconce;
 
 /**
@@ -468,8 +473,8 @@ typedef enum NpcId {
 typedef struct NPC {
   NpcId id;
   MapId map_id;
-  uint8_t col;
-  uint8_t row;
+  int8_t col;
+  int8_t row;
 } NPC;
 
 /**
@@ -694,6 +699,10 @@ typedef struct MapSystem {
    * Lever on/off states for the current floor.
    */
   uint8_t flags_lever_on;
+  /**
+   * Lever stuck/unstuck states for the current floor.
+   */
+  uint8_t flags_lever_stuck;
 } MapSystem;
 
 /**
@@ -877,32 +886,32 @@ inline int8_t hero_y(void) {
  * Sets the chest as "opened" in the map system state.
  * @param chest Chest to set as opened.
  */
-inline void set_chest_open(const Chest *chest) {
-  map.flags_chest_open |= chest->id;
+inline void set_chest_open(ChestId id) {
+  map.flags_chest_open |= id;
 }
 
 /**
  * Sets the chest as "locked" in the map system state.
  * @param chest Chest to set as locked.
  */
-inline void set_chest_locked(const Chest *chest) {
-  map.flags_chest_locked |= chest->id;
+inline void set_chest_locked(ChestId id) {
+  map.flags_chest_locked |= id;
 }
 
 /**
  * Sets a chest as "unlocked" in the map system state.
  * @param chest Chest to set as unlocked.
  */
-inline void set_chest_unlocked(const Chest *chest) {
-  map.flags_chest_locked &= ~chest->id;
+inline void set_chest_unlocked(ChestId id) {
+  map.flags_chest_locked &= ~id;
 }
 
 /**
  * @return `true` if the chest is locked.
  * @param chest The chest to check.
  */
-inline bool is_chest_locked(const Chest *chest) {
-  return map.flags_chest_locked & chest->id;
+inline bool is_chest_locked(ChestId id) {
+  return map.flags_chest_locked & id;
 }
 
 /**
@@ -918,8 +927,32 @@ inline bool is_lever_on(const Lever *lever) {
  * for the level.
  * @param lever The lever to toggle.
  */
-inline bool toggle_lever(const Lever *lever) {
-  map.flags_lever_on &= ~lever->id;
+inline bool toggle_lever_state(LeverId id) {
+  map.flags_lever_on ^= id;
+}
+
+/**
+ * @return `true` if the lever is stuck.
+ * @param lever The lever to check.
+ */
+inline bool is_lever_stuck(LeverId id) {
+  return map.flags_lever_stuck & id;
+}
+
+/**
+ * Sets the lever "stuck" state to "on". Has no effect on graphics.
+ * @param lever The lever to stick.
+ */
+inline void stick_lever(LeverId id) {
+  map.flags_lever_stuck |= id;
+}
+
+/**
+ * Sets the lever "stuck" state to "off". Has no effect on graphics.
+ * @param lever The lever to unstick.
+ */
+inline void unstick_lever(LeverId id) {
+  map.flags_lever_stuck &= ~id;
 }
 
 

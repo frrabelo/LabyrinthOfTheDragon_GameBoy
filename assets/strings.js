@@ -51,11 +51,14 @@ addNamespace('maps', 2, {
   'chest_key_locked': "You need a magic key to unlock this chest...",
   'chest_unlock_key': "You unlock the chest with a magic key!",
   'get_magic_key': "You get a magic key!",
+  'lever_stuck': "It's stuck!",
+  'lever_one_way': "Seems this lever was one and done.",
 });
 
 addNamespace('chest_item', 2, {
   '2pot_1eth': 'You get 2 potions and an ether!',
   'haste_pot': 'You get a haste potion!',
+  'regen_pot': 'You get a regen potion!',
 });
 
 addNamespace('items', 3, {

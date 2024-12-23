@@ -102,7 +102,8 @@ const Chest floor_test_chests[] = {
   {
     CHEST_2,
     MAP_A, 12, 5, true, false,
-    "Cannot open",
+    str_chest_item_haste_pot,
+    chest_item_haste_pot,
   },
   // An empty chest, default behavior if you don't set any params
   {
@@ -124,7 +125,13 @@ const Chest floor_test_chests[] = {
     NULL,
     chest_add_key,
   },
-
+  // Custom chest that is unlocked using a slightly more involved script
+  {
+    CHEST_6,
+    MAP_A, 20, 5, true, false,
+    str_chest_item_regen_pot,
+    chest_item_regen_pot,
+  },
   { END },
 };
 
@@ -186,6 +193,28 @@ const Sign floor_test_signs[] = {
 // Levers
 //------------------------------------------------------------------------------
 
+void floor_test_on_lever(const Lever *lever) {
+  if (lever->id == LEVER_1) {
+    map_textbox("You hear a click\x60");
+    set_chest_unlocked(CHEST_2);
+  }
+
+  if (lever->id == LEVER_2) {
+    if (is_lever_stuck(LEVER_3)) {
+      map_textbox("The other lever\ncreaks.");
+      unstick_lever(LEVER_3);
+    } else {
+      map_textbox("The other lever\ngroans.");
+      stick_lever(LEVER_3);
+    }
+  }
+
+  if (lever->id == LEVER_3) {
+    map_textbox("The chest clicks.");
+    set_chest_unlocked(CHEST_6);
+  }
+}
+
 const Lever floor_test_levers[] = {
   /*
   {
@@ -197,6 +226,9 @@ const Lever floor_test_levers[] = {
     NULL,     // Scripting callback for the lever
   }
   */
+  { LEVER_1, MAP_A, 12, 3, true, false, floor_test_on_lever },
+  { LEVER_2, MAP_A, 22, 3, false, false, floor_test_on_lever },
+  { LEVER_3, MAP_A, 20, 3, true, true, floor_test_on_lever },
   { END },
 };
 

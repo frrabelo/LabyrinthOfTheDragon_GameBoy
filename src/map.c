@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 
 #include "battle.h"
 #include "core.h"
@@ -144,6 +145,10 @@ void map_fade_in(MapState to_state) {
  * Note: this routine can safely be used with coordinates outside the current
  * map's dimensions. A blank tile will be returned in this case.
  *
+ * Optimization: This method should not be used during rendering as it's
+ * fairly slow. If you need to render based on its results create a buffer
+ * of map tiles and draw them progressively instead.
+ *
  * @param tile Pointer to a map tile where the data should be loaded.
  * @param x X-position in the map.
  * @param y Y-position in the map.
@@ -162,9 +167,26 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
 
   uint8_t _prev_bank = _current_bank;
   SWITCH_ROM(map.active_map->bank);
-  const uint8_t t = *data++;
+  uint8_t t = *data++;
   const uint8_t a = *data;
   SWITCH_ROM(_prev_bank);
+
+  // Check if the tile contains a chest
+  tile->chest = NULL;
+  const Chest *chest;
+  for (chest = map.active_floor->chests; chest->id != END; chest++) {
+    if (chest->map_id != map.active_map->id)
+      continue;
+    if (chest->col != x || chest->row != y)
+      continue;
+    tile->chest = chest;
+
+    // If the chest is open, increment the tile to the "open" graphic
+    if (map.flags_chest_open & chest->id)
+      t++;
+
+    break;
+  }
 
   tile->blank = false;
   tile->tile = map_tile_lookup[t & MAP_TILE_MASK];
@@ -307,6 +329,50 @@ void refresh_map_screen(void) {
 }
 
 /**
+ * Determines a VRAM address for the upper-left graphic tile in a given
+ * direction relative to where the player is on the screen.
+ * @param d Direction relative to the hero. Use `HERE` for the tile beneath.
+ * @return A pointer in bg VRAM for the tile relative to the hero's posiiton.
+ */
+uint8_t *get_local_vram(Direction d) {
+  int8_t col = (int8_t)((map.scroll_x + 16 * HERO_X_OFFSET) >> 3);
+  int8_t row = (int8_t)((map.scroll_y + 16 * HERO_Y_OFFSET) >> 3);
+
+  switch (d) {
+  case UP:
+    row -= 2;
+    break;
+  case DOWN:
+    row += 2;
+    break;
+  case LEFT:
+    col -= 2;
+    break;
+  case RIGHT:
+    col += 2;
+    break;
+  }
+
+  if (col < 0)
+    col += 32;
+  else if (col >= 32)
+    col -= 32;
+
+  if (row < 0)
+    row += 32;
+  else if (row >= 32)
+    row -= 32;
+
+
+  *debug++ = map.scroll_x;
+  *debug++ = map.scroll_y;
+  *debug++ = col;
+  *debug++ = row;
+
+  return VRAM_BACKGROUND_XY(col, row);
+}
+
+/**
  * Updates the local tiles state based on the current map position.
  */
 void update_local_tiles(void) {
@@ -320,6 +386,22 @@ void update_local_tiles(void) {
 }
 
 /**
+ * Resets chests for the current floor. This will reset all flag states for
+ * chests (as they are reused from floor to floor). If we want to implement
+ * floor backtracking, this will need to change.
+ */
+void reset_chests(void) {
+  map.flags_chest_open = 0;
+  map.flags_chest_locked = 0;
+
+  const Chest *chest;
+  for (chest = map.active_floor->chests; chest->id != END; chest++) {
+    if (chest->locked)
+      map.flags_chest_locked |= chest->id;
+  }
+}
+
+/**
  * Initiates a progressive screen reload based on the active exit being taken
  * by the player.
  */
@@ -329,6 +411,7 @@ void load_exit(void) {
 
   if (exit->to_floor)
     set_active_floor(exit->to_floor);
+
   map.active_map = map.active_floor->maps + exit->to_map;
   map.hero_direction = exit->heading;
 
@@ -470,8 +553,8 @@ void update_map_move(void) {
  * @return `true` if a sign was found and is being opened.
  */
 bool check_signs(void) {
-  uint8_t x = map.x + HERO_X_OFFSET;
-  uint8_t y = map.y + HERO_Y_OFFSET;
+  int8_t x = hero_x();
+  int8_t y = hero_y();
 
   const Sign *sign;
   for (sign = map.active_floor->signs; sign->map_id != END; sign++) {
@@ -504,13 +587,87 @@ bool check_signs(void) {
       break;
     }
 
-    if (x != hero_x || y != hero_y)
+    if (x != (int8_t)hero_x || y != (int8_t)hero_y)
       continue;
 
     map_textbox(sign->message);
     return true;
   }
   return false;
+}
+
+void open_chest(const MapTile *tile) {
+  const Chest *chest = tile->chest;
+  if (!chest)
+    return;
+
+  set_chest_open(chest);
+
+  uint8_t *vram = get_local_vram(map.hero_direction);
+  *vram = tile->tile + 2;
+  *(vram + 1) = tile->tile + 3;
+  *(vram + 0x20) = tile->tile + 0x12;
+  *(vram + 0x20 + 1) = tile->tile + 0x12 + 1;
+}
+
+/**
+ * Checks for chests and handles chest interactions at the current location.
+ * @return `true` to prevent the default behavior of the action handler.
+ */
+bool check_chests(void) {
+  const MapTile *tile = map.local_tiles + map.hero_direction;
+  const Chest *chest = tile->chest;
+
+  if (!chest)
+    return false;
+
+  if (map.flags_chest_open & chest->id)
+    return false;
+
+
+  if (chest->on_open) {
+    if (chest->on_open(chest))
+      open_chest(tile);
+    return true;
+  }
+
+  const bool locked = map.flags_chest_locked & chest->id;
+  const bool has_keys = player.magic_keys > 0;
+  bool used_key = false;
+
+  if (locked && chest->magic_key_unlock) {
+    if (player.magic_keys == 0) {
+      map_textbox(str_maps_chest_key_locked);
+      return true;
+    }
+    player.magic_keys--;
+    used_key = true;
+    map.flags_chest_locked &= ~chest->id;
+  } else if (locked) {
+    map_textbox(str_maps_chest_locked);
+    return true;
+  }
+
+  open_chest(tile);
+
+  if (chest->items) {
+    for (const Item *item = chest->items; item->id != END; item++)
+      add_items(item->id, item->quantity);
+  }
+
+  const char *message = (chest->open_msg) ?
+    chest->open_msg :
+    str_maps_chest_open;
+
+  if (used_key) {
+    char buf[96];
+    sprintf(buf, "%s\f%s", str_maps_chest_unlock_key, message);
+    map_textbox(buf);
+  } else {
+    map_textbox(message);
+  }
+
+  return true;
 }
 
 /**
@@ -524,9 +681,7 @@ bool check_action(void) {
       return true;
     if (check_signs())
       return true;
-    // if (check_chests())
-    //   return;
-    return true;
+    return check_chests();
   }
   return false;
 }
@@ -536,6 +691,7 @@ void set_active_floor(Floor *floor) BANKED {
   map.active_map = &floor->maps[floor->default_map];
   set_hero_position(floor->default_x, floor->default_y);
   core.load_bg_palette(map.active_floor->palettes, 0, 7);
+  reset_chests();
 }
 
 /**

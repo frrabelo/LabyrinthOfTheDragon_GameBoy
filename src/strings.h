@@ -91,6 +91,46 @@ extern const char str_misc_regen_pot[];
 extern const char str_misc_haste_pot[];
 
 /**
+ * "The chest is locked."
+ */
+extern const char str_maps_chest_locked[];
+
+/**
+ * "You opened the chest!"
+ */
+extern const char str_maps_chest_open[];
+
+/**
+ * "The chest was empty."
+ */
+extern const char str_maps_chest_empty[];
+
+/**
+ * "You need a magic key to unlock this chest..."
+ */
+extern const char str_maps_chest_key_locked[];
+
+/**
+ * "You unlock the chest with a magic key!"
+ */
+extern const char str_maps_chest_unlock_key[];
+
+/**
+ * "You get a magic key!"
+ */
+extern const char str_maps_get_magic_key[];
+
+/**
+ * "You get 2 potions and an ether!"
+ */
+extern const char str_chest_item_2pot_1eth[];
+
+/**
+ * "You get a haste potion!"
+ */
+extern const char str_chest_item_haste_pot[];
+
+/**
  * "%damage HP healed!"
  */
 extern const char str_items_use_potion[];

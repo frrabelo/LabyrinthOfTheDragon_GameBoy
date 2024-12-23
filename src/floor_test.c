@@ -69,20 +69,62 @@ const uint16_t floor_test_palettes[] = {
 // Chests
 //------------------------------------------------------------------------------
 
-typedef enum FLOOR_TEST_Chests {
-  FLOOR_TEST_CHEST_0,
-} FLOOR_TEST_Chests;
+bool floor_test_custom_chest(Chest *c) {
+  switch (c->id) {
+  case CHEST_5:
+    player.magic_keys++;
+    break;
+  }
+  return false;
+}
 
 const Chest floor_test_chests[] = {
   /*
   {
-    FLOOR_TEST_CHEST_0,   // id (use the enum above to define these)
-    MAP_A,                // Map where the chest is at
-    0, 0,                 // Column & row in that map
-    FLAGS_CHEST_OPEN,     // Global flag page for the open/closed flag.
-    CHEST_FLAG_1          // Open flag (the bit determines if it's been opened)
+    CHEST_1,    // Always use a CHEST_* here cause it acts like a flag
+    MAP_A,      // Map where the chest resides
+    0, 0,       // (x, y) location for the chest
+    false,      // Whether or not the chest is locked
+    false,      // If locked, can it be opened using a magic key?
+    "Nice!",    // Message to display when the chest is opened
+    NULL,       // Item list contents (optional)
+    NULL,       // Scripting "on open" callback (optional)
   }
   */
+  // Basic items chest, contains some stuffs
+  {
+    CHEST_1,
+    MAP_A, 10, 5, false, false,
+    str_chest_item_2pot_1eth,
+    chest_item_2pot_1eth
+  },
+  // A locked chest that can be unlocked using scripting
+  {
+    CHEST_2,
+    MAP_A, 12, 5, true, false,
+    "Cannot open",
+  },
+  // An empty chest, default behavior if you don't set any params
+  {
+    CHEST_3,
+    MAP_A, 14, 5, false, false,
+  },
+  // Can be unlocked using a magic key
+  {
+    CHEST_4,
+    MAP_A, 16, 5, true, true,
+    str_chest_item_haste_pot,
+    chest_item_haste_pot,
+  },
+  // Custom chest that gives a magic key using a scripting callback
+  {
+    CHEST_5,
+    MAP_A, 18, 5, false, false,
+    NULL,
+    NULL,
+    chest_add_key,
+  },
+
   { END },
 };
 
@@ -141,6 +183,69 @@ const Sign floor_test_signs[] = {
 };
 
 //------------------------------------------------------------------------------
+// Levers
+//------------------------------------------------------------------------------
+
+const Lever floor_test_levers[] = {
+  /*
+  {
+    LEVER_1,  // Use the LEVER_* constants for ids (again, used as flags)
+    MAP_A,    // The map where the lever be
+    0, 0,     // (x, y) tile coordinates in the map
+    false,    // Can the lever only be pulled once?
+    false,    // Does the lever start stuck? (requires scripting to change)
+    NULL,     // Scripting callback for the lever
+  }
+  */
+  { END },
+};
+
+//------------------------------------------------------------------------------
+// Doors (NOT YET IMPLEMENTED)
+//------------------------------------------------------------------------------
+
+const Door floor_test_doors[] = {
+  /*
+  {
+    DOOR_1,   // Use DOOR_* constants for ids.
+    MAP_A,    // Map for the door
+    0, 0      // (x, y) tile for the door
+  }
+  */
+  { END }
+};
+
+//------------------------------------------------------------------------------
+// Sconces (NOT YET IMPLEMENTED)
+//------------------------------------------------------------------------------
+
+const Sconce floor_test_sconces[] = {
+  /*
+  {
+    SCONCE_1, // Use SCONCE_* constants for ids.
+    MAP_A,    // Map for the sconce
+    0, 0      // (x, y) tile for the sconce
+  }
+  */
+  { END }
+};
+
+//------------------------------------------------------------------------------
+// Doors (NOT YET IMPLEMENTED)
+//------------------------------------------------------------------------------
+
+const NPC floor_test_npcs[] = {
+  /*
+  {
+    NPC_1,    // Use NPC_* constants for ids.
+    MAP_A,    // Map for the npc
+    0, 0      // (x, y) tile for the npc
+  }
+  */
+  { END }
+};
+
+//------------------------------------------------------------------------------
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
@@ -155,22 +260,6 @@ void floor_test_on_draw(void) {
 
 bool floor_test_on_action(void) {
   return false;
-}
-
-bool floor_test_before_chest(Chest *chest) {
-  return false;
-}
-
-void floor_test_on_enter(uint8_t from_id, uint8_t to_id) {
-}
-
-void floor_test_on_chest(Chest *chest) {
-  switch (chest->id) {
-  default:
-  case FLOOR_TEST_CHEST_0:
-    // ...
-    break;
-  }
 }
 
 bool floor_test_on_special(void) {
@@ -213,13 +302,14 @@ const Floor floor_test = {
   floor_test_exits,
   floor_test_chests,
   floor_test_signs,
+  floor_test_levers,
+  floor_test_doors,
+  floor_test_sconces,
+  floor_test_npcs,
   floor_test_on_init,
   floor_test_on_update,
   floor_test_on_draw,
   floor_test_on_action,
-  floor_test_before_chest,
-  floor_test_on_chest,
-  floor_test_on_enter,
   floor_test_on_special,
   floor_test_on_exit,
   floor_test_on_move,

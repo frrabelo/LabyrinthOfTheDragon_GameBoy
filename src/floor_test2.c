@@ -68,20 +68,7 @@ const uint16_t floor_test2_palettes[] = {
 // Chests
 //------------------------------------------------------------------------------
 
-typedef enum FLOOR_TEST2_Chests {
-  FLOOR_TEST2_CHEST_0,
-} FLOOR_TEST2_Chests;
-
 const Chest floor_test2_chests[] = {
-  /*
-  {
-    FLOOR_TEST2_CHEST_0,   // id (use the enum above to define these)
-    MAP_A,                // Map where the chest is at
-    0, 0,                 // Column & row in that map
-    FLAGS_CHEST_OPEN,     // Global flag page for the open/closed flag.
-    CHEST_FLAG_1          // Open flag (the bit determines if it's been opened)
-  }
-  */
   { END },
 };
 
@@ -127,6 +114,69 @@ const Sign floor_test2_signs[] = {
 };
 
 //------------------------------------------------------------------------------
+// Levers
+//------------------------------------------------------------------------------
+
+const Lever floor_test2_levers[] = {
+  /*
+  {
+    LEVER_1,  // Use the LEVER_* constants for ids (again, used as flags)
+    MAP_A,    // The map where the lever be
+    0, 0,     // (x, y) tile coordinates in the map
+    false,    // Can the lever only be pulled once?
+    false,    // Does the lever start stuck? (requires scripting to change)
+    NULL,     // Scripting callback for the lever
+  }
+  */
+  { END },
+};
+
+//------------------------------------------------------------------------------
+// Doors (NOT YET IMPLEMENTED)
+//------------------------------------------------------------------------------
+
+const Door floor_test2_doors[] = {
+  /*
+  {
+    DOOR_1,   // Use DOOR_* constants for ids.
+    MAP_A,    // Map for the door
+    0, 0      // (x, y) tile for the door
+  }
+  */
+  { END }
+};
+
+//------------------------------------------------------------------------------
+// Sconces (NOT YET IMPLEMENTED)
+//------------------------------------------------------------------------------
+
+const Sconce floor_test2_sconces[] = {
+  /*
+  {
+    SCONCE_1, // Use SCONCE_* constants for ids.
+    MAP_A,    // Map for the sconce
+    0, 0      // (x, y) tile for the sconce
+  }
+  */
+  { END }
+};
+
+//------------------------------------------------------------------------------
+// Doors (NOT YET IMPLEMENTED)
+//------------------------------------------------------------------------------
+
+const NPC floor_test2_npcs[] = {
+  /*
+  {
+    NPC_1,    // Use NPC_* constants for ids.
+    MAP_A,    // Map for the npc
+    0, 0      // (x, y) tile for the npc
+  }
+  */
+  { END }
+};
+
+//------------------------------------------------------------------------------
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
@@ -142,23 +192,6 @@ void floor_test2_on_draw(void) {
 bool floor_test2_on_action(void) {
   return false;
 }
-
-bool floor_test2_before_chest(Chest *chest) {
-  return false;
-}
-
-void floor_test2_on_enter(uint8_t from_id, uint8_t to_id) {
-}
-
-void floor_test2_on_chest(Chest *chest) {
-  // switch (chest->id) {
-  // default:
-  // case FLOOR_TEST2_CHEST_0:
-  //   // ...
-  //   break;
-  // }
-}
-
 bool floor_test2_on_special(void) {
   // switch (map.active_map->id) {
   // case MAP_A:
@@ -187,13 +220,14 @@ const Floor floor_test2 = {
   floor_test2_exits,
   floor_test2_chests,
   floor_test2_signs,
+  floor_test2_levers,
+  floor_test2_doors,
+  floor_test2_sconces,
+  floor_test2_npcs,
   floor_test2_on_init,
   floor_test2_on_update,
   floor_test2_on_draw,
   floor_test2_on_action,
-  floor_test2_before_chest,
-  floor_test2_on_chest,
-  floor_test2_on_enter,
   floor_test2_on_special,
   floor_test2_on_exit,
   floor_test2_on_move,

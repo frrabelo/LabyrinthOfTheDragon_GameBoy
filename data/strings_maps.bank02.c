@@ -13,3 +13,6 @@ const char str_maps_chest_unlock_key[] = "You unlock the \nchest with a \nmagic 
 const char str_maps_get_magic_key[] = "You get a magic \nkey!";
 const char str_maps_lever_stuck[] = "It\'s stuck!";
 const char str_maps_lever_one_way[] = "Seems this lever \nwas one and done.";
+const char str_maps_door_locked[] = "The door is \nlocked.";
+const char str_maps_door_locked_key[] = "You need a magic \nkey to unlock \nthis door\x60";
+const char str_maps_door_unlock_key[] = "You unlock the \ndoor with a magic\n key!";

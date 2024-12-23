@@ -244,6 +244,7 @@ const Door floor_test_doors[] = {
     0, 0      // (x, y) tile for the door
   }
   */
+  { DOOR_1, MAP_A, 14, 1, DOOR_STAIRS_UP, true },
   { END }
 };
 

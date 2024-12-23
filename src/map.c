@@ -171,6 +171,8 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
   const uint8_t a = *data;
   SWITCH_ROM(_prev_bank);
 
+  uint8_t map_attr = t >> 6;
+
   // Check if the tile contains a chest
   tile->chest = NULL;
   const Chest *chest;
@@ -200,12 +202,38 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
 
     if (map.flags_lever_on & lever->id)
       t++;
+
+    break;
   }
 
+  // Check for doors
+  tile->door = NULL;
+  const Door *door;
+  bool is_door = false;
+  for (door = map.active_floor->doors; door->id != END; door++) {
+    if (door->map_id != map.active_map->id)
+      continue;
+    if (door->col != x || door->row != y)
+      continue;
+    tile->door = door;
+
+    if (is_locked_door(door->id)) {
+      map_attr = MAP_WALL;
+    } else {
+      tile->tile = door->type;
+      is_door = true;
+    }
+
+    break;
+  }
+
+
+
   tile->blank = false;
-  tile->tile = map_tile_lookup[t & MAP_TILE_MASK];
+  if (!is_door)
+    tile->tile = map_tile_lookup[t & MAP_TILE_MASK];
   tile->attr = a;
-  tile->map_attr = t >> 6;
+  tile->map_attr = map_attr;
 }
 
 /**
@@ -414,6 +442,13 @@ void reset_chests(void) {
   for (lever = map.active_floor->levers; lever->id != END; lever++)
     if (lever->stuck)
       stick_lever(lever->id);
+
+
+  map.flags_door_locked = 0;
+
+  const Door *door;
+  for (door = map.active_floor->doors; door->id != END; door++)
+    set_door_locked(door->id);
 }
 
 /**
@@ -626,6 +661,17 @@ void tile_to_state_on(const MapTile *tile, uint8_t *vram) {
 }
 
 /**
+ * Swaps a tile's graphics to the given base tile.
+ * @param t Base tile to set.
+ */
+void tile_to_base(const MapTile *tile, uint8_t *vram, uint8_t t) {
+  set_vram_byte(vram, t);
+  set_vram_byte(vram + 1, t + 1);
+  set_vram_byte(vram + 0x20, t + 0x10);
+  set_vram_byte(vram + 0x20 + 1, t + 0x10 + 1);
+}
+
+/**
  * Swaps a tile to its "OFF" state based on it's root tileset.
  * @param tile Map tile to swap.
  * @param vram Place in bg VRAM to perform the swap.
@@ -729,6 +775,20 @@ void toggle_lever(const MapTile *tile) {
     tile_to_state_off(tile, vram);
 }
 
+
+void open_door(const MapTile *tile) {
+  const Door *door = tile->door;
+  if (!door)
+    return;
+  set_door_open(door->id);
+
+  uint8_t *vram = get_local_vram(map.hero_direction);
+  uint8_t tile_base = door->type;
+  tile_to_base(tile, vram, tile_base);
+
+  update_local_tiles();
+}
+
 /**
  * Checks for a lever in front of the player and handles its logic.
  */
@@ -757,6 +817,32 @@ bool check_levers(void) {
   return true;
 }
 
+bool check_doors(void) {
+  const MapTile *tile = map.local_tiles + map.hero_direction;
+  const Door *door = tile->door;
+
+  if (!door)
+    return false;
+
+  if (!is_locked_door(door->id))
+    return false;
+
+  if (door->magic_key_unlock) {
+    if (player.magic_keys > 0) {
+      map_textbox(str_maps_door_unlock_key);
+      set_door_open(door->id);
+      open_door(tile);
+    } else {
+      map_textbox(str_maps_door_locked_key);
+    }
+  } else {
+    map_textbox(str_maps_door_locked);
+  }
+
+  return true;
+
+}
+
 /**
  * Checks to see if the player is attempting to perform an action by pressing
  * the A button.
@@ -769,6 +855,8 @@ bool check_action(void) {
     if (check_signs())
       return true;
     if (check_chests())
+      return true;
+    if (check_doors())
       return true;
     return check_levers();
   }

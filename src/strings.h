@@ -131,6 +131,21 @@ extern const char str_maps_lever_stuck[];
 extern const char str_maps_lever_one_way[];
 
 /**
+ * "The door is locked."
+ */
+extern const char str_maps_door_locked[];
+
+/**
+ * "You need a magic key to unlock this door..."
+ */
+extern const char str_maps_door_locked_key[];
+
+/**
+ * "You unlock the door with a magic key!"
+ */
+extern const char str_maps_door_unlock_key[];
+
+/**
  * "You get 2 potions and an ether!"
  */
 extern const char str_chest_item_2pot_1eth[];

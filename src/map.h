@@ -106,6 +106,10 @@ typedef struct MapTile {
    * If the tile contains a lever, this will point to it.
    */
   const struct Lever *lever;
+  /**
+   * If the tile contains a door, this will point to it.
+   */
+  const struct Door *door;
 } MapTile;
 
 /**
@@ -416,6 +420,16 @@ typedef enum DoorId {
 } DoorId;
 
 /**
+ * Type for the door.
+ */
+typedef enum DoorType {
+  DOOR_NORMAL = 0x4E,
+  DOOR_STAIRS_UP = 0x60,
+  DOOR_STAIRS_DOWN = 0x88,
+  DOOR_NEXT_LEVEL = 0x82,
+} DoorType;
+
+/**
  * A door that can be opened, closed, and locked. WARNING: NOT IMPLEMENTED YET.
  */
 typedef struct Door {
@@ -423,6 +437,8 @@ typedef struct Door {
   MapId map_id;
   int8_t col;
   int8_t row;
+  DoorType type;
+  bool magic_key_unlock;
 } Door;
 
 /**
@@ -703,6 +719,10 @@ typedef struct MapSystem {
    * Lever stuck/unstuck states for the current floor.
    */
   uint8_t flags_lever_stuck;
+  /**
+   * Door locked open/closed state.
+   */
+  uint8_t flags_door_locked;
 } MapSystem;
 
 /**
@@ -953,6 +973,22 @@ inline void stick_lever(LeverId id) {
  */
 inline void unstick_lever(LeverId id) {
   map.flags_lever_stuck &= ~id;
+}
+
+/**
+ * Sets a door to open. Has no effect on graphics.
+ * @param id Id for the door to open.
+ */
+inline void set_door_open(DoorId id) {
+  map.flags_door_locked &= ~id;
+}
+
+inline void set_door_locked(DoorId id) {
+  map.flags_door_locked |= id;
+}
+
+inline bool is_locked_door(DoorId id) {
+  return map.flags_door_locked & id;
 }
 
 

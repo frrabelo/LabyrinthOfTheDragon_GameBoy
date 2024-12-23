@@ -53,6 +53,9 @@ addNamespace('maps', 2, {
   'get_magic_key': "You get a magic key!",
   'lever_stuck': "It's stuck!",
   'lever_one_way': "Seems this lever was one and done.",
+  'door_locked': 'The door is locked.',
+  'door_locked_key': 'You need a magic key to unlock this door...',
+  'door_unlock_key': 'You unlock the door with a magic key!',
 });
 
 addNamespace('chest_item', 2, {

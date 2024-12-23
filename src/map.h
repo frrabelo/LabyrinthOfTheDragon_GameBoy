@@ -484,11 +484,11 @@ typedef struct MapSystem {
   /**
    * The active floor.
    */
-  Floor *active_floor;
+  const Floor *active_floor;
   /**
    * Active map in the active floor.
    */
-  Map *active_map;
+  const Map *active_map;
   /**
    * Map tile data for the tile the hero currently occupies and those in every
    * cardinal direction (index this with a `Direction`).
@@ -517,7 +517,7 @@ typedef struct MapSystem {
   /**
    * Reference to the exit prior to loading the destination for an exit.
    */
-  Exit *active_exit;
+  const Exit *active_exit;
 } MapSystem;
 
 /**

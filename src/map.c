@@ -327,7 +327,7 @@ void update_local_tiles(void) {
  */
 void load_exit(void) {
   lcd_off();
-  Exit *exit = map.active_exit;
+  const Exit *exit = map.active_exit;
   map.active_map = map.active_floor->maps + exit->to_map;
   map.hero_direction = exit->heading;
   set_hero_position(exit->to_col, exit->to_row);
@@ -345,7 +345,7 @@ bool handle_exit(void) {
   uint8_t x = map.x + HERO_X_OFFSET;
   uint8_t y = map.y + HERO_Y_OFFSET;
 
-  Exit *exit;
+  const Exit *exit;
   for (exit = map.active_floor->exits; exit->map_id != END; exit++) {
     if (exit->map_id == 0xFF)
       break;
@@ -474,7 +474,7 @@ bool check_signs(void) {
   uint8_t x = map.x + HERO_X_OFFSET;
   uint8_t y = map.y + HERO_Y_OFFSET;
 
-  Sign *sign;
+  const Sign *sign;
   for (sign = map.active_floor->signs; sign->map_id != END; sign++) {
     if (sign->map_id != map.active_map->id)
       continue;

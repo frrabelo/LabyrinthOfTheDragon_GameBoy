@@ -91,7 +91,7 @@ void load_tileset(const Tileset *s, uint8_t *dst) NONBANKED {
 }
 
 void core_load_tiles(
-  Tileset *s,
+  const Tileset *s,
   uint8_t *dst,
   uint8_t o,
   uint8_t n
@@ -172,11 +172,11 @@ void draw_tilemap(Tilemap m, uint8_t *dst) NONBANKED {
   SWITCH_ROM(_prev_bank);
 }
 
-void load_bg_palette(palette_color_t *data, uint8_t index, uint8_t n) {
+void load_bg_palette(const palette_color_t *data, uint8_t index, uint8_t n) {
   update_bg_palettes(index, n, data);
 }
 
-void load_sprite_palette(palette_color_t *data, uint8_t index, uint8_t n) {
+void load_sprite_palette(const palette_color_t *data, uint8_t index, uint8_t n) {
   update_sprite_palettes(index, n, data);
 }
 

@@ -549,8 +549,16 @@ typedef struct Core {
 extern const Core core;
 
 /**
- * Map tile lookup. Used by map code but placed in bank 0 for flexible access.
+ * Lookup table that converts map_tile ids into graphic tile ids. The graphics
+ * for map tiles are laid out in a way that allows for easy editing, this makes
+ * it easy to compute the position for a tile given a 6-bit tile id.
  */
 extern const uint8_t map_tile_lookup[];
+
+/**
+ * Debug address. Provides a way to write data values to a known memory location
+ * when debugging code.
+ */
+extern uint8_t *debug;
 
 #endif

@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include "core.h"
 
-/**
- * Lookup table that converts map_tile ids into graphic tile ids. The graphics
- * for map tiles are laid out in a way that allows for easy editing, this makes
- * it easy to compute the position for a tile given a 6-bit tile id.
- */
+uint8_t *debug = (void *)0xB000;
+
 const uint8_t map_tile_lookup[64] = {
   0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E,
   0x20, 0x22, 0x24, 0x26, 0x28, 0x2A, 0x2C, 0x2E,

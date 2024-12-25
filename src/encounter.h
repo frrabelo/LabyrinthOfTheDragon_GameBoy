@@ -77,7 +77,7 @@ typedef struct Encounter {
   /**
    * Monster instances for the encounter.
    */
-  MonsterInstance monsters[3];
+  Monster monsters[3];
   /**
    * The turn order for the encounter.
    */
@@ -109,7 +109,7 @@ typedef struct Encounter {
   /**
    * If the player is targeting a monster, this is the index for that monster.
    */
-  MonsterInstance *target;
+  Monster *target;
   /**
    * Accumulated xp to reward upon finishing battle.
    */
@@ -147,14 +147,14 @@ extern Encounter encounter;
  * Sets the player's next action to a basic attack.
  * @param target Target for the basic attack.
  */
-void set_player_fight(MonsterInstance *target);
+void set_player_fight(Monster *target);
 
 /**
  * Sets the player's next action to using an ability.
  * @param a Ability to use.
  * @param target Target for the ability (if applicable).
  */
-void set_player_ability(const Ability *a, MonsterInstance *target);
+void set_player_ability(const Ability *a, Monster *target);
 
 /**
  * Sets the player's next action to fleeing.
@@ -235,7 +235,7 @@ uint8_t damage_all(
  * @return The monster at the given index.
  * @param idx Index for the monster in the battle.
  */
-inline MonsterInstance *get_monster(uint8_t idx) {
+inline Monster *get_monster(uint8_t idx) {
   return encounter.monsters + idx;
 }
 
@@ -264,7 +264,7 @@ void reset_player_stats(void) NONBANKED;
  * Resets a monster's combat stats and flags at the start of each round.
  * @param m Monster instance to reset.
  */
-void monster_reset_stats(MonsterInstance *m) NONBANKED;
+void monster_reset_stats(Monster *m) NONBANKED;
 
 /**
  * Handles status effect updates for the player.
@@ -275,7 +275,7 @@ void update_player_status_effects(void);
  * Handles status effect updates for a monster.
  * @param monster Monster for which to handle the effects.
  */
-void update_monster_status_effects(MonsterInstance *monster);
+void update_monster_status_effects(Monster *monster);
 
 /**
  * Applies a status effect and adds it to the given list.

@@ -299,7 +299,7 @@ bool floor_test_on_special(void) {
   switch (map.active_map->id) {
   case MAP_A:
     if (player_at(3, 8)) {
-      MonsterInstance *monster = encounter.monsters;
+      Monster *monster = encounter.monsters;
       reset_encounter(MONSTER_LAYOUT_3S);
       dummy_generator(monster, player.level, DUMMY_AGGRESSIVE);
       monster->id = 'A';

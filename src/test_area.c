@@ -153,7 +153,7 @@ void area0_on_chest(Chest *chest) {
 
 bool area0_on_special(void) {
   if (active_map->id == MAP_FLOOR1 && player_at(1, 9)) {
-    MonsterInstance *monster = encounter.monsters;
+    Monster *monster = encounter.monsters;
 
     // reset_encounter(MONSTER_LAYOUT_2);
     // kobold_generator(monster, player.level - 20, C_TIER);

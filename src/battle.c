@@ -38,7 +38,7 @@ const uint8_t status_effect_frame = 1;
  * Finds the monster currently selected by the screen cursor.
  * @return Monster intance for the selected monster.
  */
-MonsterInstance *get_monster_at_cursor(void) {
+Monster *get_monster_at_cursor(void) {
   uint8_t monster_idx = 0;
   switch (battle_menu.screen_cursor) {
   case BATTLE_CURSOR_MONSTER_1:
@@ -130,7 +130,7 @@ uint8_t get_hp_bar_x(MonsterPosition pos) {
  * @param p Position of the monsters on the battle screen.
  * @param m Monster instance to load.
  */
-void load_monster_graphics(MonsterPosition p, MonsterInstance *m) {
+void load_monster_graphics(MonsterPosition p, Monster *m) {
   if (!m->active)
     return;
 
@@ -288,7 +288,7 @@ void redraw_player_status_effects(void) {
  * Redraw status effects for all monsters.
  */
 void redraw_monster_status_effects(void) {
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   const uint8_t frame_offset = 0x60;
 
   for (uint8_t m = MONSTER_POSITION1; m <= MONSTER_POSITION3; m++, monster++) {
@@ -451,7 +451,7 @@ void battle_init_encounter(void) {
     break;
   }
 
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   load_monster_graphics(MONSTER_POSITION1, monster++);
   load_monster_graphics(MONSTER_POSITION2, monster++);
   load_monster_graphics(MONSTER_POSITION3, monster);
@@ -508,8 +508,8 @@ void set_magic_or_martial(void) {
  * @param b Index for the second enemy to select if active.
  */
 void select_monster(uint8_t a, uint8_t b) {
-  MonsterInstance *first = encounter.monsters + a;
-  MonsterInstance *second = encounter.monsters + b;
+  Monster *first = encounter.monsters + a;
+  Monster *second = encounter.monsters + b;
   if (first->active) {
     move_screen_cursor(BATTLE_CURSOR_MONSTER_1 + a);
     return;
@@ -846,7 +846,7 @@ void open_battle_menu(BattleMenuType m) {
     break;
   case BATTLE_ABILITY_MONSTER_SELECT:
   case BATTLE_MENU_FIGHT:
-    MonsterInstance *monster = encounter.monsters;
+    Monster *monster = encounter.monsters;
     for (uint8_t pos = 0; pos < 3; pos++, monster++) {
       if (monster->active) {
         move_screen_cursor(BATTLE_CURSOR_MONSTER_1 + pos);
@@ -1020,7 +1020,7 @@ inline uint16_t tween_hp(uint16_t hp, uint16_t target, int16_t delta) {
 
 inline bool animate_monster_hp_bars(void) {
   bool updated = false;
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   for (uint8_t pos = 0; pos < 3; pos++, monster++) {
     if (!monster->active)
       continue;
@@ -1055,7 +1055,7 @@ inline void reset_monster_death_animation(void) {
  * Palette animation for dying monsters.
  */
 inline bool animate_monster_death(void) {
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
 
   if (monster_death_state == MONSTER_DEATH_DONE)
     return false;
@@ -1160,7 +1160,7 @@ inline void update_status_effects_ui(void) {
  * Clears inactive monster palettes / graphics.
  */
 void clear_inactive_monsters(void) {
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   for (uint8_t pos = 0; pos < 3; pos++, monster++)
     if (!monster->active)
       core.load_bg_palette(blank_palette, pos + 1, 1);

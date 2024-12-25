@@ -56,7 +56,7 @@ void druid_update_stats(void) {
 void druid_base_attack(void) {
   sprintf(battle_pre_message, str_battle_poison_spray);
 
-  MonsterInstance *target = encounter.target;
+  Monster *target = encounter.target;
   if (!roll_attack(player.matk, target->mdef)) {
     sprintf(battle_post_message, str_battle_player_miss);
     return;
@@ -270,7 +270,7 @@ void test_class_ability1(void) {
 
   // player.hp = 1;
 
-  // MonsterInstance *monster = encounter.monsters;
+  // Monster *monster = encounter.monsters;
   // for (uint8_t k = 0; k < 3; k++, monster++) {
   //   if (!monster->active)
   //     continue;

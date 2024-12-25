@@ -14,7 +14,7 @@
  * @param m Base monster for the instance.
  */
 void monster_init_instance(
-  MonsterInstance *monster,
+  Monster *monster,
   MonsterType type,
   const char *name,
   const Tileset *ts
@@ -87,7 +87,7 @@ void damage_player(uint16_t base_damage, DamageAspect type) BANKED {
 // Monster 255 - Test Dummy
 // -----------------------------------------------------------------------------
 
-inline void dummy_take_turn(MonsterInstance *dummy) {
+inline void dummy_take_turn(Monster *dummy) {
   sprintf(battle_pre_message, str_monster_dummy_pre, dummy->id);
 
   switch (dummy->parameter) {
@@ -115,7 +115,7 @@ inline void dummy_take_turn(MonsterInstance *dummy) {
 }
 
 void dummy_generator(
-  MonsterInstance *monster,
+  Monster *monster,
   uint8_t level,
   TestDummyType type
 ) BANKED {
@@ -150,7 +150,7 @@ void dummy_generator(
 // Monster 1 - Kobold
 // -----------------------------------------------------------------------------
 
-inline void kobold_take_turn(MonsterInstance *m) {
+inline void kobold_take_turn(Monster *m) {
   const uint8_t move_roll = d16();
 
   // Dazed (silly kobolds being dazed 6.25% of the time)
@@ -187,7 +187,7 @@ inline void kobold_take_turn(MonsterInstance *m) {
   }
 }
 
-void kobold_generator(MonsterInstance *m, uint8_t level, PowerTier tier) BANKED {
+void kobold_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(m, MONSTER_KOBOLD, str_misc_kobold, &kobold_tileset);
 
   m->palette = MONSTER_KOBOLD_PALETTES + tier * 4;
@@ -209,7 +209,7 @@ void kobold_generator(MonsterInstance *m, uint8_t level, PowerTier tier) BANKED 
   monster_reset_stats(m);
 }
 
-void monster_flee(MonsterInstance *monster) BANKED {
+void monster_flee(Monster *monster) BANKED {
   sprintf(
     battle_pre_message,
     str_monster_flee,
@@ -226,7 +226,7 @@ void monster_flee(MonsterInstance *monster) BANKED {
   }
 }
 
-void monster_take_turn(MonsterInstance *monster) BANKED {
+void monster_take_turn(Monster *monster) BANKED {
   switch (monster->type) {
   case MONSTER_KOBOLD:
     kobold_take_turn(monster);

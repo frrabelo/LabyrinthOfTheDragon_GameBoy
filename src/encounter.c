@@ -27,7 +27,7 @@ void roll_initiative(void) {
   rolls[0] = d32() + player.agl + 1;
 
   // Roll for the monsters that currently live
-  MonsterInstance *mon = encounter.monsters;
+  Monster *mon = encounter.monsters;
   for (uint8_t m = 1; m < 4; m++, mon++) {
     if (mon->active) {
       encounter.order[m] = TURN_PLAYER + m;
@@ -103,7 +103,7 @@ void reset_player_stats(void) NONBANKED {
   encounter.player_died = false;
 }
 
-void monster_reset_stats(MonsterInstance *m) NONBANKED {
+void monster_reset_stats(Monster *m) NONBANKED {
   m->agl = m->agl_base;
   m->atk = m->atk_base;
   m->def = m->def_base;
@@ -164,7 +164,7 @@ void update_player_status_effects(void) {
   }
 }
 
-void update_monster_status_effects(MonsterInstance *monster) {
+void update_monster_status_effects(Monster *monster) {
   StatusEffectInstance *effect = monster->status_effects;
 
   monster->buffs = 0;
@@ -281,7 +281,7 @@ inline void player_turn(void) {
 
 inline void monster_turn(void) {
   const uint8_t offset = encounter.turn - TURN_MONSTER1;
-  MonsterInstance *monster = encounter.monsters + offset;
+  Monster *monster = encounter.monsters + offset;
 
   if (!monster->active)
     return;
@@ -327,8 +327,8 @@ inline void monster_turn(void) {
       break;
     case DEBUFF_CONFUSED:
       if (confused_attack(effect->tier)) {
-        MonsterInstance *target = monster;
-        MonsterInstance *list = encounter.monsters;
+        Monster *target = monster;
+        Monster *list = encounter.monsters;
         for (uint8_t k = 0; k < 3; k++, list++) {
           if (!list->active)
             continue;
@@ -383,7 +383,7 @@ void take_action(void) {
   else
     monster_turn();
 
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   for (uint8_t k = 0; k < 3; k++, monster++) {
     if (monster->target_hp != monster->hp)
       monster->hp_delta = monster->target_hp - monster->hp;
@@ -398,7 +398,7 @@ void after_action(void) {
   }
 
   bool monster_active = false;
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   for (uint8_t pos = 0; pos < 3; pos++, monster++) {
     if (!monster->active)
       continue;
@@ -418,12 +418,12 @@ void after_action(void) {
   encounter.victory = !encounter.player_died && !monster_active;
 }
 
-void set_player_fight(MonsterInstance *target) {
+void set_player_fight(Monster *target) {
   encounter.player_action = PLAYER_ACTION_FIGHT;
   encounter.target = target;
 }
 
-void set_player_ability(const Ability *a, MonsterInstance *target) {
+void set_player_ability(const Ability *a, Monster *target) {
   encounter.player_action = PLAYER_ACTION_ABILITY;
   encounter.player_ability = a;
   encounter.target = target;
@@ -483,7 +483,7 @@ void reset_encounter(MonsterLayout layout) NONBANKED {
   encounter.victory = false;
   reset_status_effects(encounter.player_status_effects);
 
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   for (uint8_t k = 0; k < 3; k++, monster++) {
     reset_status_effects(monster->status_effects);
     monster_deactivate(monster);
@@ -491,7 +491,7 @@ void reset_encounter(MonsterLayout layout) NONBANKED {
 }
 
 void damage_monster(uint16_t base_damage, DamageAspect type) {
-  MonsterInstance *monster = encounter.target;
+  Monster *monster = encounter.target;
 
   if (!monster)
     return;
@@ -531,7 +531,7 @@ uint8_t damage_all(
   uint8_t dam_roll = d16();
   uint16_t damage = calc_damage(dam_roll, base_damage);
 
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   uint8_t atk_roll = d256();
   uint8_t hits = 0;
 
@@ -688,7 +688,7 @@ void player_flee(void) {
   sprintf(battle_pre_message, str_battle_player_flee_attempt);
 
   uint8_t max_def_agl = 0;
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
   for (uint8_t k = 0; k < 3; k++, monster++) {
     if (!monster->active)
       continue;

@@ -25,7 +25,7 @@ typedef enum MonsterType {
 /**
  * An instance of a monster that is used for battle.
  */
-typedef struct MonsterInstance {
+typedef struct Monster {
   /**
    * The id for the type of monster.
    */
@@ -160,12 +160,12 @@ typedef struct MonsterInstance {
    * behaviors in the `take_turn` handler.
    */
   uint8_t parameter;
-} MonsterInstance;
+} Monster;
 
 /**
  * Deactivates a monster instance and removes it from combat.
  */
-inline void monster_deactivate(MonsterInstance *monster) {
+inline void monster_deactivate(Monster *monster) {
   monster->active = false;
 }
 
@@ -186,26 +186,26 @@ typedef enum TestDummyType {
  * @param invincible Whether or not the dummy is invincible.
  */
 void dummy_generator(
-  MonsterInstance *m, uint8_t level, TestDummyType type) BANKED;
+  Monster *m, uint8_t level, TestDummyType type) BANKED;
 
 /**
  * Basic kobold generator.
  * @param level Level for the kobold to generate.
  */
 void kobold_generator(
-  MonsterInstance *m, uint8_t level, PowerTier tier) BANKED;
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
 
 /**
  * Handle the "flee" action for a monster.
  * @param monster Monster who is trying to flee.
  * @return Whether or not the monster could flee.
  */
-void monster_flee(MonsterInstance *monster) BANKED;
+void monster_flee(Monster *monster) BANKED;
 
 /**
  * Performs a battle turn for the given monster.
  */
-void monster_take_turn(MonsterInstance *monster) BANKED;
+void monster_take_turn(Monster *monster) BANKED;
 
 // Data externs (see: monster.data.c, stored on bank 0)
 

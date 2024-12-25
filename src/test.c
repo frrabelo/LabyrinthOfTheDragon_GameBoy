@@ -59,7 +59,7 @@ void test_stats(void) {
 void test_setup_encounter(MonsterLayout layout, TestDummyType type) {
   reset_encounter(layout);
 
-  MonsterInstance *monster = encounter.monsters;
+  Monster *monster = encounter.monsters;
 
   switch (layout) {
   case MONSTER_LAYOUT_1:

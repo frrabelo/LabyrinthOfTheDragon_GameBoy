@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "battle.h"
 #include "core.h"
@@ -13,6 +14,109 @@
 #include "map.h"
 
 MapSystem map = { MAP_STATE_WAITING };
+
+/**
+ * Map tile data for the tile the hero currently occupies and those in every
+ * cardinal direction (index this with a `Direction`).
+ */
+MapTile local_tiles[5];
+
+/**
+ * Stores a buffer of tiles to be progressively loaded over the animation frames
+ * of a move.
+ */
+MapTile tile_buf[2 * MAP_HORIZ_LOADS];
+
+/**
+ * Map game object hashtable. Makes it easy to lookup game objects based on the
+ * map and tile position in the map.
+ */
+TileHashEntry tile_object_hashtable[TILE_HASHTABLE_SIZE];
+
+/**
+ * Hash function for positions in floor maps.
+ * @param map_id Id of the map for the position.
+ * @param x X position in the map.
+ * @param y Y position in the map.
+ */
+uint8_t hash(uint8_t map_id, int8_t x, int8_t y) {
+  uint8_t k = map_id;
+  k ^= ((uint8_t)x << 1);
+  k ^= ((uint8_t)y << 2);
+  return k & (TILE_HASHTABLE_SIZE - 1);
+}
+
+/**
+ * Adds an entry for the given object to the tile objects hashtable.
+ * @param type Type of object being added.
+ * @param object Pointer to the object.
+ * @param map_id Map on which the object resides.
+ * @param x Horizontal position for the object.
+ * @param y Vertical position for the object.
+ */
+void hash_object(
+  TileHashType type,
+  void *object,
+  uint8_t map_id,
+  int8_t x,
+  int8_t y
+) {
+  TileHashEntry *entry = tile_object_hashtable + hash(map_id, x, y);
+
+  if (entry->data) {
+    while (entry->next) {
+      entry = entry->next;
+    }
+
+    TileHashEntry *next = (TileHashEntry *)malloc(sizeof(TileHashEntry));
+    entry->next = next;
+    entry = next;
+    entry->next = NULL;
+  }
+
+  entry->map_id = map_id;
+  entry->x = x;
+  entry->y = y;
+  entry->type = type;
+  entry->data = object;
+}
+
+TileHashEntry *get_hash_entry(int8_t x, int8_t y) {
+  const uint8_t map_id = map.active_map->id;
+  const uint8_t hash_idx = hash(map_id, x, y);
+  TileHashEntry *entry = tile_object_hashtable + hash_idx;
+
+  while (entry && entry->data) {
+    if (entry->map_id == map_id && entry->x == x && entry->y == y)
+      return entry;
+    entry = entry->next;
+  }
+
+  return NULL;
+}
+
+/**
+ * Resets the object hash and frees allocated bucket items.
+ */
+void reset_object_hash(void) {
+  TileHashEntry *entry = tile_object_hashtable;
+
+  for (uint8_t k = 0; k < TILE_HASHTABLE_SIZE; k++, entry++) {
+    entry->data = NULL;
+    entry->map_id = 0xFF;
+    entry->x = 0xFF;
+    entry->y = 0xFF;
+
+    TileHashEntry *sibling = entry->next;
+    entry->next = NULL;
+
+    while (sibling) {
+      TileHashEntry *tmp = sibling;
+      free(tmp);
+      sibling = sibling->next;
+    }
+  }
+}
 
 /**
  * Initializes the hero character sprites.
@@ -175,58 +279,47 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
   uint8_t map_tile = map_tile_lookup[t & MAP_TILE_MASK];
   uint8_t map_attr = t >> 6;
 
-  // Check if the tile contains a chest
   tile->chest = NULL;
-  const Chest *chest;
-  for (chest = map.active_floor->chests; chest->id != END; chest++) {
-    if (chest->map_id != map.active_map->id)
-      continue;
-    if (chest->col != x || chest->row != y)
-      continue;
-    tile->chest = chest;
-
-    // If the chest is open, increment the tile to the "open" graphic
-    if (map.flags_chest_open & chest->id)
-      map_tile = map_tile_lookup[(t + 1) & MAP_TILE_MASK];
-
-    break;
-  }
-
-  // Check for levers
-  tile->lever = NULL;
-  const Lever *lever;
-  for (lever = map.active_floor->levers; lever->id != END; lever++) {
-    if (lever->map_id != map.active_map->id)
-      continue;
-    if (lever->col != x || lever->row != y)
-      continue;
-    tile->lever = lever;
-
-    if (map.flags_chest_open & chest->id)
-      map_tile = map_tile_lookup[(t + 1) & MAP_TILE_MASK];
-
-    break;
-  }
-
-  // Check for doors
   tile->door = NULL;
-  const Door *door;
-  bool is_door = false;
-  for (door = map.active_floor->doors; door->id != END; door++) {
-    if (door->map_id != map.active_map->id)
-      continue;
-    if (door->col != x || door->row != y)
-      continue;
-    tile->door = door;
+  tile->lever = NULL;
+  tile->sign = NULL;
+  tile->sconce = NULL;
 
-    if (is_locked_door(door->id))
-      map_attr = MAP_WALL;
-    else {
-      tile->tile = door->type;
-      map_attr = MAP_EXIT;
+  TileHashEntry *entry = get_hash_entry(x, y);
+  if (entry) {
+    switch(entry->type) {
+    case HASH_TYPE_CHEST:
+      Chest *chest = (Chest *)entry->data;
+      tile->chest = chest;
+      if (is_chest_open(chest->id))
+        map_tile += 2;
+      break;
+    case HASH_TYPE_LEVER:
+      Lever *lever = (Lever *)entry->data;
+      tile->lever = lever;
+      if (is_lever_on(lever->id))
+        map_tile += 2;
+      break;
+    case HASH_TYPE_DOOR:
+      Door *door = (Door *)entry->data;
+      tile->door = door;
+      if (is_locked_door(door->id))
+        map_attr = MAP_WALL;
+      else {
+        map_tile = door->type;
+        map_attr = MAP_EXIT;
+      }
+      break;
+    case HASH_TYPE_SIGN:
+      Sign *sign = (Sign *)entry->data;
+      tile->sign = sign;
+      break;
+    case HASH_TYPE_SCONCE:
+      Sconce *sconce = (Sconce *)entry->data;
+      tile->sconce = sconce;
+      break;
+    default:
     }
-
-    break;
   }
 
   tile->blank = false;
@@ -264,7 +357,7 @@ void load_tile_buffer(void) {
   }
 
   // Reset the buffer position
-  MapTile *tile_buf = map.tile_buf;
+  MapTile *t = tile_buf;
   map.buffer_pos = 0;
 
   // Update world coordinates
@@ -297,8 +390,8 @@ void load_tile_buffer(void) {
       map.vram_row -= 0x20;
 
     const int8_t map_offset = dy < 0 ? 0 : 10;
-    for (int8_t x = map.x - 1; x < map.x + MAP_HORIZ_LOADS; x++, tile_buf++)
-      get_map_tile(tile_buf, x, map.y - 1 + map_offset);
+    for (int8_t x = map.x - 1; x < map.x + MAP_HORIZ_LOADS; x++, t++)
+      get_map_tile(t, x, map.y - 1 + map_offset);
   } else if (dx != 0) {
     map.buffer_max = MAP_VERT_LOADS;
     map.vram_d_col = 0;
@@ -311,8 +404,8 @@ void load_tile_buffer(void) {
     map.vram_row = map.vram_y;
 
     const int8_t map_offset = dx < 0 ? -1 : 10;
-    for (int8_t y = map.y - 1; y < map.y + MAP_VERT_LOADS; y++, tile_buf++)
-      get_map_tile(tile_buf, map.x + map_offset, y);
+    for (int8_t y = map.y - 1; y < map.y + MAP_VERT_LOADS; y++, t++)
+      get_map_tile(t, map.x + map_offset, y);
   }
 }
 
@@ -413,41 +506,61 @@ uint8_t *get_local_vram(Direction d) {
 void update_local_tiles(void) {
   uint8_t x = map.x + HERO_X_OFFSET;
   uint8_t y = map.y + HERO_Y_OFFSET;
-  get_map_tile(map.local_tiles + HERE, x, y);
-  get_map_tile(map.local_tiles + UP, x, y - 1);
-  get_map_tile(map.local_tiles + DOWN, x, y + 1);
-  get_map_tile(map.local_tiles + LEFT, x - 1, y);
-  get_map_tile(map.local_tiles + RIGHT, x + 1, y);
+  get_map_tile(local_tiles + HERE, x, y);
+  get_map_tile(local_tiles + UP, x, y - 1);
+  get_map_tile(local_tiles + DOWN, x, y + 1);
+  get_map_tile(local_tiles + LEFT, x - 1, y);
+  get_map_tile(local_tiles + RIGHT, x + 1, y);
 }
 
 /**
  * Resets all stateful objects on the flooor (chests, doors, npc, levers, etc.)
  */
-void reset_chests(void) {
+void reset_map_objects(void) {
+  reset_object_hash();
+
   // Chests
   map.flags_chest_open = 0;
   map.flags_chest_locked = 0;
 
   const Chest *chest;
-  for (chest = map.active_floor->chests; chest->id != END; chest++)
+  for (chest = map.active_floor->chests; chest->id != END; chest++) {
     if (chest->locked)
       set_chest_locked(chest->id);
+    hash_object(HASH_TYPE_CHEST, chest, chest->map_id, chest->col, chest->row);
+  }
 
   // Levers
   map.flags_lever_on = 0;
   map.flags_lever_stuck = 0;
 
   const Lever *lever;
-  for (lever = map.active_floor->levers; lever->id != END; lever++)
+  for (lever = map.active_floor->levers; lever->id != END; lever++) {
     if (lever->stuck)
       stick_lever(lever->id);
+    hash_object(HASH_TYPE_LEVER, lever, lever->map_id, lever->col, lever->row);
+  }
 
-
+  // Doors
   map.flags_door_locked = 0;
 
   const Door *door;
-  for (door = map.active_floor->doors; door->id != END; door++)
+  for (door = map.active_floor->doors; door->id != END; door++) {
     set_door_locked(door->id);
+    hash_object(HASH_TYPE_DOOR, door, door->map_id, door->col, door->row);
+  }
+
+  // Signs
+  const Sign *sign;
+  for (sign = map.active_floor->signs; sign->map_id != END; sign++)
+    hash_object(HASH_TYPE_SIGN, sign, sign->map_id, sign->col, sign->row);
+
+  // Sconces
+  const Sconce *sconce;
+  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+    hash_object(HASH_TYPE_SCONCE, sconce,
+      sconce->map_id, sconce->col, sconce->row);
+  }
 }
 
 /**
@@ -501,7 +614,7 @@ bool handle_exit(void) {
  * @param d Direction the player is to move.
  */
 void start_move(Direction d) {
-  MapTile *destination = map.local_tiles + d;
+  MapTile *destination = local_tiles + d;
 
   map.hero_direction = d;
 
@@ -551,7 +664,7 @@ void update_map_move(void) {
   }
 
   if (map.buffer_pos < map.buffer_max) {
-    MapTile *tile = map.tile_buf + map.buffer_pos;
+    MapTile *tile = tile_buf + map.buffer_pos;
     uint8_t *vram = VRAM_BACKGROUND_XY(map.vram_col, map.vram_row);
     draw_map_tile(vram, tile);
 
@@ -578,7 +691,7 @@ void update_map_move(void) {
   if (on_move())
     return;
 
-  MapTile *here = map.local_tiles + HERE;
+  MapTile *here = local_tiles + HERE;
 
   switch (here->map_attr) {
   case MAP_EXIT:
@@ -605,44 +718,14 @@ bool check_signs(void) {
   int8_t x = hero_x();
   int8_t y = hero_y();
 
-  const Sign *sign;
-  for (sign = map.active_floor->signs; sign->map_id != END; sign++) {
-    if (sign->map_id != map.active_map->id)
-      continue;
+  const MapTile *tile = local_tiles + map.hero_direction;
+  const Sign *sign = tile->sign;
 
-    if (sign->facing == HERE)
-      continue;
+  if (!sign)
+    return false;
 
-    if (map.hero_direction != sign->facing)
-      continue;
-
-    uint8_t hero_x, hero_y;
-    switch (sign->facing) {
-    case UP:
-      hero_x = sign->col;
-      hero_y = sign->row + 1;
-      break;
-    case DOWN:
-      hero_x = sign->col;
-      hero_y = sign->row - 1;
-      break;
-    case LEFT:
-      hero_x = sign->col - 1;
-      hero_y = sign->row;
-      break;
-    default:
-      hero_x = sign->col + 1;
-      hero_y = sign->row;
-      break;
-    }
-
-    if (x != (int8_t)hero_x || y != (int8_t)hero_y)
-      continue;
-
-    map_textbox(sign->message);
-    return true;
-  }
-  return false;
+  map_textbox(sign->message);
+  return true;
 }
 
 /**
@@ -701,7 +784,7 @@ void open_chest(const MapTile *tile) {
  * @return `true` to prevent the default behavior of the action handler.
  */
 bool check_chests(void) {
-  const MapTile *tile = map.local_tiles + map.hero_direction;
+  const MapTile *tile = local_tiles + map.hero_direction;
   const Chest *chest = tile->chest;
 
   if (!chest)
@@ -768,11 +851,21 @@ void toggle_lever(const MapTile *tile) {
 
   toggle_lever_state(lever->id);
 
+  uint8_t t = 0x8A;
+
+  if (tile->tile == 0x8A || tile->tile == 0x8C) {
+    // Non-wall lever
+    t = is_lever_on(lever->id) ? 0x8C : 0x8A;
+  } else {
+    // Wall lever
+    t = is_lever_on(lever->id) ? 0xA0 : 0x8E;
+  }
+
   uint8_t *vram = get_local_vram(map.hero_direction);
-  if (is_lever_on(lever))
-    tile_to_state_on(tile, vram);
-  else
-    tile_to_state_off(tile, vram);
+  set_vram_byte(vram, t);
+  set_vram_byte(vram + 1, t + 1);
+  set_vram_byte(vram + 0x20, t + 0x10);
+  set_vram_byte(vram + 0x20 + 1, t + 0x10 + 1);
 }
 
 
@@ -793,13 +886,13 @@ void open_door(const MapTile *tile) {
  * Checks for a lever in front of the player and handles its logic.
  */
 bool check_levers(void) {
-  const MapTile *tile = map.local_tiles + map.hero_direction;
+  const MapTile *tile = local_tiles + map.hero_direction;
   const Lever *lever = tile->lever;
 
   if (!lever)
     return false;
 
-  if (lever->one_shot && is_lever_on(lever)) {
+  if (lever->one_shot && is_lever_on(lever->id)) {
     map_textbox(str_maps_lever_one_way);
     return true;
   }
@@ -818,7 +911,7 @@ bool check_levers(void) {
 }
 
 bool check_doors(void) {
-  const MapTile *tile = map.local_tiles + map.hero_direction;
+  const MapTile *tile = local_tiles + map.hero_direction;
   const Door *door = tile->door;
 
   if (!door)
@@ -829,6 +922,7 @@ bool check_doors(void) {
 
   if (door->magic_key_unlock) {
     if (player.magic_keys > 0) {
+      player.magic_keys--;
       map_textbox(str_maps_door_unlock_key);
       set_door_open(door->id);
       open_door(tile);
@@ -868,7 +962,7 @@ void set_active_floor(Floor *floor) BANKED {
   map.active_map = &floor->maps[floor->default_map];
   set_hero_position(floor->default_x, floor->default_y);
   core.load_bg_palette(map.active_floor->palettes, 0, 7);
-  reset_chests();
+  reset_map_objects();
 }
 
 /**

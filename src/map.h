@@ -34,6 +34,16 @@
 #define HERO_Y_OFFSET 4
 
 /**
+ * Mask used to isolate a map data byte's "tile id".
+ */
+#define MAP_TILE_MASK 0b00111111
+
+/**
+ * Mask used to isolate a map data byte's "attribute".
+ */
+#define MAP_ATTR_MASK 0b11000000
+
+/**
  * Use these values when denoting map ids instead of hard coded constants.
  */
 typedef enum MapId {
@@ -44,10 +54,6 @@ typedef enum MapId {
   MAP_E,
   MAP_F,
   MAP_G,
-  MAP_H,
-  MAP_I,
-  MAP_J,
-  MAP_K,
   MAP_INVALID = 0xFF
 } MapId;
 
@@ -110,6 +116,14 @@ typedef struct MapTile {
    * If the tile contains a door, this will point to it.
    */
   const struct Door *door;
+  /**
+   * If the tile contains a sign, this will point to it.
+   */
+  const struct Sign *sign;
+  /**
+   * If the tile contains a sconce, this will point to it.
+   */
+  const struct Sconce *sconce;
 } MapTile;
 
 /**
@@ -586,14 +600,51 @@ typedef struct Floor {
 } Floor;
 
 /**
- * Mask used to isolate a map data byte's "tile id".
+ * Number of entries in the map object hash table.
  */
-#define MAP_TILE_MASK 0b00111111
+#define TILE_HASHTABLE_SIZE 64
 
 /**
- * Mask used to isolate a map data byte's "attribute".
+ * Denotes the type of data stored in a hash entry.
  */
-#define MAP_ATTR_MASK 0b11000000
+typedef enum TileHashType {
+  HASH_TYPE_CHEST,
+  HASH_TYPE_LEVER,
+  HASH_TYPE_DOOR,
+  HASH_TYPE_SIGN,
+  HASH_TYPE_SCONCE,
+} TileHashType;
+
+/**
+ * Entry for the tile objects hash table.
+ */
+typedef struct TileHashEntry {
+  /**
+   * Map id for the associated tile in the map.
+   */
+  uint8_t map_id;
+  /**
+   * Horizontal position for the associated tile in the map.
+   */
+  int8_t x;
+  /**
+   * Vertical positon for the associated tile in the map.
+   */
+  int8_t y;
+  /**
+   * Type of data being hashed.
+   */
+  TileHashType type;
+  /**
+   * Pointer to the data associated with the tile.
+   */
+  void *data;
+  /**
+   * Pointer to the next entry in the bucket. This will only be set if there is
+   * a hashing coflict between two positions.
+   */
+  struct TileHashEntry *next;
+} TileHashEntry;
 
 /**
  * Map system main state. Holds all global memory values used in the system.
@@ -636,11 +687,6 @@ typedef struct MapSystem {
    */
   int8_t vram_y;
   /**
-   * Tile buffer containing all map tiles to be progressively loaded while
-   * scrolling the map during a move.
-   */
-  MapTile tile_buf[2 * MAP_HORIZ_LOADS];
-  /**
    * Position in the buffer for the next map tile to be loaded.
    */
   uint8_t buffer_pos;
@@ -674,11 +720,6 @@ typedef struct MapSystem {
    * Active map in the active floor.
    */
   const Map *active_map;
-  /**
-   * Map tile data for the tile the hero currently occupies and those in every
-   * cardinal direction (index this with a `Direction`).
-   */
-  MapTile local_tiles[5];
   /**
    * State of the hero sprites.
    */
@@ -911,6 +952,14 @@ inline void set_chest_open(ChestId id) {
 }
 
 /**
+ * @return `true` if the chest with the given id is open.
+ * @param id Id of the chest to check.
+ */
+inline bool is_chest_open(ChestId id) {
+  return map.flags_chest_open & id;
+}
+
+/**
  * Sets the chest as "locked" in the map system state.
  * @param chest Chest to set as locked.
  */
@@ -938,8 +987,8 @@ inline bool is_chest_locked(ChestId id) {
  * @return `true` if the lever is on.
  * @param level The lever to test.
  */
-inline bool is_lever_on(const Lever *lever) {
-  return map.flags_lever_on & lever->id;
+inline bool is_lever_on(LeverId id) {
+  return map.flags_lever_on & id;
 }
 
 /**

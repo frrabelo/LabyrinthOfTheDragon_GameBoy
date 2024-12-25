@@ -165,12 +165,14 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
   const uint16_t offset = (uint16_t)(2 * (x + y * w));
   const uint8_t *data = map.active_map->data + offset;
 
+  // Fetch banked tile & attribute data
   uint8_t _prev_bank = _current_bank;
   SWITCH_ROM(map.active_map->bank);
   uint8_t t = *data++;
-  const uint8_t a = *data;
+  const uint8_t attr = *data;
   SWITCH_ROM(_prev_bank);
 
+  uint8_t map_tile = map_tile_lookup[t & MAP_TILE_MASK];
   uint8_t map_attr = t >> 6;
 
   // Check if the tile contains a chest
@@ -185,7 +187,7 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
 
     // If the chest is open, increment the tile to the "open" graphic
     if (map.flags_chest_open & chest->id)
-      t++;
+      map_tile = map_tile_lookup[(t + 1) & MAP_TILE_MASK];
 
     break;
   }
@@ -200,8 +202,8 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
       continue;
     tile->lever = lever;
 
-    if (map.flags_lever_on & lever->id)
-      t++;
+    if (map.flags_chest_open & chest->id)
+      map_tile = map_tile_lookup[(t + 1) & MAP_TILE_MASK];
 
     break;
   }
@@ -217,22 +219,19 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
       continue;
     tile->door = door;
 
-    if (is_locked_door(door->id)) {
+    if (is_locked_door(door->id))
       map_attr = MAP_WALL;
-    } else {
+    else {
       tile->tile = door->type;
-      is_door = true;
+      map_attr = MAP_EXIT;
     }
 
     break;
   }
 
-
-
   tile->blank = false;
-  if (!is_door)
-    tile->tile = map_tile_lookup[t & MAP_TILE_MASK];
-  tile->attr = a;
+  tile->tile = map_tile;
+  tile->attr = attr;
   tile->map_attr = map_attr;
 }
 
@@ -662,9 +661,10 @@ void tile_to_state_on(const MapTile *tile, uint8_t *vram) {
 
 /**
  * Swaps a tile's graphics to the given base tile.
- * @param t Base tile to set.
+ * @param vram VRAM address of the tile to swap.
+ * @param t Base tile for the graphics to set.
  */
-void tile_to_base(const MapTile *tile, uint8_t *vram, uint8_t t) {
+void swap_tile_graphics(uint8_t *vram, uint8_t t) {
   set_vram_byte(vram, t);
   set_vram_byte(vram + 1, t + 1);
   set_vram_byte(vram + 0x20, t + 0x10);
@@ -784,7 +784,7 @@ void open_door(const MapTile *tile) {
 
   uint8_t *vram = get_local_vram(map.hero_direction);
   uint8_t tile_base = door->type;
-  tile_to_base(tile, vram, tile_base);
+  swap_tile_graphics(vram, tile_base);
 
   update_local_tiles();
 }

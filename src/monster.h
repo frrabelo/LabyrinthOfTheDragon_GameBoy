@@ -15,35 +15,33 @@
 #define MONSTER_TILES 7 * 7 * 2
 
 /**
- * Defines a monster and its behaviors.
+ * Monster ids for all the monsters in the game.
  */
-typedef struct Monster {
-  /**
-   * Unique identifier for the monster.
-   */
-  const uint8_t id;
-  /**
-   * Nine character display name for the monster.
-   */
-  const char name[9];
-  /**
-   * Tileset for the monster.
-   */
-  const Tileset *tileset;
-} Monster;
+typedef enum MonsterType {
+  MONSTER_KOBOLD,
+  MONSTER_DUMMY = 0xFF,
+} MonsterType;
 
 /**
  * An instance of a monster that is used for battle.
  */
 typedef struct MonsterInstance {
   /**
+   * The id for the type of monster.
+   */
+  MonsterType type;
+  /**
+   * The tileset used by the instance.
+   */
+  const Tileset *tileset;
+  /**
+   * Name for the monster.
+   */
+  const char *name;
+  /**
    * Whether or not the monster is active in combat and can take a turn.
    */
   bool active;
-  /**
-   * Monster definition that generated this instance.
-   */
-  const Monster *monster;
   /**
    * Palette colors for the instance.
    */
@@ -162,19 +160,7 @@ typedef struct MonsterInstance {
    * behaviors in the `take_turn` handler.
    */
   uint8_t parameter;
-  /**
-   * Takes a turn for the given monster instance.
-   * @param m Monster instance for which to take a turn.
-   */
-  void (*take_turn)(struct MonsterInstance *m);
 } MonsterInstance;
-
-/**
- * Initializes a monster instance for a monster generator.
- * @param i Monster instance to reset.
- * @param m Base monster for the instance.
- */
-void monster_init_instance(MonsterInstance *i, Monster *m);
 
 /**
  * Deactivates a monster instance and removes it from combat.
@@ -199,13 +185,34 @@ typedef enum TestDummyType {
  * @param level Level for the dummy.
  * @param invincible Whether or not the dummy is invincible.
  */
-void dummy_generator(MonsterInstance *m, uint8_t level, TestDummyType type);
+void dummy_generator(
+  MonsterInstance *m, uint8_t level, TestDummyType type) BANKED;
 
 /**
  * Basic kobold generator.
  * @param level Level for the kobold to generate.
  */
-void kobold_generator(MonsterInstance *m, uint8_t level, PowerTier tier);
+void kobold_generator(
+  MonsterInstance *m, uint8_t level, PowerTier tier) BANKED;
 
+/**
+ * Handle the "flee" action for a monster.
+ * @param monster Monster who is trying to flee.
+ * @return Whether or not the monster could flee.
+ */
+void monster_flee(MonsterInstance *monster) BANKED;
+
+/**
+ * Performs a battle turn for the given monster.
+ */
+void monster_take_turn(MonsterInstance *monster) BANKED;
+
+// Data externs (see: monster.data.c, stored on bank 0)
+
+extern const Tileset kobold_tileset;
+extern const Tileset test_dummy_tileset;
+
+extern const palette_color_t DUMMY_COLORS[];
+extern const palette_color_t MONSTER_KOBOLD_PALETTES[];
 
 #endif

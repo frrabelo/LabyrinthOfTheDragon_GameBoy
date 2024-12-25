@@ -22,3 +22,6 @@ const char str_misc_def_up_potion[] = "DEF ^ ";
 const char str_misc_elixer[] = "Elixer";
 const char str_misc_regen_pot[] = "Regen ";
 const char str_misc_haste_pot[] = "Haste ";
+const char str_misc_dummy[] = "Dummy";
+const char str_misc_kobold[] = "Kobold";
+const char str_misc_beholder[] = "Beholder";

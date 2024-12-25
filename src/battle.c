@@ -131,10 +131,10 @@ uint8_t get_hp_bar_x(MonsterPosition pos) {
  * @param m Monster instance to load.
  */
 void load_monster_graphics(MonsterPosition p, MonsterInstance *m) {
-  if (!m->active || !m->monster)
+  if (!m->active)
     return;
 
-  const Tileset *tileset = m->monster->tileset;
+  const Tileset *tileset = m->tileset;
 
   switch (p) {
   case MONSTER_POSITION1:

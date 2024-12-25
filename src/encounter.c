@@ -298,7 +298,7 @@ inline void monster_turn(void) {
         return;
       } else if (fear_shiver_roll(effect->tier)) {
         sprintf(battle_pre_message, str_battle_monster_scared_frozen,
-          monster->monster->name, monster->id);
+          monster->name, monster->id);
         skip_post_message = true;
         return;
       }
@@ -306,7 +306,7 @@ inline void monster_turn(void) {
     case DEBUFF_PARALYZED:
       if (paralyzed_roll(effect->tier)) {
         sprintf(battle_pre_message, str_battle_monster_paralyzed,
-          monster->monster->name, monster->id);
+          monster->name, monster->id);
         skip_post_message = true;
         return;
       }
@@ -320,7 +320,7 @@ inline void monster_turn(void) {
 
       if (monster->target_hp == 0) {
         sprintf(battle_pre_message, str_battle_monster_poison_death,
-          monster->monster->name, monster->id);
+          monster->name, monster->id);
         skip_post_message = true;
         return;
       }
@@ -350,16 +350,16 @@ inline void monster_turn(void) {
 
         if (target == monster) {
           sprintf(battle_pre_message, str_battle_monster_confuse_attack_self,
-            monster->monster->name, monster->id);
+            monster->name, monster->id);
         } else {
           sprintf(battle_pre_message, str_battle_monster_confuse_attack_other,
-            monster->monster->name, monster->id);
+            monster->name, monster->id);
         }
         skip_post_message = true;
         return;
       } else {
         sprintf(battle_pre_message, str_battle_monster_confuse_stupor,
-          monster->monster->name, monster->id);
+          monster->name, monster->id);
         skip_post_message = true;
         return;
       }
@@ -374,7 +374,7 @@ inline void monster_turn(void) {
     }
   }
 
-  monster->take_turn(monster);
+  monster_take_turn(monster);
 }
 
 void take_action(void) {
@@ -701,23 +701,6 @@ void player_flee(void) {
     sprintf(battle_post_message, str_battle_player_flee_success);
   else
     sprintf(battle_post_message, str_battle_player_flee_failure);
-}
-
-void monster_flee(MonsterInstance *monster) {
-  sprintf(
-    battle_pre_message,
-    str_battle_monster_flee,
-    monster->monster->name,
-    monster->id
-  );
-
-  if (roll_flee(monster->agl, player.agl)) {
-    sprintf(battle_post_message, str_battle_monster_flee_success);
-    monster->fled = true;
-  } else {
-    sprintf(battle_post_message, str_battle_monster_flee_failure);
-    monster->fled = false;
-  }
 }
 
 Encounter encounter = {

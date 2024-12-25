@@ -1,4 +1,4 @@
-#pragma bank 0
+#pragma bank 6
 
 #include <stdio.h>
 
@@ -8,32 +8,44 @@
 #include "stats.h"
 #include "strings.h"
 
-void monster_init_instance(MonsterInstance *i, Monster *m) {
-  i->active = true;
-  i->monster = m;
-  i->palette = NULL;
-  i->id = '\0';
-  i->exp_tier = C_TIER;
-  i->hp = 0;
-  i->max_hp = 0;
-  i->target_hp = 0;
-  i->atk_base = 0;
-  i->atk = 0;
-  i->def_base = 0;
-  i->def = 0;
-  i->matk_base = 0;
-  i->matk = 0;
-  i->mdef_base = 0;
-  i->mdef = 0;
-  i->agl_base = 0;
-  i->agl = 0;
-  i->aspect_immune = 0;
-  i->aspect_resist = 0;
-  i->aspect_vuln = 0;
-  i->debuff_immune = 0;
-  i->can_flee = true;
-  i->fled = false;
-  i->parameter = 0;
+/**
+ * Initializes a monster instance for a monster generator.
+ * @param i Monster instance to reset.
+ * @param m Base monster for the instance.
+ */
+void monster_init_instance(
+  MonsterInstance *monster,
+  MonsterType type,
+  const char *name,
+  const Tileset *ts
+) {
+  monster->type = type;
+  monster->tileset = ts;
+  monster->active = true;
+  monster->name = name;
+  monster->palette = NULL;
+  monster->id = '\0';
+  monster->exp_tier = C_TIER;
+  monster->hp = 0;
+  monster->max_hp = 0;
+  monster->target_hp = 0;
+  monster->atk_base = 0;
+  monster->atk = 0;
+  monster->def_base = 0;
+  monster->def = 0;
+  monster->matk_base = 0;
+  monster->matk = 0;
+  monster->mdef_base = 0;
+  monster->mdef = 0;
+  monster->agl_base = 0;
+  monster->agl = 0;
+  monster->aspect_immune = 0;
+  monster->aspect_resist = 0;
+  monster->aspect_vuln = 0;
+  monster->debuff_immune = 0;
+  monster->can_flee = true;
+  monster->fled = false;
+  monster->parameter = 0;
 }
 
 /**
@@ -41,9 +53,9 @@ void monster_init_instance(MonsterInstance *i, Monster *m) {
  * @param base_damage Base damage for the attck.
  * @param type Type of damage dealt.
  */
-void damage_player(uint16_t base_damage, DamageAspect type) {
+void damage_player(uint16_t base_damage, DamageAspect type) BANKED {
   if (player.aspect_immune & type) {
-    sprintf(battle_post_message, str_battle_monster_hit_immune);
+    sprintf(battle_post_message, str_monster_hit_immune);
     return;
   }
 
@@ -52,17 +64,17 @@ void damage_player(uint16_t base_damage, DamageAspect type) {
   bool critical = roll >= 12;
 
   if (critical) {
-    sprintf(battle_post_message, str_battle_monster_hit_crit, damage);
+    sprintf(battle_post_message, str_monster_hit_crit, damage);
   } else  if (player.aspect_resist & type) {
     damage >>= 1;
-    sprintf(battle_post_message, str_battle_monster_hit_resist, damage);
+    sprintf(battle_post_message, str_monster_hit_resist, damage);
   } else if (player.aspect_vuln & type) {
     damage <<= 1;
   } else if (type == DAMAGE_PHYSICAL) {
-    sprintf(battle_post_message, str_battle_monster_hit, damage);
+    sprintf(battle_post_message, str_monster_hit, damage);
   } else {
     const char *aspect = damage_aspect_name(type);
-    sprintf(battle_post_message, str_battle_monster_hit_aspect, damage, aspect);
+    sprintf(battle_post_message, str_monster_hit_aspect, damage, aspect);
   }
 
   if (player.hp < damage)
@@ -71,21 +83,11 @@ void damage_player(uint16_t base_damage, DamageAspect type) {
     player.hp -= damage;
 }
 
-
 // -----------------------------------------------------------------------------
 // Monster 255 - Test Dummy
 // -----------------------------------------------------------------------------
-const Tileset test_dummy_tileset = { MONSTER_TILES, 14, tile_dummy };
-const Monster MONSTER_DUMMY = { 255, "Dummy", &test_dummy_tileset };
 
-const palette_color_t DUMMY_COLORS[4] = {
-  RGB_WHITE,
-  RGB8(210, 0, 150),
-  RGB_DARKBLUE,
-  RGB8(24, 0, 24),
-};
-
-void dummy_take_turn(MonsterInstance *dummy) {
+inline void dummy_take_turn(MonsterInstance *dummy) {
   sprintf(battle_pre_message, str_monster_dummy_pre, dummy->id);
 
   switch (dummy->parameter) {
@@ -97,13 +99,13 @@ void dummy_take_turn(MonsterInstance *dummy) {
     monster_flee(dummy);
     break;
   case DUMMY_AGGRESSIVE:
-    sprintf(battle_pre_message, str_battle_monster_attack,
-      dummy->monster->name, dummy->id);
+    sprintf(battle_pre_message, str_monster_attack,
+      dummy->name, dummy->id);
     if (roll_attack(dummy->atk, player.def)) {
       const uint16_t base = get_monster_dmg(dummy->level, dummy->exp_tier);
       damage_player(base, DAMAGE_PHYSICAL);
     } else {
-      sprintf(battle_post_message, str_battle_monster_miss);
+      sprintf(battle_post_message, str_monster_miss);
     }
     break;
   default:
@@ -112,61 +114,43 @@ void dummy_take_turn(MonsterInstance *dummy) {
   }
 }
 
-void dummy_generator(MonsterInstance *m, uint8_t level, TestDummyType type) {
-  monster_init_instance(m, &MONSTER_DUMMY);
+void dummy_generator(
+  MonsterInstance *monster,
+  uint8_t level,
+  TestDummyType type
+) BANKED {
+  monster_init_instance(
+    monster,
+    MONSTER_DUMMY,
+    str_misc_dummy,
+    &test_dummy_tileset
+  );
 
   PowerTier tier = C_TIER;
 
-  m->palette = DUMMY_COLORS;
-  m->exp_tier = tier;
-  m->level = level;
+  monster->palette = DUMMY_COLORS;
+  monster->exp_tier = tier;
+  monster->level = level;
 
-  m->max_hp = get_monster_hp(level, tier);
-  m->hp = m->max_hp;
+  monster->max_hp = get_monster_hp(level, tier);
+  monster->hp = monster->max_hp;
 
-  m->atk_base = get_monster_atk(level, tier);
-  m->def_base = get_monster_def(level, tier);
-  m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
-  m->agl_base = get_agl(1, C_TIER);
+  monster->atk_base = get_monster_atk(level, tier);
+  monster->def_base = get_monster_def(level, tier);
+  monster->matk_base = get_monster_atk(level, tier);
+  monster->mdef_base = get_monster_def(level, tier);
+  monster->agl_base = get_agl(1, C_TIER);
 
-  m->take_turn = dummy_take_turn;
-  m->parameter = type;
+  monster->parameter = type;
 
-  monster_reset_stats(m);
-
+  monster_reset_stats(monster);
 }
 
 // -----------------------------------------------------------------------------
 // Monster 1 - Kobold
 // -----------------------------------------------------------------------------
-const Tileset kobold_tileset = { MONSTER_TILES, 14, tile_kobold };
-const Monster MONSTER_KOBOLD = { 1, "Kobold", &kobold_tileset };
 
-const palette_color_t MONSTER_KOBOLD_PALETTES[16] = {
-  // C-Tier
-  RGB_WHITE,
-  RGB8(177, 113, 51),
-  RGB8(77, 22, 11),
-  RGB8(37, 3, 40),
-  // B-Tier
-  RGB_WHITE,
-  RGB8(113, 51, 177),
-  RGB8(77, 22, 11),
-  RGB8(37, 3, 40),
-  // A-Tier
-  RGB_WHITE,
-  RGB_LIGHTGRAY,
-  RGB_DARKGRAY,
-  RGB_BLACK,
-  // S-Tier
-  RGB_WHITE,
-  RGB_LIGHTGRAY,
-  RGB_DARKGRAY,
-  RGB_BLACK,
-};
-
-void kobold_take_turn(MonsterInstance *m) {
+inline void kobold_take_turn(MonsterInstance *m) {
   const uint8_t move_roll = d16();
 
   // Dazed (silly kobolds being dazed 6.25% of the time)
@@ -199,12 +183,12 @@ void kobold_take_turn(MonsterInstance *m) {
     // Silly kobolds falling over on their ass 6.25% of the time
     sprintf(battle_post_message, str_monster_kobold_miss);
   } else {
-    sprintf(battle_post_message, str_battle_monster_miss);
+    sprintf(battle_post_message, str_monster_miss);
   }
 }
 
-void kobold_generator(MonsterInstance *m, uint8_t level, PowerTier tier) {
-  monster_init_instance(m, &MONSTER_KOBOLD);
+void kobold_generator(MonsterInstance *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(m, MONSTER_KOBOLD, str_misc_kobold, &kobold_tileset);
 
   m->palette = MONSTER_KOBOLD_PALETTES + tier * 4;
   m->exp_tier = tier;
@@ -221,13 +205,34 @@ void kobold_generator(MonsterInstance *m, uint8_t level, PowerTier tier) {
 
   m->aspect_resist = DAMAGE_EARTH;
   m->aspect_vuln = DAMAGE_FIRE;
-  m->take_turn = kobold_take_turn;
 
   monster_reset_stats(m);
 }
 
-// -----------------------------------------------------------------------------
-// Monster 2 - Beholder
-// -----------------------------------------------------------------------------
-const Tileset beholder_tileset = { MONSTER_TILES, 14, tile_beholder };
-const Monster MONSTER_BEHOLDER = { 2, "BEHOLDER", &beholder_tileset };
+void monster_flee(MonsterInstance *monster) BANKED {
+  sprintf(
+    battle_pre_message,
+    str_monster_flee,
+    monster->name,
+    monster->id
+  );
+
+  if (roll_flee(monster->agl, player.agl)) {
+    sprintf(battle_post_message, str_monster_flee_success);
+    monster->fled = true;
+  } else {
+    sprintf(battle_post_message, str_monster_flee_failure);
+    monster->fled = false;
+  }
+}
+
+void monster_take_turn(MonsterInstance *monster) BANKED {
+  switch (monster->type) {
+  case MONSTER_KOBOLD:
+    kobold_take_turn(monster);
+    break;
+  case MONSTER_DUMMY:
+    dummy_take_turn(monster);
+    break;
+  }
+}

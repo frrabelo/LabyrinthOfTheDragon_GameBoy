@@ -91,6 +91,21 @@ extern const char str_misc_regen_pot[];
 extern const char str_misc_haste_pot[];
 
 /**
+ * "Dummy"
+ */
+extern const char str_misc_dummy[];
+
+/**
+ * "Kobold"
+ */
+extern const char str_misc_kobold[];
+
+/**
+ * "Beholder"
+ */
+extern const char str_misc_beholder[];
+
+/**
  * "The chest is locked."
  */
 extern const char str_maps_chest_locked[];
@@ -281,66 +296,6 @@ extern const char str_battle_insect_plague[];
 extern const char str_battle_regen[];
 
 /**
- * "%monster %c attacks!"
- */
-extern const char str_battle_monster_attack[];
-
-/**
- * "But they miss!"
- */
-extern const char str_battle_monster_miss[];
-
-/**
- * "But it has no effect!"
- */
-extern const char str_battle_monster_magic_miss[];
-
-/**
- * "You take %damage damage!"
- */
-extern const char str_battle_monster_hit[];
-
-/**
- * "You take %damage %aspect damage!"
- */
-extern const char str_battle_monster_hit_aspect[];
-
-/**
- * "But you're completely immune!"
- */
-extern const char str_battle_monster_hit_immune[];
-
-/**
- * "You resist, only %damage damage"
- */
-extern const char str_battle_monster_hit_resist[];
-
-/**
- * "It's SUPER BAD! %damage damage!"
- */
-extern const char str_battle_monster_hit_vuln[];
-
-/**
- * "CRITICAL HIT! You take %damage damage!"
- */
-extern const char str_battle_monster_hit_crit[];
-
-/**
- * "%monster %c makes a run for it..."
- */
-extern const char str_battle_monster_flee[];
-
-/**
- * "But they cannot get away!"
- */
-extern const char str_battle_monster_flee_failure[];
-
-/**
- * "And they get away!"
- */
-extern const char str_battle_monster_flee_success[];
-
-/**
  * "%monster %c shivers in fear..."
  */
 extern const char str_battle_monster_scared_frozen[];
@@ -454,6 +409,66 @@ extern const char str_battle_victory_no_xp[];
  * "LEVEL UP! You reach %level!"
  */
 extern const char str_battle_level_up[];
+
+/**
+ * "%monster %c makes a run for it..."
+ */
+extern const char str_monster_flee[];
+
+/**
+ * "But they cannot get away!"
+ */
+extern const char str_monster_flee_failure[];
+
+/**
+ * "And they get away!"
+ */
+extern const char str_monster_flee_success[];
+
+/**
+ * "%monster %c attacks!"
+ */
+extern const char str_monster_attack[];
+
+/**
+ * "But they miss!"
+ */
+extern const char str_monster_miss[];
+
+/**
+ * "But it has no effect!"
+ */
+extern const char str_monster_magic_miss[];
+
+/**
+ * "You take %damage damage!"
+ */
+extern const char str_monster_hit[];
+
+/**
+ * "You take %damage %aspect damage!"
+ */
+extern const char str_monster_hit_aspect[];
+
+/**
+ * "But you're completely immune!"
+ */
+extern const char str_monster_hit_immune[];
+
+/**
+ * "You resist, only %damage damage"
+ */
+extern const char str_monster_hit_resist[];
+
+/**
+ * "It's SUPER BAD! %damage damage!"
+ */
+extern const char str_monster_hit_vuln[];
+
+/**
+ * "CRITICAL HIT! You take %damage damage!"
+ */
+extern const char str_monster_hit_crit[];
 
 /**
  * "Dummy %c stands still."

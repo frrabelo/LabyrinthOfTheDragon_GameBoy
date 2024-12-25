@@ -301,7 +301,7 @@ bool floor_test_on_special(void) {
     if (player_at(3, 8)) {
       MonsterInstance *monster = encounter.monsters;
       reset_encounter(MONSTER_LAYOUT_3S);
-      dummy_generator(monster, player.level, DUMMY_COWARD);
+      dummy_generator(monster, player.level, DUMMY_AGGRESSIVE);
       monster->id = 'A';
       dummy_generator(++monster, player.level, DUMMY_COWARD);
       monster->id = 'B';

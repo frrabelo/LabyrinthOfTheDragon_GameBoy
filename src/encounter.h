@@ -161,7 +161,6 @@ void set_player_ability(const Ability *a, MonsterInstance *target);
  */
 void set_player_flee(void);
 
-
 /**
  * Sets the player's next action to using an item.
  */
@@ -301,13 +300,6 @@ StatusEffectResult apply_status_effect(
  * @return Whether or not the player could flee.
  */
 void player_flee(void);
-
-/**
- * Handle the "flee" action for a monster.
- * @param monster Monster who is trying to flee.
- * @return Whether or not the monster could flee.
- */
-void monster_flee(MonsterInstance *monster);
 
 /**
  * Applies rewards after a successful encounter. Handles XP, leveling, etc.

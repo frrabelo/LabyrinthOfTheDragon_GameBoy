@@ -41,7 +41,10 @@ addNamespace('misc', 0, {
   'def_up_potion': 'DEF ^ ',
   'elixer':        'Elixer',
   'regen_pot':     'Regen ',
-  'haste_pot':     'Haste '
+  'haste_pot':     'Haste ',
+  'dummy':    'Dummy',
+  'kobold':   'Kobold',
+  'beholder': 'Beholder',
 })
 
 addNamespace('maps', 2, {
@@ -98,18 +101,6 @@ addNamespace('battle', 3, {
   'heal': 'Radiant blue light falls upon you...',
   'insect_plague': 'Locusts swarm your enemies!',
   'regen': 'You surge with vitality!',
-  'monster_attack': '%monster %c attacks!',
-  'monster_miss': 'But they miss!',
-  'monster_magic_miss': 'But it has no effect!',
-  'monster_hit': 'You take %damage damage!',
-  'monster_hit_aspect': 'You take %damage %aspect damage!',
-  'monster_hit_immune': "But you're completely immune!",
-  'monster_hit_resist': 'You resist, only %damage damage',
-  'monster_hit_vuln': "It's SUPER BAD! %damage damage!",
-  'monster_hit_crit': 'CRITICAL HIT! You take %damage damage!',
-  'monster_flee': '%monster %c makes a run for it...',
-  'monster_flee_failure': 'But they cannot get away!',
-  'monster_flee_success': 'And they get away!',
   'monster_scared_frozen': '%monster %c shivers in fear...',
   'monster_paralyzed': "%monster %c can't move!",
   'monster_poison_death': '%monster %c succumbs to the poison!',
@@ -138,7 +129,19 @@ addNamespace('battle', 3, {
 /**
  * Monster specific battle strings
  */
-addNamespace('monster', 3, {
+addNamespace('monster', 6, {
+  'flee': '%monster %c makes a run for it...',
+  'flee_failure': 'But they cannot get away!',
+  'flee_success': 'And they get away!',
+  'attack': '%monster %c attacks!',
+  'miss': 'But they miss!',
+  'magic_miss': 'But it has no effect!',
+  'hit': 'You take %damage damage!',
+  'hit_aspect': 'You take %damage %aspect damage!',
+  'hit_immune': "But you're completely immune!",
+  'hit_resist': 'You resist, only %damage damage',
+  'hit_vuln': "It's SUPER BAD! %damage damage!",
+  'hit_crit': 'CRITICAL HIT! You take %damage damage!',
   'dummy_pre': 'Dummy %c stands still.',
   'dummy_post_heal': '"I will never die..."',
   'kobold_axe': 'Kobold %c raises a tiny axe...',

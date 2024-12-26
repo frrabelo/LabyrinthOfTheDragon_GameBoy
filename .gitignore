@@ -1,3 +1,6 @@
+# Emulator sram SAV files
+*.sav
+
 # Prerequisites
 *.d
 

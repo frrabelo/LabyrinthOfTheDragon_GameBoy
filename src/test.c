@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 
 #include "battle.h"
 #include "core.h"
@@ -15,6 +16,14 @@ void reset_test(void) {
     *_test++ = 0xFF;
   }
   _test = (void *)0xA000;
+}
+
+void init_test_player(uint8_t level) {
+  init_player(CLASS_TEST);
+  grant_ability(ABILITY_ALL);
+  set_player_level(level);
+  sprintf(player.name, "Tester");
+  player.message_speed = AUTO_PAGE_FAST;
 }
 
 void test_battle_init(void) {

@@ -254,53 +254,47 @@ extern uint8_t player_num_abilities;
 extern const Ability null_ability;
 
 /**
- * Initializes a new player with the given class.
- */
-void init_player(PlayerClass player_class);
-
-/**
- * Initializes the player using the test class.
- * @param level Level for the test player.
- */
-void init_test_player(uint8_t level);
-
-/**
  * Grants the player a new ability.
  * @param flag The flag for the ability.
  */
-void grant_ability(AbilityFlag flag);
+void grant_ability(AbilityFlag flag) BANKED;
 
 /**
- * Sets class abilities based on the current player class.
+ * Sets the player's level to a specific value.
+ * @param level Level to set.
  */
-void set_class_abilities(void);
+void set_player_level(uint8_t level) BANKED;
 
 /**
- * Sets player abilities based on current ability flags.
+ * Initializes a new player with the given class.
  */
-void set_player_abilities(void);
-
-/**
- * Performs a basic attack against the the targeted monster.
- */
-void player_base_attack(void);
+void init_player(PlayerClass player_class) BANKED;
 
 /**
  * Adds the given experience points and performs a level up if applicable.
  * @param xp Experience points to add.
  * @return `true` if the player leveled up.
  */
-bool level_up(uint16_t xp);
+bool level_up(uint16_t xp) BANKED;
+
+/**
+ * Performs a basic attack against the the targeted monster.
+ */
+void player_base_attack(void) BANKED;
+
+/**
+ * Executes a player ability.
+ * @param ability Ability to execute.
+ */
+void player_use_ability(const Ability *ability) BANKED;
 
 /**
  * Full heals the player, setting HP and SP to their max values.
  */
-void full_heal_player(void);
-
-/**
- * Sets the player's level to a specific value.
- */
-void set_player_level(uint8_t level);
+inline void full_heal_player(void) {
+  player.hp = player.max_hp;
+  player.sp = player.max_sp;
+}
 
 /**
  * @return `true` if the player has a magic combat class.

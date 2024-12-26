@@ -268,7 +268,7 @@ inline void player_turn(void) {
   case PLAYER_ACTION_ABILITY:
     // No sp bounds checking here, should be handled in battle UI
     player.sp -= encounter.player_ability->sp_cost;
-    encounter.player_ability->execute();
+    player_use_ability(encounter.player_ability);
     break;
   case PLAYER_ACTION_ITEM:
     use_item(encounter.item_id);
@@ -490,84 +490,6 @@ void reset_encounter(MonsterLayout layout) NONBANKED {
   }
 }
 
-void damage_monster(uint16_t base_damage, DamageAspect type) {
-  Monster *monster = encounter.target;
-
-  if (!monster)
-    return;
-
-  if (monster->aspect_immune & type) {
-    sprintf(battle_post_message, str_battle_player_hit_immune);
-    return;
-  }
-
-  uint8_t roll = d16();
-  uint16_t damage = calc_damage(roll, base_damage);
-  bool critical = is_critical(roll);
-
-  if (critical) {
-    sprintf(battle_post_message, str_battle_player_hit_crit, damage);
-  } else if (monster->aspect_resist & type) {
-    damage >>= 1;
-    sprintf(battle_post_message, str_battle_player_hit_resist, damage);
-  } else if (monster->aspect_vuln & type) {
-    damage <<= 1;
-  } else {
-    sprintf(battle_post_message, str_battle_player_hit, damage);
-  }
-
-  if (monster->target_hp < damage)
-    monster->target_hp = 0;
-  else
-    monster->target_hp -= damage;
-}
-
-uint8_t damage_all(
-  uint8_t base_damage,
-  uint8_t atk,
-  bool use_mdef,
-  DamageAspect type
-) {
-  uint8_t dam_roll = d16();
-  uint16_t damage = calc_damage(dam_roll, base_damage);
-
-  Monster *monster = encounter.monsters;
-  uint8_t atk_roll = d256();
-  uint8_t hits = 0;
-
-  for (uint8_t k = 0; k < 3; k++, monster++) {
-    if (!monster->active)
-      continue;
-    if (monster->aspect_immune & type)
-      continue;
-
-    const uint8_t def = use_mdef ? monster->mdef : monster->def;
-    if (!check_attack(atk_roll, atk, def))
-      continue;
-
-    hits++;
-
-    uint16_t d = damage;
-    if (monster->aspect_resist & type) {
-      d = damage >> 1;
-    } else if (monster->aspect_vuln & type) {
-      d = damage << 1;
-    }
-
-    if (monster->target_hp < d)
-      monster->target_hp = 0;
-    else
-      monster->target_hp -= d;
-  }
-
-  return hits;
-}
-
-void ability_placeholder(void) {
-  sprintf(battle_pre_message, "You try a thing.");
-  sprintf(battle_post_message, "It doesn't work.");
-}
-
 /**
  * @return The opposing status effect if defined.
  * @param effect Effect to for which to find opposition.
@@ -666,7 +588,7 @@ StatusEffectResult apply_status_effect(
   PowerTier tier,
   uint8_t duration,
   uint8_t immune
-) {
+) BANKED {
   if (immune & flag)
     return STATUS_RESULT_IMMUNE;
 

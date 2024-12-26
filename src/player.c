@@ -1,3 +1,5 @@
+#pragma bank 4
+
 #include <gb/gb.h>
 #include <gb/cgb.h>
 #include <rand.h>
@@ -18,6 +20,21 @@ uint8_t player_num_abilities = 0;
 
 const Ability null_ability = { 0 };
 
+void ability_placeholder(void) {
+  sprintf(battle_pre_message, "You try a thing.");
+  sprintf(battle_post_message, "It doesn't work.");
+}
+
+/**
+ * Updates player stats based on the given power tiers.
+ * @param hp Power tier for hp.
+ * @param sp Power tier for sp.
+ * @param atk Power tier for atk.
+ * @param def Power tier for def.
+ * @param matk Power tier for matk.
+ * @param mdef Power tier for mdef.
+ * @param agl Power tier for agl.
+ */
 void update_stats(
   PowerTier hp,
   PowerTier sp,
@@ -34,6 +51,94 @@ void update_stats(
   player.matk_base = get_player_atk(player.level, matk);
   player.mdef_base = get_player_def(player.level, mdef);
   player.agl_base = get_agl(player.level, agl);
+}
+
+/**
+ * Applies damage to the target monster. Takes immunities, etc. into account and
+ * handles battle result messages.
+ * @param base_damage Base damage for the attack.
+ * @param type Aspect for the damage.
+ */
+void damage_monster(uint16_t base_damage, DamageAspect type) {
+  Monster *monster = encounter.target;
+
+  if (!monster)
+    return;
+
+  if (monster->aspect_immune & type) {
+    sprintf(battle_post_message, str_battle_player_hit_immune);
+    return;
+  }
+
+  uint8_t roll = d16();
+  uint16_t damage = calc_damage(roll, base_damage);
+  bool critical = is_critical(roll);
+
+  if (critical) {
+    sprintf(battle_post_message, str_battle_player_hit_crit, damage);
+  } else if (monster->aspect_resist & type) {
+    damage >>= 1;
+    sprintf(battle_post_message, str_battle_player_hit_resist, damage);
+  } else if (monster->aspect_vuln & type) {
+    damage <<= 1;
+  } else {
+    sprintf(battle_post_message, str_battle_player_hit, damage);
+  }
+
+  if (monster->target_hp < damage)
+    monster->target_hp = 0;
+  else
+    monster->target_hp -= damage;
+}
+
+/**
+ * Applies damage to all active monsters in the encounter. Takes immmunities,
+ * etc. into account. Does **NOT** handle battle result messages.
+ * @param base_damage Base damage for the attack.
+ * @param atk ATK of the attacker.
+ * @param use_mdef Whether or not to use DEF or MDEF when checking attack roll.
+ * @param type Aspect type for the damage.
+ * @return Number of monsters hit by the attack.
+ */
+uint8_t damage_all(
+  uint8_t base_damage,
+  uint8_t atk,
+  bool use_mdef,
+  DamageAspect type
+) {
+  uint8_t dam_roll = d16();
+  uint16_t damage = calc_damage(dam_roll, base_damage);
+
+  Monster *monster = encounter.monsters;
+  uint8_t atk_roll = d256();
+  uint8_t hits = 0;
+
+  for (uint8_t k = 0; k < 3; k++, monster++) {
+    if (!monster->active)
+      continue;
+    if (monster->aspect_immune & type)
+      continue;
+
+    const uint8_t def = use_mdef ? monster->mdef : monster->def;
+    if (!check_attack(atk_roll, atk, def))
+      continue;
+
+    hits++;
+
+    uint16_t d = damage;
+    if (monster->aspect_resist & type) {
+      d = damage >> 1;
+    } else if (monster->aspect_vuln & type) {
+      d = damage << 1;
+    }
+
+    if (monster->target_hp < d)
+      monster->target_hp = 0;
+    else
+      monster->target_hp -= d;
+  }
+
+  return hits;
 }
 
 //------------------------------------------------------------------------------
@@ -270,6 +375,9 @@ void update_player_stats(void) {
   }
 }
 
+/**
+ * Sets class abilities based on the current player class.
+ */
 void set_class_abilities(void) {
   switch (player.player_class) {
   case CLASS_DRUID:
@@ -315,6 +423,9 @@ void set_class_abilities(void) {
   }
 }
 
+/**
+ * Sets abilities based on the player's current class.
+ */
 void set_player_abilities(void) {
   uint8_t flags = player.ability_flags;
   player_num_abilities = 0;
@@ -326,7 +437,22 @@ void set_player_abilities(void) {
   }
 }
 
-void init_player(PlayerClass player_class) {
+// -----------------------------------------------------------------------------
+
+void grant_ability(AbilityFlag flag) BANKED {
+  player.ability_flags |= flag;
+  set_player_abilities();
+}
+
+void set_player_level(uint8_t level) BANKED {
+  player.level = level;
+  player.exp = get_exp(player.level);
+  player.next_level_exp = get_exp(player.level + 1);
+  update_player_stats();
+  full_heal_player();
+}
+
+void init_player(PlayerClass player_class) BANKED {
   player.player_class = player_class;
   set_class_abilities();
   player.ability_flags = 0;
@@ -340,33 +466,7 @@ void init_player(PlayerClass player_class) {
 
 }
 
-void init_test_player(uint8_t level) {
-  init_player(CLASS_TEST);
-  grant_ability(ABILITY_ALL);
-  set_player_level(level);
-  sprintf(player.name, "Tester");
-  player.message_speed = AUTO_PAGE_FAST;
-}
-
-void grant_ability(AbilityFlag flag) {
-  player.ability_flags |= flag;
-  set_player_abilities();
-}
-
-void full_heal_player(void) {
-  player.hp = player.max_hp;
-  player.sp = player.max_sp;
-}
-
-void set_player_level(uint8_t level) {
-  player.level = level;
-  player.exp = get_exp(player.level);
-  player.next_level_exp = get_exp(player.level + 1);
-  update_player_stats();
-  full_heal_player();
-}
-
-bool level_up(uint16_t xp) {
+bool level_up(uint16_t xp) BANKED {
   bool level_up = false;
   player.exp += xp;
 
@@ -384,7 +484,7 @@ bool level_up(uint16_t xp) {
   return level_up;
 }
 
-void player_base_attack(void) {
+void player_base_attack(void) BANKED {
   switch (player.player_class) {
   case CLASS_DRUID:
     druid_base_attack();
@@ -402,4 +502,8 @@ void player_base_attack(void) {
     test_class_base_attack();
     break;
   }
+}
+
+void player_use_ability(const Ability *ability) BANKED {
+  ability->execute();
 }

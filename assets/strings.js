@@ -64,6 +64,40 @@ addNamespace('ability', 0, {
   'druid_regen':         'Regenerate   ',
 });
 
+addNamespace('battle', 0, {
+  'poison_spray': 'Poison gas erupts from your palm!',
+  'cure_wounds': "You're enveloped in blue light...",
+  'bark_skin': 'Your skin grows hard as wood.',
+  'lightning': 'Bolts of lighting fall!',
+  'heal': 'Radiant blue light falls upon you...',
+  'insect_plague': 'Locusts swarm your enemies!',
+  'regen': 'You surge with vitality!',
+  'monster_scared_frozen': '%monster %c shivers in fear...',
+  'monster_paralyzed': "%monster %c can't move!",
+  'monster_poison_death': '%monster %c succumbs to the poison!',
+  'monster_confuse_attack_self': 'Confused, %monster %c attacks itself!',
+  'monster_confuse_attack_other': 'Confused, %monster %c attacks any ally!',
+  'monster_confuse_stupor': '%monster %c stares aimlessly.',
+  'player_miss': 'But you miss!',
+  'player_magic_miss': 'But it has no effect!',
+  'player_hit': 'You deal %damage damage!',
+  'player_hit_immune': "They're completely immune!",
+  'player_hit_resist': "They resist your attack, only %damage damage...",
+  'player_hit_vuln': "It's SUPER EFFECTIVE dealing %damage damage!",
+  'player_hit_crit': 'CRITICAL HIT! You deal %damage damage!',
+  'player_heal': 'You heal %damage HP.',
+  'player_heal_crit': 'CRITICAL! You heal a whopping %damage HP!',
+  'player_heal_fumble': 'You only heal a measly %damage HP.',
+  'player_miss_all': 'A COMPLETE WHIFF.',
+  'player_flee_attempt': 'You attempt to flee...',
+  'player_flee_success': 'And get away!',
+  'player_flee_failure': 'But are blocked!',
+  'victory': 'Victory! You gain %exp XP!',
+  'victory_no_xp': 'Victory! You gain no XP.\fMust have been too weak...',
+  'level_up': 'LEVEL UP! You reach %level!',
+})
+
+
 
 addNamespace('maps', 2, {
   'chest_locked': "The chest is locked.",
@@ -99,39 +133,6 @@ addNamespace('items', 3, {
   'use_regen': 'You begin regenerating!',
   'use_haste': 'The world slows down!',
   'use_failed': "The item didn't work!",
-})
-
-addNamespace('battle', 3, {
-  'poison_spray': 'Poison gas erupts from your palm!',
-  'cure_wounds': "You're enveloped in blue light...",
-  'bark_skin': 'Your skin grows hard as wood.',
-  'lightning': 'Bolts of lighting fall!',
-  'heal': 'Radiant blue light falls upon you...',
-  'insect_plague': 'Locusts swarm your enemies!',
-  'regen': 'You surge with vitality!',
-  'monster_scared_frozen': '%monster %c shivers in fear...',
-  'monster_paralyzed': "%monster %c can't move!",
-  'monster_poison_death': '%monster %c succumbs to the poison!',
-  'monster_confuse_attack_self': 'Confused, %monster %c attacks itself!',
-  'monster_confuse_attack_other': 'Confused, %monster %c attacks any ally!',
-  'monster_confuse_stupor': '%monster %c stares aimlessly.',
-  'player_miss': 'But you miss!',
-  'player_magic_miss': 'But it has no effect!',
-  'player_hit': 'You deal %damage damage!',
-  'player_hit_immune': "They're completely immune!",
-  'player_hit_resist': "They resist your attack, only %damage damage...",
-  'player_hit_vuln': "It's SUPER EFFECTIVE dealing %damage damage!",
-  'player_hit_crit': 'CRITICAL HIT! You deal %damage damage!',
-  'player_heal': 'You heal %damage HP.',
-  'player_heal_crit': 'CRITICAL! You heal a whopping %damage HP!',
-  'player_heal_fumble': 'You only heal a measly %damage HP.',
-  'player_miss_all': 'A COMPLETE WHIFF.',
-  'player_flee_attempt': 'You attempt to flee...',
-  'player_flee_success': 'And get away!',
-  'player_flee_failure': 'But are blocked!',
-  'victory': 'Victory! You gain %exp XP!',
-  'victory_no_xp': 'Victory! You gain no XP.\fMust have been too weak...',
-  'level_up': 'LEVEL UP! You reach %level!',
 })
 
 addNamespace('monster', 6, {

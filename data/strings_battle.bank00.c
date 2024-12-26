@@ -1,9 +1,9 @@
 /*
- * strings_battle.bank03.c
+ * strings_battle.bank00.c
  * Encoded string values for the "battle" namespace.
  */
 
-#pragma bank 3
+#pragma bank 0
 
 const char str_battle_poison_spray[] = "Poison gas erupts \nfrom your palm!";
 const char str_battle_cure_wounds[] = "You\'re enveloped \nin blue light\x60";

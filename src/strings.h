@@ -191,141 +191,6 @@ extern const char str_ability_druid_insect_plague[];
 extern const char str_ability_druid_regen[];
 
 /**
- * "The chest is locked."
- */
-extern const char str_maps_chest_locked[];
-
-/**
- * "You opened the chest!"
- */
-extern const char str_maps_chest_open[];
-
-/**
- * "The chest was empty."
- */
-extern const char str_maps_chest_empty[];
-
-/**
- * "You need a magic key to unlock this chest..."
- */
-extern const char str_maps_chest_key_locked[];
-
-/**
- * "You unlock the chest with a magic key!"
- */
-extern const char str_maps_chest_unlock_key[];
-
-/**
- * "You get a magic key!"
- */
-extern const char str_maps_get_magic_key[];
-
-/**
- * "It's stuck!"
- */
-extern const char str_maps_lever_stuck[];
-
-/**
- * "Seems this lever was one and done."
- */
-extern const char str_maps_lever_one_way[];
-
-/**
- * "The door is locked."
- */
-extern const char str_maps_door_locked[];
-
-/**
- * "You need a magic key to unlock this door..."
- */
-extern const char str_maps_door_locked_key[];
-
-/**
- * "You unlock the door with a magic key!"
- */
-extern const char str_maps_door_unlock_key[];
-
-/**
- * "The sconce burns brightly."
- */
-extern const char str_maps_sconce_lit_no_torch[];
-
-/**
- * "Hmm... how do you light this?"
- */
-extern const char str_maps_sconce_no_torch[];
-
-/**
- * "Your torch lacks a flame."
- */
-extern const char str_maps_sconce_torch_not_lit[];
-
-/**
- * "You get 2 potions and an ether!"
- */
-extern const char str_chest_item_2pot_1eth[];
-
-/**
- * "You get a haste potion!"
- */
-extern const char str_chest_item_haste_pot[];
-
-/**
- * "You get a regen potion!"
- */
-extern const char str_chest_item_regen_pot[];
-
-/**
- * "%damage HP healed!"
- */
-extern const char str_items_use_potion[];
-
-/**
- * "%damage SP restored!"
- */
-extern const char str_items_use_ether_sp[];
-
-/**
- * "%damage MP restored!"
- */
-extern const char str_items_use_ether_mp[];
-
-/**
- * "You remedy what ails you!"
- */
-extern const char str_items_use_remedy[];
-
-/**
- * "Your attack increases!"
- */
-extern const char str_items_use_atkup[];
-
-/**
- * "Your defense increases!"
- */
-extern const char str_items_use_defup[];
-
-/**
- * "You fully heal!"
- */
-extern const char str_items_use_elixer[];
-
-/**
- * "You begin regenerating!"
- */
-extern const char str_items_use_regen[];
-
-/**
- * "The world slows down!"
- */
-extern const char str_items_use_haste[];
-
-/**
- * "The item didn't work!"
- */
-extern const char str_items_use_failed[];
-
-/**
  * "Poison gas erupts from your palm!"
  */
 extern const char str_battle_poison_spray[];
@@ -474,6 +339,141 @@ extern const char str_battle_victory_no_xp[];
  * "LEVEL UP! You reach %level!"
  */
 extern const char str_battle_level_up[];
+
+/**
+ * "The chest is locked."
+ */
+extern const char str_maps_chest_locked[];
+
+/**
+ * "You opened the chest!"
+ */
+extern const char str_maps_chest_open[];
+
+/**
+ * "The chest was empty."
+ */
+extern const char str_maps_chest_empty[];
+
+/**
+ * "You need a magic key to unlock this chest..."
+ */
+extern const char str_maps_chest_key_locked[];
+
+/**
+ * "You unlock the chest with a magic key!"
+ */
+extern const char str_maps_chest_unlock_key[];
+
+/**
+ * "You get a magic key!"
+ */
+extern const char str_maps_get_magic_key[];
+
+/**
+ * "It's stuck!"
+ */
+extern const char str_maps_lever_stuck[];
+
+/**
+ * "Seems this lever was one and done."
+ */
+extern const char str_maps_lever_one_way[];
+
+/**
+ * "The door is locked."
+ */
+extern const char str_maps_door_locked[];
+
+/**
+ * "You need a magic key to unlock this door..."
+ */
+extern const char str_maps_door_locked_key[];
+
+/**
+ * "You unlock the door with a magic key!"
+ */
+extern const char str_maps_door_unlock_key[];
+
+/**
+ * "The sconce burns brightly."
+ */
+extern const char str_maps_sconce_lit_no_torch[];
+
+/**
+ * "Hmm... how do you light this?"
+ */
+extern const char str_maps_sconce_no_torch[];
+
+/**
+ * "Your torch lacks a flame."
+ */
+extern const char str_maps_sconce_torch_not_lit[];
+
+/**
+ * "You get 2 potions and an ether!"
+ */
+extern const char str_chest_item_2pot_1eth[];
+
+/**
+ * "You get a haste potion!"
+ */
+extern const char str_chest_item_haste_pot[];
+
+/**
+ * "You get a regen potion!"
+ */
+extern const char str_chest_item_regen_pot[];
+
+/**
+ * "%damage HP healed!"
+ */
+extern const char str_items_use_potion[];
+
+/**
+ * "%damage SP restored!"
+ */
+extern const char str_items_use_ether_sp[];
+
+/**
+ * "%damage MP restored!"
+ */
+extern const char str_items_use_ether_mp[];
+
+/**
+ * "You remedy what ails you!"
+ */
+extern const char str_items_use_remedy[];
+
+/**
+ * "Your attack increases!"
+ */
+extern const char str_items_use_atkup[];
+
+/**
+ * "Your defense increases!"
+ */
+extern const char str_items_use_defup[];
+
+/**
+ * "You fully heal!"
+ */
+extern const char str_items_use_elixer[];
+
+/**
+ * "You begin regenerating!"
+ */
+extern const char str_items_use_regen[];
+
+/**
+ * "The world slows down!"
+ */
+extern const char str_items_use_haste[];
+
+/**
+ * "The item didn't work!"
+ */
+extern const char str_items_use_failed[];
 
 /**
  * "%monster %c makes a run for it..."

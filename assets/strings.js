@@ -21,9 +21,6 @@ function addNamespace(name, bank, strings) {
   namespaces[name] = { bank, strings };
 }
 
-/**
- * Misc. game text strings used in various places.
- */
 addNamespace('misc', 0, {
   'empty': 'EMPTY...',
   'physical': '',
@@ -56,6 +53,17 @@ addNamespace('misc', 0, {
   'beholder': 'Beholder',
   'dragon': 'Dragon',
 })
+
+addNamespace('ability', 0, {
+  'druid_poison_spray':  'Poison Spray ',
+  'druid_cure_wounds':   'Cure Wounds  ',
+  'druid_bark_skin':     'Bark Skin    ',
+  'druid_ligtning':      'Lightning    ',
+  'druid_heal':          'Heal         ',
+  'druid_insect_plague': 'Insect Plague',
+  'druid_regen':         'Regenerate   ',
+});
+
 
 addNamespace('maps', 2, {
   'chest_locked': "The chest is locked.",
@@ -93,19 +101,6 @@ addNamespace('items', 3, {
   'use_failed': "The item didn't work!",
 })
 
-addNamespace('ability', 0, {
-  'druid_poison_spray':  'Poison Spray ',
-  'druid_cure_wounds':   'Cure Wounds  ',
-  'druid_bark_skin':     'Bark Skin    ',
-  'druid_ligtning':      'Lightning    ',
-  'druid_heal':          'Heal         ',
-  'druid_insect_plague': 'Insect Plague',
-  'druid_regen':         'Regenerate   ',
-});
-
-/**
- * General battle strings
- */
 addNamespace('battle', 3, {
   'poison_spray': 'Poison gas erupts from your palm!',
   'cure_wounds': "You're enveloped in blue light...",
@@ -139,9 +134,6 @@ addNamespace('battle', 3, {
   'level_up': 'LEVEL UP! You reach %level!',
 })
 
-/**
- * Monster specific battle strings
- */
 addNamespace('monster', 6, {
   'flee': '%monster %c makes a run for it...',
   'flee_failure': 'But they cannot get away!',

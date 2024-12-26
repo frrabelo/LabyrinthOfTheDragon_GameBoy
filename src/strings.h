@@ -156,6 +156,41 @@ extern const char str_misc_beholder[];
 extern const char str_misc_dragon[];
 
 /**
+ * "Poison Spray "
+ */
+extern const char str_ability_druid_poison_spray[];
+
+/**
+ * "Cure Wounds  "
+ */
+extern const char str_ability_druid_cure_wounds[];
+
+/**
+ * "Bark Skin    "
+ */
+extern const char str_ability_druid_bark_skin[];
+
+/**
+ * "Lightning    "
+ */
+extern const char str_ability_druid_ligtning[];
+
+/**
+ * "Heal         "
+ */
+extern const char str_ability_druid_heal[];
+
+/**
+ * "Insect Plague"
+ */
+extern const char str_ability_druid_insect_plague[];
+
+/**
+ * "Regenerate   "
+ */
+extern const char str_ability_druid_regen[];
+
+/**
  * "The chest is locked."
  */
 extern const char str_maps_chest_locked[];
@@ -289,41 +324,6 @@ extern const char str_items_use_haste[];
  * "The item didn't work!"
  */
 extern const char str_items_use_failed[];
-
-/**
- * "Poison Spray "
- */
-extern const char str_ability_druid_poison_spray[];
-
-/**
- * "Cure Wounds  "
- */
-extern const char str_ability_druid_cure_wounds[];
-
-/**
- * "Bark Skin    "
- */
-extern const char str_ability_druid_bark_skin[];
-
-/**
- * "Lightning    "
- */
-extern const char str_ability_druid_ligtning[];
-
-/**
- * "Heal         "
- */
-extern const char str_ability_druid_heal[];
-
-/**
- * "Insect Plague"
- */
-extern const char str_ability_druid_insect_plague[];
-
-/**
- * "Regenerate   "
- */
-extern const char str_ability_druid_regen[];
 
 /**
  * "Poison gas erupts from your palm!"

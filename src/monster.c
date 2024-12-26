@@ -220,7 +220,25 @@ void goblin_take_turn(Monster *monster) {
 
 void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(m, MONSTER_GOBLIN, str_misc_goblin, &goblin_tileset);
+  m->palette = goblin_palettes;
   m->take_turn = goblin_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -235,7 +253,25 @@ void zombie_take_turn(Monster *monster) {
 
 void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(m, MONSTER_ZOMBIE, str_misc_zombie, &zombie_tileset);
+  m->palette = zombie_palettes;
   m->take_turn = zombie_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -250,7 +286,25 @@ void bugbear_take_turn(Monster *monster) {
 
 void bugbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(m, MONSTER_BUGBEAR, str_misc_bugbear, &bugbear_tileset);
+  m->palette = bugbear_palettes;
   m->take_turn = bugbear_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -265,7 +319,25 @@ void owlbear_take_turn(Monster *monster) {
 
 void owlbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(m, MONSTER_OWLBEAR, str_misc_owlbear, &owlbear_tileset);
+  m->palette = owlbear_palettes;
   m->take_turn = owlbear_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -286,7 +358,25 @@ void gelatinous_cube_generator(
   monster_init_instance(
     m, MONSTER_GELATINOUS_CUBE,
     str_misc_gelatinous_cube, &gelatinous_cube_tileset);
+  m->palette = gelatinous_cube_palettes;
   m->take_turn = goblin_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -307,7 +397,25 @@ void displacer_beast_generator(
   monster_init_instance(
     m, MONSTER_DISPLACER_BEAST,
     str_misc_displacer_beast, &displacer_beast_tileset);
+  m->palette = displacer_beast_palettes;
   m->take_turn = displacer_beast_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -320,10 +428,28 @@ void will_o_wisp_take_turn(Monster *monster) {
   skip_post_message = true;
 }
 
-void _generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+void will_o_wisp_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_WILL_O_WISP, str_misc_will_o_wisp, &will_o_wisp_tileset);
+  m->palette = will_o_wisp_palettes;
   m->take_turn = will_o_wisp_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -339,7 +465,25 @@ void deathknight_take_turn(Monster *monster) {
 void deathknight_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_DEATHKNIGHT, str_misc_death_knight, &deathknight_tileset);
+  m->palette = deathknight_palettes;
   m->take_turn = deathknight_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -355,7 +499,25 @@ void mindflayer_take_turn(Monster *monster) {
 void mindflayer_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_MINDFLAYER, str_misc_mind_flayer, &mindflayer_tileset);
+  m->palette = mindflayer_palettes;
   m->take_turn = mindflayer_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -371,7 +533,25 @@ void beholder_take_turn(Monster *monster) {
 void beholder_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_BEHOLDER, str_misc_beholder, &beholder_tileset);
+  m->palette = beholder_palettes;
   m->take_turn = beholder_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
@@ -386,7 +566,25 @@ void dragon_take_turn(Monster *monster) {
 
 void dragon_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(m, MONSTER_DRAGON, str_misc_dragon, &dragon_tileset);
+  m->palette = dragon_palettes;
   m->take_turn = dragon_take_turn;
+
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(level, tier);
+
+  m->aspect_resist = 0;
+  m->aspect_vuln = 0;
+  m->debuff_immune = 0;
+
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------

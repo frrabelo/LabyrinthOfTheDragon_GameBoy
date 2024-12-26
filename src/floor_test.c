@@ -309,13 +309,11 @@ bool floor_test_on_special(void) {
   case MAP_A:
     if (player_at(3, 8)) {
       Monster *monster = encounter.monsters;
-      reset_encounter(MONSTER_LAYOUT_3S);
-      dummy_generator(monster, player.level, DUMMY_AGGRESSIVE);
+      reset_encounter(MONSTER_LAYOUT_2);
+      beholder_generator(monster, player.level, C_TIER);
       monster->id = 'A';
-      dummy_generator(++monster, player.level, DUMMY_COWARD);
-      monster->id = 'B';
-      dummy_generator(++monster, player.level, DUMMY_COWARD);
-      monster->id = 'C';
+      dragon_generator(++monster, player.level, C_TIER);
+      monster->id = 'A';
       start_battle();
       return true;
     }

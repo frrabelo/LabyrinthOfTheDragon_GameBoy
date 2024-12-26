@@ -204,10 +204,111 @@ void dummy_generator(
   Monster *m, uint8_t level, TestDummyType type) BANKED;
 
 /**
- * Basic kobold generator.
- * @param level Level for the kobold to generate.
+ * Generates a Kobold.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
  */
 void kobold_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a Goblin.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void goblin_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a zombie.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void zombie_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a bugbear.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void bugbear_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a owlbear.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void owlbear_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a gelatinous_cube.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void gelatinous_cube_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a displacer beast.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void displacer_beast_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a will-o-wisp.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void will_o_wisp_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a death knight.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void deathknight_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a mind flayer.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void mindflayer_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a beholder.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void beholder_generator(
+  Monster *m, uint8_t level, PowerTier tier) BANKED;
+
+/**
+ * Generates a dragon.
+ * @param m Monster instance to populate.
+ * @param level Level for the monster.
+ * @param tier Power tier.
+ */
+void dragon_generator(
   Monster *m, uint8_t level, PowerTier tier) BANKED;
 
 /**

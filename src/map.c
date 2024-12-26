@@ -34,6 +34,14 @@ MapTile tile_buf[2 * MAP_HORIZ_LOADS];
 TileHashEntry tile_object_hashtable[TILE_HASHTABLE_SIZE];
 
 /**
+ * Holds the color of the flames for the sconces in the current floor.
+ */
+FlameColor sconce_colors[8] = {
+  FLAME_RED, FLAME_RED, FLAME_RED, FLAME_RED,
+  FLAME_RED, FLAME_RED, FLAME_RED, FLAME_RED,
+};
+
+/**
  * Hash function for positions in floor maps.
  * @param map_id Id of the map for the position.
  * @param x X position in the map.
@@ -104,8 +112,8 @@ void reset_object_hash(void) {
   for (uint8_t k = 0; k < TILE_HASHTABLE_SIZE; k++, entry++) {
     entry->data = NULL;
     entry->map_id = 0xFF;
-    entry->x = 0xFF;
-    entry->y = 0xFF;
+    entry->x = (int8_t)0xFF;
+    entry->y = (int8_t)0xFF;
 
     TileHashEntry *sibling = entry->next;
     entry->next = NULL;
@@ -221,6 +229,129 @@ void clear_hero(void) {
   move_sprite(2, 0, 0);
   move_sprite(3, 0, 0);
 }
+
+/**
+ * Palettes used for flames.
+ */
+const palette_color_t flame_palettes[] = {
+  // Red flame
+  RGB_BLACK,
+  RGB8(213, 200, 89),
+  RGB8(132, 88, 32),
+  RGB8(72, 21, 13),
+  // Green flame
+  RGB_BLACK,
+  RGB8(89, 213, 200),
+  RGB8(32, 132, 88),
+  RGB8(13, 72, 21),
+  // Blue flame
+  RGB_BLACK,
+  RGB8(200, 89, 213),
+  RGB8(88, 32, 132),
+  RGB8(21, 13, 72),
+};
+
+/**
+ * @return The flame sprite id for the given sconce.
+ * @param s The id of the sconce.
+ */
+uint8_t get_sconce_flame_sprite(SconceId s) {
+  switch (s) {
+  case SCONCE_1: return FLAME_1;
+  case SCONCE_2: return FLAME_2;
+  case SCONCE_3: return FLAME_3;
+  case SCONCE_4: return FLAME_4;
+  case SCONCE_5: return FLAME_5;
+  case SCONCE_6: return FLAME_6;
+  case SCONCE_7: return FLAME_7;
+  default: return FLAME_8;
+  }
+}
+
+/**
+ * Initializes sconce flame sprites.
+ */
+void init_flames(void) {
+  init_timer(map.flame_timer, 20);
+  map.flame_frame = 0;
+  core.load_sprite_palette(flame_palettes, 1, 3);
+
+  for (uint8_t k = FLAME_1; k <= FLAME_8; k++) {
+    set_sprite_tile(k, 0x04);
+    set_sprite_prop(k, 0b00001001);
+  }
+
+  const Sconce *sconce;
+  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+    const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
+    switch (sconce->color) {
+    case FLAME_GREEN:
+      set_sprite_prop(sprite_id, 0b00001010);
+      break;
+    case FLAME_BLUE:
+      set_sprite_prop(sprite_id, 0b00001011);
+      break;
+    }
+  }
+}
+
+/**
+ * Updates flame sprites and animation.
+ */
+void update_flames(void) {
+  if (update_timer(map.flame_timer)) {
+    reset_timer(map.flame_timer);
+    map.flame_frame ^= 1;
+    const uint8_t tile = map.flame_frame ? 0x14 : 0x04;
+    for (uint8_t k = FLAME_1; k <= FLAME_8; k++) {
+      set_sprite_tile(k, tile);
+    }
+  }
+
+  const Sconce *sconce;
+  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+    const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
+    if (
+      is_sconce_lit(sconce->id) &&
+      sconce->col >= map.x - 1 &&
+      sconce->col < map.x + MAP_HORIZ_LOADS &&
+      sconce->row >= map.y - 1 &&
+      sconce->row < map.y + MAP_VERT_LOADS
+    ) {
+      // Sconce is on the active screen.
+      uint8_t x = ((sconce->col - map.x + 1) << 4) - 4;
+      uint8_t y = ((sconce->row - map.y + 1) << 4) + 2;
+
+      if (map.state == MAP_STATE_MOVING) {
+        switch (map.move_direction) {
+        case UP:
+          y += map.move_step - 15;
+          break;
+        case DOWN:
+          y -= map.move_step - 15;
+          break;
+        case LEFT:
+          x += map.move_step - 15;
+          break;
+        case RIGHT:
+          x -= map.move_step - 15;
+          break;
+        }
+      }
+
+      move_sprite(sprite_id, x, y);
+    } else {
+      // Sconce is offscreen
+      move_sprite(sprite_id, 0, 0);
+    }
+  }
+}
+
+void clear_flames(void) {
+  for (uint8_t k = FLAME_1; k <= FLAME_8; k++)
+    move_sprite(k, 0, 0);
+}
+
 
 /**
  * Initiates a fade out to state transition.
@@ -560,6 +691,9 @@ void reset_map_objects(void) {
   for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
     hash_object(HASH_TYPE_SCONCE, sconce,
       sconce->map_id, sconce->col, sconce->row);
+    if (sconce->is_lit) {
+      light_sconce(sconce->id);
+    }
   }
 }
 
@@ -626,6 +760,8 @@ void start_move(Direction d) {
   map.move_step = 0;
   map.state = MAP_STATE_MOVING;
   map.hero_state = HERO_WALKING;
+
+  // Note: this updated map.x & map.y
   load_tile_buffer();
 }
 
@@ -868,7 +1004,10 @@ void toggle_lever(const MapTile *tile) {
   set_vram_byte(vram + 0x20 + 1, t + 0x10 + 1);
 }
 
-
+/**
+ * Opens the door at the given map tile.
+ * @param tile Map tile containing the door.
+ */
 void open_door(const MapTile *tile) {
   const Door *door = tile->door;
   if (!door)
@@ -910,6 +1049,9 @@ bool check_levers(void) {
   return true;
 }
 
+/**
+ * Checks to see if the player is interacting with a door.
+ */
 bool check_doors(void) {
   const MapTile *tile = local_tiles + map.hero_direction;
   const Door *door = tile->door;
@@ -980,6 +1122,7 @@ void initialize_world_map(void) {
   textbox.init();
 
   init_hero();
+  init_flames();
   update_local_tiles();
   refresh_map_screen();
 
@@ -1043,6 +1186,7 @@ void update_world_map(void) NONBANKED {
   }
 
   update_hero();
+  update_flames();
 }
 
 void draw_world_map(void) {

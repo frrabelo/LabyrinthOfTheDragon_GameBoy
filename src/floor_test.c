@@ -239,9 +239,11 @@ const Lever floor_test_levers[] = {
 const Door floor_test_doors[] = {
   /*
   {
-    DOOR_1,   // Use DOOR_* constants for ids.
-    MAP_A,    // Map for the door
-    0, 0      // (x, y) tile for the door
+    DOOR_1,           // Use DOOR_* constants for ids.
+    MAP_A,            // Map for the door
+    0, 0              // (x, y) tile for the door
+    DOOR_STAIRS_UP    // Kind of door
+    true              // Magic key required to unlock
   }
   */
   { DOOR_1, MAP_A, 14, 1, DOOR_STAIRS_UP, true },
@@ -255,11 +257,17 @@ const Door floor_test_doors[] = {
 const Sconce floor_test_sconces[] = {
   /*
   {
-    SCONCE_1, // Use SCONCE_* constants for ids.
-    MAP_A,    // Map for the sconce
-    0, 0      // (x, y) tile for the sconce
+    SCONCE_1,   // Use SCONCE_* constants for ids.
+    MAP_A,      // Map for the sconce
+    0, 0,       // (x, y) tile for the sconce
+    true,       // Should the sconce start lit
+    FLAME_BLUE  // Flame color for the sconce if it starts lit.
   }
   */
+  { SCONCE_1, MAP_A, 7, 5, true, FLAME_RED },
+  { SCONCE_2, MAP_A, 11, 1, true, FLAME_GREEN },
+  { SCONCE_3, MAP_A, 16, 1, true, FLAME_BLUE },
+  { SCONCE_4, MAP_A, 23, 1, true, FLAME_RED },
   { END }
 };
 

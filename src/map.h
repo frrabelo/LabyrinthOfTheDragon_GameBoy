@@ -44,6 +44,20 @@
 #define MAP_ATTR_MASK 0b11000000
 
 /**
+ * Sconce flame sprite ids.
+ */
+typedef enum SconceFlames {
+  FLAME_1 = 32,
+  FLAME_2 = 33,
+  FLAME_3 = 34,
+  FLAME_4 = 35,
+  FLAME_5 = 36,
+  FLAME_6 = 37,
+  FLAME_7 = 38,
+  FLAME_8 = 39,
+} SconceFlames;
+
+/**
  * Use these values when denoting map ids instead of hard coded constants.
  */
 typedef enum MapId {
@@ -467,20 +481,45 @@ typedef enum SconceId {
   SCONCE_6 = FLAG(5),
   SCONCE_7 = FLAG(6),
   SCONCE_8 = FLAG(7),
-  /**
-   * Denotes a sconce that starts lit.
-   */
-  SCONCE_LIT = 0xFF,
 } SconceId;
+
+/**
+ * Used to define the flame color for a sconce.
+ */
+typedef enum FlameColor {
+  FLAME_RED,
+  FLAME_GREEN,
+  FLAME_BLUE,
+} FlameColor;
 
 /**
  * A sconce that can be lit. WARNING: Not yet implemented.
  */
 typedef struct Sconce {
+  /**
+   * Id of the sconce.
+   */
   SconceId id;
+  /**
+   * Map where the sconce resides.
+   */
   MapId map_id;
+  /**
+   * Column for the sconce.
+   */
   int8_t col;
+  /**
+   * Row for the sconce.
+   */
   int8_t row;
+  /**
+   * Whether or not the sconce starts lit.
+   */
+  bool is_lit;
+  /**
+   * Color of the sconce's flame if it started lit.
+   */
+  FlameColor color;
 } Sconce;
 
 /**
@@ -764,6 +803,18 @@ typedef struct MapSystem {
    * Door locked open/closed state.
    */
   uint8_t flags_door_locked;
+  /**
+   * Whether or not particular sconces are lit.
+   */
+  uint8_t flags_sconce_lit;
+  /**
+   * Timer for animating the sconce flame sprites.
+   */
+  Timer flame_timer;
+  /**
+   * The current flame sprite frame.
+   */
+  uint8_t flame_frame;
 } MapSystem;
 
 /**
@@ -1032,13 +1083,44 @@ inline void set_door_open(DoorId id) {
   map.flags_door_locked &= ~id;
 }
 
+/**
+ * Sets a door to be locked. Has no effect on graphics.
+ * @param id Id for the door to lock.
+ */
 inline void set_door_locked(DoorId id) {
   map.flags_door_locked |= id;
 }
 
+/**
+ * @return `true` if the door with the given id is locked.
+ * @param id Id of the door to test.
+ */
 inline bool is_locked_door(DoorId id) {
   return map.flags_door_locked & id;
 }
 
+/**
+ * @return `true` if the sconce with the given id is lit.
+ * @param id Id of the sconce to test.
+ */
+inline bool is_sconce_lit(SconceId id) {
+  return map.flags_sconce_lit & id;
+}
+
+/**
+ * Lights a sconce.
+ * @param id Id of the sconce to light.
+ */
+inline void light_sconce(SconceId id) {
+  map.flags_sconce_lit |= id;
+}
+
+/**
+ * Extinguishes a sconce.
+ * @param id Id of the sconce to extinguish.
+ */
+inline void extinguish_sconce(SconceId id) {
+  map.flags_sconce_lit &= ~id;
+}
 
 #endif

@@ -161,6 +161,21 @@ extern const char str_maps_door_locked_key[];
 extern const char str_maps_door_unlock_key[];
 
 /**
+ * "The sconce burns brightly."
+ */
+extern const char str_maps_sconce_lit_no_torch[];
+
+/**
+ * "Hmm... how do you light this sconce?"
+ */
+extern const char str_maps_sconce_no_torch[];
+
+/**
+ * "Your torch lacks a flame."
+ */
+extern const char str_maps_sconce_torch_not_lit[];
+
+/**
  * "You get 2 potions and an ether!"
  */
 extern const char str_chest_item_2pot_1eth[];

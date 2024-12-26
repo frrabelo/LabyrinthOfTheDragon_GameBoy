@@ -16,3 +16,6 @@ const char str_maps_lever_one_way[] = "Seems this lever \nwas one and done.";
 const char str_maps_door_locked[] = "The door is \nlocked.";
 const char str_maps_door_locked_key[] = "You need a magic \nkey to unlock \nthis door\x60";
 const char str_maps_door_unlock_key[] = "You unlock the \ndoor with a magic\n key!";
+const char str_maps_sconce_lit_no_torch[] = "The sconce burns \nbrightly.";
+const char str_maps_sconce_no_torch[] = "Hmm\x60 how do you \nlight this \nsconce?";
+const char str_maps_sconce_torch_not_lit[] = "Your torch lacks a\n flame.";

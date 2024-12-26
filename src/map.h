@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "core.h"
+#include "item.h"
 #include "textbox.h"
 
 /**
@@ -1110,10 +1111,9 @@ inline bool is_sconce_lit(SconceId id) {
 /**
  * Lights a sconce.
  * @param id Id of the sconce to light.
+ * @param color Color of the flame.
  */
-inline void light_sconce(SconceId id) {
-  map.flags_sconce_lit |= id;
-}
+void light_sconce(SconceId id, FlameColor color);
 
 /**
  * Extinguishes a sconce.

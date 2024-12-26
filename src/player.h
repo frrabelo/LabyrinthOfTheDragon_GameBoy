@@ -3,10 +3,7 @@
 
 #include <stdint.h>
 
-#include "monster.h"
-#include "stats.h"
-#include "tables.h"
-#include "text_writer.h"
+#include "map.h"
 
 /**
  * Maximum number of abilities a player can acquire.
@@ -216,6 +213,10 @@ typedef struct Player {
    * Gauge that represents how long the torch can stay lit.
    */
   uint8_t torch_gauge;
+  /**
+   * The color of the flame with which the torch is lit.
+   */
+  FlameColor torch_color;
   /**
    * Number of magic keys the player currently posesses.
    */

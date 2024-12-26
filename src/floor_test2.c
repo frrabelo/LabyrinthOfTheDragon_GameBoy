@@ -68,7 +68,17 @@ const uint16_t floor_test2_palettes[] = {
 // Chests
 //------------------------------------------------------------------------------
 
+bool get_torch(const Chest *chest) {
+  if (chest->id == 1) {
+    map_textbox("You find a torch!");
+    player.has_torch = true;
+    return true;
+  }
+  return false;
+}
+
 const Chest floor_test2_chests[] = {
+  { CHEST_1, MAP_A, 9, 13, false, false, NULL, NULL, get_torch },
   { END },
 };
 
@@ -132,37 +142,27 @@ const Lever floor_test2_levers[] = {
 };
 
 //------------------------------------------------------------------------------
-// Doors (NOT YET IMPLEMENTED)
+// Doors
 //------------------------------------------------------------------------------
 
 const Door floor_test2_doors[] = {
-  /*
-  {
-    DOOR_1,   // Use DOOR_* constants for ids.
-    MAP_A,    // Map for the door
-    0, 0      // (x, y) tile for the door
-  }
-  */
+  { DOOR_1, MAP_A, 11, 2, DOOR_NEXT_LEVEL, false },
   { END }
 };
 
 //------------------------------------------------------------------------------
-// Sconces (NOT YET IMPLEMENTED)
+// Sconces
 //------------------------------------------------------------------------------
 
 const Sconce floor_test2_sconces[] = {
-  /*
-  {
-    SCONCE_1, // Use SCONCE_* constants for ids.
-    MAP_A,    // Map for the sconce
-    0, 0      // (x, y) tile for the sconce
-  }
-  */
+  { SCONCE_1, MAP_A, 6, 4, true, FLAME_RED },
+  { SCONCE_2, MAP_A, 10, 2, false },
+  { SCONCE_3, MAP_A, 12, 2, false },
   { END }
 };
 
 //------------------------------------------------------------------------------
-// Doors (NOT YET IMPLEMENTED)
+// NPCs
 //------------------------------------------------------------------------------
 
 const NPC floor_test2_npcs[] = {

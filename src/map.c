@@ -269,6 +269,23 @@ uint8_t get_sconce_flame_sprite(SconceId s) {
 }
 
 /**
+ * @return Index for the sconce with the given id.
+ * @param id Id of the sconce.
+ */
+uint8_t get_sconce_index(SconceId s) {
+  switch (s) {
+  case SCONCE_1: return 0;
+  case SCONCE_2: return 1;
+  case SCONCE_3: return 2;
+  case SCONCE_4: return 3;
+  case SCONCE_5: return 4;
+  case SCONCE_6: return 5;
+  case SCONCE_7: return 6;
+  default: return 7;
+  }
+}
+
+/**
  * Initializes sconce flame sprites.
  */
 void init_flames(void) {
@@ -279,11 +296,13 @@ void init_flames(void) {
   for (uint8_t k = FLAME_1; k <= FLAME_8; k++) {
     set_sprite_tile(k, 0x04);
     set_sprite_prop(k, 0b00001001);
+    move_sprite(k, 0, 0);
   }
 
   const Sconce *sconce;
   for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
     const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
+    sconce_colors[get_sconce_index(sconce->id)] = sconce->color;
     switch (sconce->color) {
     case FLAME_GREEN:
       set_sprite_prop(sprite_id, 0b00001010);
@@ -313,6 +332,7 @@ void update_flames(void) {
     const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
     if (
       is_sconce_lit(sconce->id) &&
+      sconce->map_id == map.active_map->id &&
       sconce->col >= map.x - 1 &&
       sconce->col < map.x + MAP_HORIZ_LOADS &&
       sconce->row >= map.y - 1 &&
@@ -687,12 +707,13 @@ void reset_map_objects(void) {
     hash_object(HASH_TYPE_SIGN, sign, sign->map_id, sign->col, sign->row);
 
   // Sconces
+  map.flags_sconce_lit = 0;
   const Sconce *sconce;
   for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
     hash_object(HASH_TYPE_SCONCE, sconce,
       sconce->map_id, sconce->col, sconce->row);
     if (sconce->is_lit) {
-      light_sconce(sconce->id);
+      light_sconce(sconce->id, sconce->color);
     }
   }
 }
@@ -714,6 +735,7 @@ void load_exit(void) {
   set_hero_position(exit->to_col, exit->to_row);
   update_local_tiles();
   refresh_map_screen();
+  clear_flames();
   map_fade_in(MAP_STATE_EXIT_LOADED);
   lcd_on();
 }
@@ -1080,6 +1102,54 @@ bool check_doors(void) {
 }
 
 /**
+ * Lights the player's torch with the given flame color.
+ * @param color Color of the flame.
+ */
+void light_torch(FlameColor color) {
+  player.torch_gauge = 32;
+  player.torch_color = color;
+}
+
+void light_sconce(SconceId id, FlameColor color) {
+  map.flags_sconce_lit |= id;
+  sconce_colors[get_sconce_index(id)] = color;
+  set_sprite_prop(get_sconce_flame_sprite(id), 0b00001000 | (color + 1));
+}
+
+/**
+ * Checks to see if the player is interacting with a sconce.
+ */
+bool check_sconces(void) {
+  const MapTile *tile = local_tiles + map.hero_direction;
+  const Sconce *sconce = tile->sconce;
+
+  if (!sconce)
+    return false;
+
+  const uint8_t sconce_idx = get_sconce_index(sconce->id);
+
+  if (is_sconce_lit(sconce->id)) {
+    if (player.has_torch) {
+      light_torch(sconce_colors[sconce_idx]);
+    } else {
+      map_textbox(str_maps_sconce_lit_no_torch);
+    }
+  } else {
+    if (player.has_torch) {
+      if (player.torch_gauge > 0) {
+        light_sconce(sconce->id, player.torch_color);
+      } else {
+        map_textbox(str_maps_sconce_torch_not_lit);
+      }
+    } else {
+      map_textbox(str_maps_sconce_no_torch);
+    }
+  }
+
+  return true;
+}
+
+/**
  * Checks to see if the player is attempting to perform an action by pressing
  * the A button.
  * @return `true` if an action was attempted.
@@ -1093,6 +1163,8 @@ bool check_action(void) {
     if (check_chests())
       return true;
     if (check_doors())
+      return true;
+    if (check_sconces())
       return true;
     return check_levers();
   }

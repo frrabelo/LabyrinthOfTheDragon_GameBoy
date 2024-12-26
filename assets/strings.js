@@ -59,6 +59,9 @@ addNamespace('maps', 2, {
   'door_locked': 'The door is locked.',
   'door_locked_key': 'You need a magic key to unlock this door...',
   'door_unlock_key': 'You unlock the door with a magic key!',
+  'sconce_lit_no_torch': 'The sconce burns brightly.',
+  'sconce_no_torch': 'Hmm... how do you light this sconce?',
+  'sconce_torch_not_lit': 'Your torch lacks a flame.',
 });
 
 addNamespace('chest_item', 2, {

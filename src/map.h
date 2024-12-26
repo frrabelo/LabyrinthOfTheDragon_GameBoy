@@ -45,6 +45,81 @@
 #define MAP_ATTR_MASK 0b11000000
 
 /**
+ * Tile id for the torch gauge "zero" sprite.
+ */
+#define TORCH_GAUGE_ZERO 0x20
+
+/**
+ * Tile id for the torch gauge cap.
+ */
+#define TORCH_GAUGE_CAP 0x29
+
+/**
+ * Sprite id for the torch gauge "flame"
+ */
+#define TORCH_GAUGE_FLAME 24
+
+/**
+ * Sprite id for the torch gauge body positon 1.
+ */
+#define TORCH_GAUGE_BODY_1 25
+
+/**
+ * Sprite id for the torch gauge body positon 2.
+ */
+#define TORCH_GAUGE_BODY_2 26
+
+/**
+ * Sprite id for the torch gauge body positon 3.
+ */
+#define TORCH_GAUGE_BODY_3 27
+
+/**
+ * Sprite id for the torch gauge body positon 4.
+ */
+#define TORCH_GAUGE_BODY_4 28
+
+/**
+ * Sprite property for all torch gauge sprites.
+ */
+#define TORCH_GAUGE_PROP 0b00001100
+
+/**
+ * X position for the torch gauge on the screen.
+ */
+#define TORCH_GAUGE_X 16
+
+/**
+ * Y position for the torch gauge on the screen
+ */
+#define TORCH_GAUGE_Y 24
+
+/**
+ * Flame tile animation frame 1.
+ */
+#define FLAME_TILE_1 0x04
+
+/**
+ * Flame tile animation frame 2.
+ */
+#define FLAME_TILE_2 0x14
+
+/**
+ * Clear tile for sprites.
+ */
+#define SPRITE_TILE_CLEAR 0x74
+
+/**
+ * Number of frames before reducing the torch gauge by 1.
+ */
+#define TORCH_GAUGE_SPEED 10
+
+/**
+ * Palette index for the torch gauge.
+ */
+#define TORCH_GAUGE_PALETTE 4
+
+/**
  * Sconce flame sprite ids.
  */
 typedef enum SconceFlames {
@@ -139,6 +214,11 @@ typedef struct MapTile {
    * If the tile contains a sconce, this will point to it.
    */
   const struct Sconce *sconce;
+  /**
+   * Whether or not the tile was marked as BG priority for rendering in the tile
+   * source data.
+   */
+  bool bg_priority;
 } MapTile;
 
 /**
@@ -816,6 +896,14 @@ typedef struct MapSystem {
    * The current flame sprite frame.
    */
   uint8_t flame_frame;
+  /**
+   * Timer used to slowly reduce the amount of torch guage remaining.
+   */
+  Timer torch_timer;
+  /**
+   * Whether or not the BG priority was set for the destination during a move.
+   */
+  bool bg_priority_set;
 } MapSystem;
 
 /**

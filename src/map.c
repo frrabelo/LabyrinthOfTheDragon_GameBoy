@@ -251,6 +251,29 @@ const palette_color_t flame_palettes[] = {
   RGB8(21, 13, 72),
 };
 
+const palette_color_t torch_gauge_palettes[] = {
+  // Extinguished
+  RGB_BLACK,
+  RGB8(80, 80, 80),
+  RGB8(140, 140, 140),
+  RGB8(200, 200, 200),
+  // Red Flame
+  RGB_BLACK,
+  RGB8(72, 21, 13),
+  RGB8(132, 88, 32),
+  RGB8(213, 200, 89),
+  // Green Flame
+  RGB_BLACK,
+  RGB8(13, 72, 21),
+  RGB8(32, 132, 88),
+  RGB8(89, 213, 200),
+  // Blue Flame
+  RGB_BLACK,
+  RGB8(21, 13, 72),
+  RGB8(88, 32, 132),
+  RGB8(200, 89, 213),
+};
+
 /**
  * @return The flame sprite id for the given sconce.
  * @param s The id of the sconce.
@@ -294,7 +317,7 @@ void init_flames(void) {
   core.load_sprite_palette(flame_palettes, 1, 3);
 
   for (uint8_t k = FLAME_1; k <= FLAME_8; k++) {
-    set_sprite_tile(k, 0x04);
+    set_sprite_tile(k, FLAME_TILE_1);
     set_sprite_prop(k, 0b00001001);
     move_sprite(k, 0, 0);
   }
@@ -321,7 +344,7 @@ void update_flames(void) {
   if (update_timer(map.flame_timer)) {
     reset_timer(map.flame_timer);
     map.flame_frame ^= 1;
-    const uint8_t tile = map.flame_frame ? 0x14 : 0x04;
+    const uint8_t tile = map.flame_frame ? FLAME_TILE_2 : FLAME_TILE_1;
     for (uint8_t k = FLAME_1; k <= FLAME_8; k++) {
       set_sprite_tile(k, tile);
     }
@@ -367,11 +390,107 @@ void update_flames(void) {
   }
 }
 
+/**
+ * Clears all flame sprites.
+ */
 void clear_flames(void) {
   for (uint8_t k = FLAME_1; k <= FLAME_8; k++)
     move_sprite(k, 0, 0);
 }
 
+
+/**
+ * Initializes the player hud (torch gauge, keys, floor, etc.).
+ */
+void init_hud(void) {
+  core.load_sprite_palette(torch_gauge_palettes, TORCH_GAUGE_PALETTE, 1);
+
+  init_timer(map.torch_timer, TORCH_GAUGE_SPEED);
+
+  set_sprite_tile(TORCH_GAUGE_FLAME, FLAME_TILE_1);
+  set_sprite_prop(TORCH_GAUGE_FLAME, TORCH_GAUGE_PROP);
+  move_sprite(TORCH_GAUGE_FLAME, TORCH_GAUGE_X, TORCH_GAUGE_Y);
+
+  for (uint8_t k = TORCH_GAUGE_BODY_1; k <= TORCH_GAUGE_BODY_4; k++) {
+    set_sprite_tile(k, TORCH_GAUGE_ZERO);
+    set_sprite_prop(k, TORCH_GAUGE_PROP);
+    switch (k) {
+    case TORCH_GAUGE_BODY_1:
+      move_sprite(k, TORCH_GAUGE_X + 10, TORCH_GAUGE_Y);
+      break;
+    case TORCH_GAUGE_BODY_2:
+      move_sprite(k, TORCH_GAUGE_X + 18, TORCH_GAUGE_Y);
+      break;
+    case TORCH_GAUGE_BODY_3:
+      move_sprite(k, TORCH_GAUGE_X + 26, TORCH_GAUGE_Y);
+      break;
+    case TORCH_GAUGE_BODY_4:
+      move_sprite(k, TORCH_GAUGE_X + 34, TORCH_GAUGE_Y);
+      break;
+    }
+  }
+}
+
+/**
+ * Updates the player hud.
+ */
+void update_hud(void) {
+  if (player.has_torch) {
+    if (player.torch_gauge > 0) {
+      set_sprite_tile(TORCH_GAUGE_FLAME,
+        map.flame_frame ? FLAME_TILE_1 : FLAME_TILE_2);
+
+      if (player.torch_gauge > 24) {
+        const uint8_t t = TORCH_GAUGE_ZERO + (player.torch_gauge - 24);
+        set_sprite_tile(TORCH_GAUGE_BODY_1, TORCH_GAUGE_ZERO + 8);
+        set_sprite_tile(TORCH_GAUGE_BODY_2, TORCH_GAUGE_ZERO + 8);
+        set_sprite_tile(TORCH_GAUGE_BODY_3, TORCH_GAUGE_ZERO + 8);
+        set_sprite_tile(TORCH_GAUGE_BODY_4, t);
+      } else if (player.torch_gauge > 16) {
+        const uint8_t t = TORCH_GAUGE_ZERO + (player.torch_gauge - 16);
+        set_sprite_tile(TORCH_GAUGE_BODY_1, TORCH_GAUGE_ZERO + 8);
+        set_sprite_tile(TORCH_GAUGE_BODY_2, TORCH_GAUGE_ZERO + 8);
+        set_sprite_tile(TORCH_GAUGE_BODY_3, t);
+        set_sprite_tile(TORCH_GAUGE_BODY_4, TORCH_GAUGE_ZERO);
+      } else if (player.torch_gauge > 8) {
+        const uint8_t t = TORCH_GAUGE_ZERO + (player.torch_gauge - 8);
+        set_sprite_tile(TORCH_GAUGE_BODY_1, TORCH_GAUGE_ZERO + 8);
+        set_sprite_tile(TORCH_GAUGE_BODY_2, t);
+        set_sprite_tile(TORCH_GAUGE_BODY_3, TORCH_GAUGE_ZERO);
+        set_sprite_tile(TORCH_GAUGE_BODY_4, TORCH_GAUGE_ZERO);
+      } else {
+        const uint8_t t = TORCH_GAUGE_ZERO + player.torch_gauge;
+        set_sprite_tile(TORCH_GAUGE_BODY_1, t);
+        set_sprite_tile(TORCH_GAUGE_BODY_2, TORCH_GAUGE_ZERO);
+        set_sprite_tile(TORCH_GAUGE_BODY_3, TORCH_GAUGE_ZERO);
+        set_sprite_tile(TORCH_GAUGE_BODY_4, TORCH_GAUGE_ZERO);
+      }
+    } else {
+      set_sprite_tile(TORCH_GAUGE_FLAME, FLAME_TILE_1);
+      set_sprite_tile(TORCH_GAUGE_BODY_1, TORCH_GAUGE_ZERO);
+      set_sprite_tile(TORCH_GAUGE_BODY_2, TORCH_GAUGE_ZERO);
+      set_sprite_tile(TORCH_GAUGE_BODY_3, TORCH_GAUGE_ZERO);
+      set_sprite_tile(TORCH_GAUGE_BODY_4, TORCH_GAUGE_ZERO);
+    }
+  } else {
+    set_sprite_tile(TORCH_GAUGE_FLAME, SPRITE_TILE_CLEAR);
+    set_sprite_tile(TORCH_GAUGE_BODY_1, SPRITE_TILE_CLEAR);
+    set_sprite_tile(TORCH_GAUGE_BODY_2, SPRITE_TILE_CLEAR);
+    set_sprite_tile(TORCH_GAUGE_BODY_3, SPRITE_TILE_CLEAR);
+    set_sprite_tile(TORCH_GAUGE_BODY_4, SPRITE_TILE_CLEAR);
+  }
+}
+
+/**
+ * Clears the player HUD.
+ */
+void clear_hud(void) {
+  move_sprite(TORCH_GAUGE_FLAME, 0, 0);
+  move_sprite(TORCH_GAUGE_BODY_1, 0, 0);
+  move_sprite(TORCH_GAUGE_BODY_2, 0, 0);
+  move_sprite(TORCH_GAUGE_BODY_3, 0, 0);
+  move_sprite(TORCH_GAUGE_BODY_4, 0, 0);
+}
 
 /**
  * Initiates a fade out to state transition.
@@ -424,7 +543,7 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
   uint8_t _prev_bank = _current_bank;
   SWITCH_ROM(map.active_map->bank);
   uint8_t t = *data++;
-  const uint8_t attr = *data;
+  uint8_t attr = *data;
   SWITCH_ROM(_prev_bank);
 
   uint8_t map_tile = map_tile_lookup[t & MAP_TILE_MASK];
@@ -472,6 +591,9 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
     default:
     }
   }
+
+  tile->bg_priority = attr & 0b10000000;
+  attr &= 0b01111111;
 
   tile->blank = false;
   tile->tile = map_tile;
@@ -652,6 +774,56 @@ uint8_t *get_local_vram(Direction d) {
 }
 
 /**
+ * Sets background priority on at the move destination.
+ */
+void set_move_vram_bg_priority(uint8_t attr) {
+  uint8_t *vram = get_local_vram(map.move_direction);
+  const uint8_t a = attr | 0b10000000;
+
+  VBK_REG = VBK_ATTRIBUTES;
+  set_vram_byte(vram, a);
+  set_vram_byte(vram + 1, a);
+  set_vram_byte(vram + 0x20, a);
+  set_vram_byte(vram + 0x20 + 1, a);
+}
+
+/**
+ * Clears the background priority in VRAM for the given tile.
+ * @param tile Tile to clear.
+ */
+void clear_vram_bg_priority(void) {
+  MapTile *tile;
+  uint8_t *vram;
+
+  switch (map.move_direction) {
+  case UP:
+    vram = get_local_vram(DOWN);
+    tile = local_tiles + DOWN;
+    break;
+  case DOWN:
+    vram = get_local_vram(UP);
+    tile = local_tiles + UP;
+    break;
+  case LEFT:
+    vram = get_local_vram(RIGHT);
+    tile = local_tiles + RIGHT;
+    break;
+  default:
+  // case RIGHT:
+    vram = get_local_vram(LEFT);
+    tile = local_tiles + LEFT;
+    break;
+  }
+
+  const uint8_t attr = tile->attr;
+  VBK_REG = VBK_ATTRIBUTES;
+  set_vram_byte(vram, attr);
+  set_vram_byte(vram + 1, attr);
+  set_vram_byte(vram + 0x20, attr);
+  set_vram_byte(vram + 0x20 + 1, attr);
+}
+
+/**
  * Updates the local tiles state based on the current map position.
  */
 void update_local_tiles(void) {
@@ -783,6 +955,11 @@ void start_move(Direction d) {
   map.state = MAP_STATE_MOVING;
   map.hero_state = HERO_WALKING;
 
+  if (destination->bg_priority) {
+    set_move_vram_bg_priority(destination->attr);
+    map.bg_priority_set = true;
+  }
+
   // Note: this updated map.x & map.y
   load_tile_buffer();
 }
@@ -842,6 +1019,11 @@ void update_map_move(void) {
     return;
 
   update_local_tiles();
+
+  if (map.bg_priority_set) {
+    clear_vram_bg_priority();
+    map.bg_priority_set = false;
+  }
 
   map.state = MAP_STATE_WAITING;
   map.hero_state = HERO_STILL;
@@ -1108,6 +1290,8 @@ bool check_doors(void) {
 void light_torch(FlameColor color) {
   player.torch_gauge = 32;
   player.torch_color = color;
+  const palette_color_t *palette = torch_gauge_palettes + (color + 1) * 4;
+  core.load_sprite_palette(palette, TORCH_GAUGE_PALETTE, 1);
 }
 
 void light_sconce(SconceId id, FlameColor color) {
@@ -1195,6 +1379,7 @@ void initialize_world_map(void) {
 
   init_hero();
   init_flames();
+  init_hud();
   update_local_tiles();
   refresh_map_screen();
 
@@ -1257,8 +1442,18 @@ void update_world_map(void) NONBANKED {
     return;
   }
 
+  if (update_timer(map.torch_timer)) {
+    reset_timer(map.torch_timer);
+    if (player.torch_gauge > 0) {
+      player.torch_gauge--;
+      if (player.torch_gauge == 0)
+        core.load_sprite_palette(torch_gauge_palettes, TORCH_GAUGE_PALETTE, 1);
+    }
+  }
+
   update_hero();
   update_flames();
+  update_hud();
 }
 
 void draw_world_map(void) {

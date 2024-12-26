@@ -108,6 +108,7 @@ void test_flee(void) {
 void test_big_map(void) {
   init_test_player(20);
 
+  // set_active_floor(&floor_test);
   set_active_floor(&floor_test2);
   init_world_map();
 

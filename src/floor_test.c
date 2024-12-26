@@ -72,6 +72,7 @@ const uint16_t floor_test_palettes[] = {
 bool floor_test_custom_chest(Chest *c) {
   switch (c->id) {
   case CHEST_5:
+    player.got_magic_key = true;
     player.magic_keys++;
     break;
   }

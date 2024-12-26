@@ -274,6 +274,14 @@ const palette_color_t torch_gauge_palettes[] = {
   RGB8(200, 89, 213),
 };
 
+const palette_color_t magic_keys_palette[] = {
+  // Extinguished
+  RGB_BLACK,
+  RGB8(88, 32, 132),
+  RGB8(200, 89, 213),
+  RGB8(240, 240, 240),
+};
+
 /**
  * @return The flame sprite id for the given sconce.
  * @param s The id of the sconce.
@@ -404,6 +412,7 @@ void clear_flames(void) {
  */
 void init_hud(void) {
   core.load_sprite_palette(torch_gauge_palettes, TORCH_GAUGE_PALETTE, 1);
+  core.load_sprite_palette(magic_keys_palette, MAGIC_KEY_HUD_PALETTE, 1);
 
   init_timer(map.torch_timer, TORCH_GAUGE_SPEED);
 
@@ -429,6 +438,18 @@ void init_hud(void) {
       break;
     }
   }
+
+  set_sprite_tile(MAGIC_KEY_SPRITE_1, MAGIC_KEY_TOP_TILE);
+  set_sprite_tile(MAGIC_KEY_SPRITE_2, MAGIC_KEY_BOTTOM_TILE);
+  set_sprite_tile(MAGIC_KEY_QTY, MAGIC_KEY_NUM_0);
+
+  set_sprite_prop(MAGIC_KEY_SPRITE_1, MAGIC_KEY_HUD_ATTR);
+  set_sprite_prop(MAGIC_KEY_SPRITE_2, MAGIC_KEY_HUD_ATTR);
+  set_sprite_prop(MAGIC_KEY_QTY, MAGIC_KEY_HUD_ATTR);
+
+  move_sprite(MAGIC_KEY_SPRITE_1, MAGIC_KEYS_X, MAGIC_KEYS_Y - 1);
+  move_sprite(MAGIC_KEY_SPRITE_2, MAGIC_KEYS_X, MAGIC_KEYS_Y + 7);
+  move_sprite(MAGIC_KEY_QTY, MAGIC_KEYS_X + 9, MAGIC_KEYS_Y);
 }
 
 /**
@@ -479,10 +500,21 @@ void update_hud(void) {
     set_sprite_tile(TORCH_GAUGE_BODY_3, SPRITE_TILE_CLEAR);
     set_sprite_tile(TORCH_GAUGE_BODY_4, SPRITE_TILE_CLEAR);
   }
+
+  if (player.got_magic_key) {
+    move_sprite(MAGIC_KEY_SPRITE_1, MAGIC_KEYS_X, MAGIC_KEYS_Y);
+    move_sprite(MAGIC_KEY_SPRITE_2, MAGIC_KEYS_X, MAGIC_KEYS_Y + 8);
+    move_sprite(MAGIC_KEY_QTY, MAGIC_KEYS_X + 9, MAGIC_KEYS_Y + 1);
+    set_sprite_tile(MAGIC_KEY_QTY, MAGIC_KEY_NUM_0 + player.magic_keys);
+  } else {
+    move_sprite(MAGIC_KEY_SPRITE_1, 0, 0);
+    move_sprite(MAGIC_KEY_SPRITE_2, 0, 0);
+    move_sprite(MAGIC_KEY_QTY, 0, 0);
+  }
 }
 
 /**
- * Clears the player HUD.
+ * Clears the player HUD sprites.
  */
 void clear_hud(void) {
   move_sprite(TORCH_GAUGE_FLAME, 0, 0);
@@ -490,6 +522,9 @@ void clear_hud(void) {
   move_sprite(TORCH_GAUGE_BODY_2, 0, 0);
   move_sprite(TORCH_GAUGE_BODY_3, 0, 0);
   move_sprite(TORCH_GAUGE_BODY_4, 0, 0);
+  move_sprite(MAGIC_KEY_SPRITE_1, 0, 0);
+  move_sprite(MAGIC_KEY_SPRITE_1, 0, 0);
+  move_sprite(MAGIC_KEY_QTY, 0, 0);
 }
 
 /**

@@ -221,6 +221,10 @@ typedef struct Player {
    * Number of magic keys the player currently posesses.
    */
   uint8_t magic_keys;
+  /**
+   * Whether or not the player has collected their first magic key (for UI).
+   */
+  bool got_magic_key;
 } Player;
 
 /**

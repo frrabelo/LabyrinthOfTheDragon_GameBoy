@@ -120,6 +120,56 @@
 #define TORCH_GAUGE_PALETTE 4
 
 /**
+ * Horizontal position of the magic keys HUD sprites.
+ */
+#define MAGIC_KEYS_X 16 + 8 * 6
+
+/**
+ * Vertical position for the magic keys HUD sprites.
+ */
+#define MAGIC_KEYS_Y 22
+
+/**
+ * Sprite id for the top "key" graphic sprite.
+ */
+#define MAGIC_KEY_SPRITE_1 29
+
+/**
+ * Sprite id for the bottom "key" graphic sprite.
+ */
+#define MAGIC_KEY_SPRITE_2 30
+
+/**
+ * Sprite id for the quantity of keys
+ */
+#define MAGIC_KEY_QTY 31
+
+/**
+ * Attribute to use for all magic key HUD sprites.
+ */
+#define MAGIC_KEY_HUD_ATTR 0b00001101
+
+/**
+ * Tile id for the top portion of the magic key.
+ */
+#define MAGIC_KEY_TOP_TILE 0x05
+
+/**
+ * Tile id for the bottom porition of the magic key.
+ */
+#define MAGIC_KEY_BOTTOM_TILE 0x15
+
+/**
+ * Tile id for the number 0 for the key quantity.
+ */
+#define MAGIC_KEY_NUM_0 0x30
+
+/**
+ * Palette to use for the magic keys hud.
+ */
+#define MAGIC_KEY_HUD_PALETTE 5
+
+/**
  * Sconce flame sprite ids.
  */
 typedef enum SconceFlames {

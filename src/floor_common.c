@@ -9,6 +9,7 @@ bool chest_add_magic_key(Chest *chest) {
     map_textbox(str_maps_chest_locked);
     return false;
   } else {
+    player.got_magic_key = true;
     player.magic_keys++;
     map_textbox(str_maps_get_magic_key);
   }

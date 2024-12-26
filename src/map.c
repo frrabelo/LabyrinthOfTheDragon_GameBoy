@@ -1226,6 +1226,58 @@ void open_door(const MapTile *tile) {
 }
 
 /**
+ * @return Vram at the given tile.
+ * @param tx Tile x coordinate.
+ * @param ty Tile y coordinate.
+ */
+uint8_t *get_vram_at(int8_t tx, int8_t ty) {
+  int8_t col = (int8_t)((map.scroll_x) >> 3);
+  int8_t row = (int8_t)((map.scroll_y) >> 3);
+
+  const int8_t dx = tx - map.x;
+  col += dx * 2;
+  const int8_t dy = ty - map.y;
+  row += dy * 2;
+
+  if (col < 0)
+    col += 32;
+  if (col >= 32)
+    col -= 32;
+
+  if (row < 0)
+    row += 32;
+  if (row >= 32)
+    row -= 32;
+
+  return VRAM_BACKGROUND_XY(col, row);
+}
+
+void open_door_by_id(DoorId id) {
+  const Door *door;
+  for (door = map.active_floor->doors; door->id != END; door++) {
+    if (door->id == id)
+      break;
+  }
+
+  if (door->id == END)
+    return;
+
+  set_door_open(id);
+
+  if (
+    map.active_map->id != door->map_id ||
+    door->col < map.x - 1 ||
+    door->col >= map.x + MAP_HORIZ_LOADS ||
+    door->row < map.y - 1 ||
+    door->row >= map.y + MAP_VERT_LOADS
+  ) return;
+
+  uint8_t *vram = get_vram_at(door->col, door->row);
+  uint8_t tile_base = door->type;
+  swap_tile_graphics(vram, tile_base);
+}
+
+/**
  * Checks for a lever in front of the player and handles its logic.
  */
 bool check_levers(void) {
@@ -1290,14 +1342,29 @@ bool check_doors(void) {
 void light_torch(FlameColor color) {
   player.torch_gauge = 32;
   player.torch_color = color;
-  const palette_color_t *palette = torch_gauge_palettes + (color + 1) * 4;
+  const palette_color_t *palette = torch_gauge_palettes + color * 4;
   core.load_sprite_palette(palette, TORCH_GAUGE_PALETTE, 1);
 }
 
+/**
+ * Lights a sconce.
+ * @param id Id of the sconce to light.
+ * @param color Color of the flame.
+ */
 void light_sconce(SconceId id, FlameColor color) {
   map.flags_sconce_lit |= id;
   sconce_colors[get_sconce_index(id)] = color;
-  set_sprite_prop(get_sconce_flame_sprite(id), 0b00001000 | (color + 1));
+  set_sprite_prop(get_sconce_flame_sprite(id), 0b00001000 | color);
+
+  // Call the "on_lit" handler
+  const Sconce *sconce;
+  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+    if (sconce->id != id)
+      continue;
+    if (sconce->on_lit)
+      sconce->on_lit(sconce);
+    break;
+  }
 }
 
 /**

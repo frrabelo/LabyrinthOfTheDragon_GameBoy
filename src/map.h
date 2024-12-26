@@ -568,6 +568,7 @@ typedef enum SconceId {
  * Used to define the flame color for a sconce.
  */
 typedef enum FlameColor {
+  FLAME_NONE,
   FLAME_RED,
   FLAME_GREEN,
   FLAME_BLUE,
@@ -601,6 +602,10 @@ typedef struct Sconce {
    * Color of the sconce's flame if it started lit.
    */
   FlameColor color;
+  /**
+   * Callback to execute when the sconce is lit.
+   */
+  void (*on_lit)(const struct Sconce *sconce);
 } Sconce;
 
 /**
@@ -967,6 +972,12 @@ void start_battle(void);
 void return_from_battle(void) NONBANKED;
 
 /**
+ * Opens a door with the given id.
+ * @param id Id of the door to open.
+ */
+void open_door_by_id(DoorId id);
+
+/**
  * Opens a textbox while on the world map.
  * @param text Text to display in the text box.
  */
@@ -1170,6 +1181,14 @@ inline void unstick_lever(LeverId id) {
  */
 inline void set_door_open(DoorId id) {
   map.flags_door_locked &= ~id;
+}
+
+/**
+ * @return If a door is open or not.
+ * @param id Id of the door to test.
+ */
+inline bool is_door_open(DoorId id) {
+  return ~map.flags_door_locked & id;
 }
 
 /**

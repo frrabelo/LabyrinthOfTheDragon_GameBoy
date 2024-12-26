@@ -102,11 +102,12 @@ const Exit floor_test2_exits[] = {
   { MAP_B, 2, 2, MAP_A, 2, 2, DOWN, EXIT_STAIRS },
   { MAP_B, 9, 9, MAP_A, 9, 9, DOWN, EXIT_STAIRS },
   { MAP_A, 9, 9, MAP_B, 9, 9, DOWN, EXIT_STAIRS },
+  { MAP_A, 11, 2, MAP_A, 4, 4, UP, EXIT_STAIRS, &floor_test },
   { END },
 };
 
 //------------------------------------------------------------------------------
-// Exits
+// Signs
 //------------------------------------------------------------------------------
 
 const Sign floor_test2_signs[] = {
@@ -154,10 +155,23 @@ const Door floor_test2_doors[] = {
 // Sconces
 //------------------------------------------------------------------------------
 
+void floor_test2_on_lit(const Sconce *sconce) {
+  if (sconce->id == SCONCE_2 || sconce->id == SCONCE_3) {
+    if (
+      is_sconce_lit(SCONCE_2) &&
+      is_sconce_lit(SCONCE_3) &&
+      !is_door_open(DOOR_1)
+    ) {
+      open_door_by_id(DOOR_1);
+      map_textbox("The door opens!");
+    }
+  }
+}
+
 const Sconce floor_test2_sconces[] = {
   { SCONCE_1, MAP_A, 6, 4, true, FLAME_RED },
-  { SCONCE_2, MAP_A, 10, 2, false },
-  { SCONCE_3, MAP_A, 12, 2, false },
+  { SCONCE_2, MAP_A, 10, 2, false, FLAME_NONE, floor_test2_on_lit },
+  { SCONCE_3, MAP_A, 12, 2, false, FLAME_NONE, floor_test2_on_lit },
   { END }
 };
 

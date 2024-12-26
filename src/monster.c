@@ -53,7 +53,7 @@ void monster_init_instance(
  * @param base_damage Base damage for the attck.
  * @param type Type of damage dealt.
  */
-void damage_player(uint16_t base_damage, DamageAspect type) BANKED {
+void damage_player(uint16_t base_damage, DamageAspect type) {
   if (player.aspect_immune & type) {
     sprintf(battle_post_message, str_monster_hit_immune);
     return;
@@ -87,7 +87,7 @@ void damage_player(uint16_t base_damage, DamageAspect type) BANKED {
 // Monster 255 - Test Dummy
 // -----------------------------------------------------------------------------
 
-inline void dummy_take_turn(Monster *dummy) {
+void dummy_take_turn(Monster *dummy) {
   sprintf(battle_pre_message, str_monster_dummy_pre, dummy->id);
 
   switch (dummy->parameter) {
@@ -114,13 +114,9 @@ inline void dummy_take_turn(Monster *dummy) {
   }
 }
 
-void dummy_generator(
-  Monster *monster,
-  uint8_t level,
-  TestDummyType type
-) BANKED {
+void dummy_generator(Monster *m, uint8_t level, TestDummyType type) BANKED {
   monster_init_instance(
-    monster,
+    m,
     MONSTER_DUMMY,
     str_misc_dummy,
     &test_dummy_tileset
@@ -128,29 +124,30 @@ void dummy_generator(
 
   PowerTier tier = C_TIER;
 
-  monster->palette = DUMMY_COLORS;
-  monster->exp_tier = tier;
-  monster->level = level;
+  m->palette = dummy_palette;
+  m->exp_tier = tier;
+  m->level = level;
 
-  monster->max_hp = get_monster_hp(level, tier);
-  monster->hp = monster->max_hp;
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
 
-  monster->atk_base = get_monster_atk(level, tier);
-  monster->def_base = get_monster_def(level, tier);
-  monster->matk_base = get_monster_atk(level, tier);
-  monster->mdef_base = get_monster_def(level, tier);
-  monster->agl_base = get_agl(1, C_TIER);
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(1, C_TIER);
 
-  monster->parameter = type;
+  m->parameter = type;
+  m->take_turn = dummy_take_turn;
 
-  monster_reset_stats(monster);
+  monster_reset_stats(m);
 }
 
 // -----------------------------------------------------------------------------
 // Monster 1 - Kobold
 // -----------------------------------------------------------------------------
 
-inline void kobold_take_turn(Monster *m) {
+void kobold_take_turn(Monster *m) {
   const uint8_t move_roll = d16();
 
   // Dazed (silly kobolds being dazed 6.25% of the time)
@@ -190,7 +187,7 @@ inline void kobold_take_turn(Monster *m) {
 void kobold_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(m, MONSTER_KOBOLD, str_misc_kobold, &kobold_tileset);
 
-  m->palette = MONSTER_KOBOLD_PALETTES + tier * 4;
+  m->palette = kobold_palettes + tier * 4;
   m->exp_tier = tier;
   m->level = level;
 
@@ -206,8 +203,195 @@ void kobold_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->aspect_resist = DAMAGE_EARTH;
   m->aspect_vuln = DAMAGE_FIRE;
 
+  m->take_turn = kobold_take_turn;
+
   monster_reset_stats(m);
 }
+
+// -----------------------------------------------------------------------------
+// Monster 2 - Goblin
+// -----------------------------------------------------------------------------
+
+void goblin_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(m, MONSTER_GOBLIN, str_misc_goblin, &goblin_tileset);
+  m->take_turn = goblin_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 3 - Zombie
+// -----------------------------------------------------------------------------
+
+void zombie_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(m, MONSTER_ZOMBIE, str_misc_zombie, &zombie_tileset);
+  m->take_turn = zombie_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 4 - Bugbear
+// -----------------------------------------------------------------------------
+
+void bugbear_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void bugbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(m, MONSTER_BUGBEAR, str_misc_bugbear, &bugbear_tileset);
+  m->take_turn = bugbear_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 5 - Owlbear
+// -----------------------------------------------------------------------------
+
+void owlbear_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void owlbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(m, MONSTER_OWLBEAR, str_misc_owlbear, &owlbear_tileset);
+  m->take_turn = owlbear_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 6 - Gelatinous Cube
+// -----------------------------------------------------------------------------
+
+void gelatinous_cube_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void gelatinous_cube_generator(
+  Monster *m,
+  uint8_t level,
+  PowerTier tier
+) BANKED {
+  monster_init_instance(
+    m, MONSTER_GELATINOUS_CUBE,
+    str_misc_gelatinous_cube, &gelatinous_cube_tileset);
+  m->take_turn = goblin_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 7 - Displacer Beast
+// -----------------------------------------------------------------------------
+
+void displacer_beast_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void displacer_beast_generator(
+  Monster *m,
+  uint8_t level,
+  PowerTier tier
+) BANKED {
+  monster_init_instance(
+    m, MONSTER_DISPLACER_BEAST,
+    str_misc_displacer_beast, &displacer_beast_tileset);
+  m->take_turn = displacer_beast_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 8 - Will-o-Wisp
+// -----------------------------------------------------------------------------
+
+void will_o_wisp_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void _generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(
+    m, MONSTER_WILL_O_WISP, str_misc_will_o_wisp, &will_o_wisp_tileset);
+  m->take_turn = will_o_wisp_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 9 - Death Knight
+// -----------------------------------------------------------------------------
+
+void deathknight_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void deathknight_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(
+    m, MONSTER_DEATHKNIGHT, str_misc_death_knight, &deathknight_tileset);
+  m->take_turn = deathknight_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 10 - Mind Flayer
+// -----------------------------------------------------------------------------
+
+void mindflayer_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void mindflayer_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(
+    m, MONSTER_MINDFLAYER, str_misc_mind_flayer, &mindflayer_tileset);
+  m->take_turn = mindflayer_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 11 - Beholder
+// -----------------------------------------------------------------------------
+
+void beholder_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void beholder_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(
+    m, MONSTER_BEHOLDER, str_misc_beholder, &beholder_tileset);
+  m->take_turn = beholder_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Monster 12 - Dragon
+// -----------------------------------------------------------------------------
+
+void dragon_take_turn(Monster *monster) {
+  sprintf(battle_pre_message, str_monster_does_nothing,
+    monster->name, monster->id);
+  skip_post_message = true;
+}
+
+void dragon_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
+  monster_init_instance(m, MONSTER_DRAGON, str_misc_dragon, &dragon_tileset);
+  m->take_turn = dragon_take_turn;
+}
+
+// -----------------------------------------------------------------------------
+// Common monster routines.
+// -----------------------------------------------------------------------------
 
 void monster_flee(Monster *monster) BANKED {
   sprintf(
@@ -227,12 +411,9 @@ void monster_flee(Monster *monster) BANKED {
 }
 
 void monster_take_turn(Monster *monster) BANKED {
-  switch (monster->type) {
-  case MONSTER_KOBOLD:
-    kobold_take_turn(monster);
-    break;
-  case MONSTER_DUMMY:
-    dummy_take_turn(monster);
-    break;
+  if (!monster->take_turn) {
+    sprintf(battle_pre_message, "ERROR:\nNO take_turn()");
+    skip_post_message = true;
   }
+  monster->take_turn(monster);
 }

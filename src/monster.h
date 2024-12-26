@@ -19,6 +19,17 @@
  */
 typedef enum MonsterType {
   MONSTER_KOBOLD,
+  MONSTER_GOBLIN,
+  MONSTER_ZOMBIE,
+  MONSTER_BUGBEAR,
+  MONSTER_OWLBEAR,
+  MONSTER_GELATINOUS_CUBE,
+  MONSTER_DISPLACER_BEAST,
+  MONSTER_WILL_O_WISP,
+  MONSTER_DEATHKNIGHT,
+  MONSTER_MINDFLAYER,
+  MONSTER_BEHOLDER,
+  MONSTER_DRAGON,
   MONSTER_DUMMY = 0xFF,
 } MonsterType;
 
@@ -160,6 +171,10 @@ typedef struct Monster {
    * behaviors in the `take_turn` handler.
    */
   uint8_t parameter;
+  /**
+   * Routine to determine how the monster acts on its turn.
+   */
+  void (*take_turn)(struct Monster *m);
 } Monster;
 
 /**
@@ -209,10 +224,32 @@ void monster_take_turn(Monster *monster) BANKED;
 
 // Data externs (see: monster.data.c, stored on bank 0)
 
-extern const Tileset kobold_tileset;
 extern const Tileset test_dummy_tileset;
+extern const Tileset kobold_tileset;
+extern const Tileset goblin_tileset;
+extern const Tileset zombie_tileset;
+extern const Tileset bugbear_tileset;
+extern const Tileset owlbear_tileset;
+extern const Tileset gelatinous_cube_tileset;
+extern const Tileset displacer_beast_tileset;
+extern const Tileset will_o_wisp_tileset;
+extern const Tileset deathknight_tileset;
+extern const Tileset mindflayer_tileset;
+extern const Tileset beholder_tileset;
+extern const Tileset dragon_tileset;
 
-extern const palette_color_t DUMMY_COLORS[];
-extern const palette_color_t MONSTER_KOBOLD_PALETTES[];
+extern const palette_color_t dummy_palette[];
+extern const palette_color_t kobold_palettes[];
+extern const palette_color_t goblin_palettes[];
+extern const palette_color_t zombie_palettes[];
+extern const palette_color_t bugbear_palettes[];
+extern const palette_color_t owlbear_palettes[];
+extern const palette_color_t gelatinous_cube_palettes[];
+extern const palette_color_t displacer_beast_palettes[];
+extern const palette_color_t will_o_wisp_palettes[];
+extern const palette_color_t deathknight_palettes[];
+extern const palette_color_t mindflayer_palettes[];
+extern const palette_color_t beholder_palettes[];
+extern const palette_color_t dragon_palettes[];
 
 #endif

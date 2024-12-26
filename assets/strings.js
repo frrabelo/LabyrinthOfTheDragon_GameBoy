@@ -42,9 +42,19 @@ addNamespace('misc', 0, {
   'elixer':        'Elixer',
   'regen_pot':     'Regen ',
   'haste_pot':     'Haste ',
-  'dummy':    'Dummy',
-  'kobold':   'Kobold',
+  'dummy': 'Dummy',
+  'kobold': 'Kobold',
+  'goblin': 'Goblin',
+  'zombie': 'Zombie',
+  'bugbear': 'Bugbear',
+  'owlbear': 'Owlbear',
+  'gelatinous_cube': 'G.Cube',
+  'displacer_beast': 'D.Beast',
+  'will_o_wisp': 'W.O.Wisp',
+  'death_knight': 'D.Knight',
+  'mind_flayer': 'M.Flayer',
   'beholder': 'Beholder',
+  'dragon': 'Dragon',
 })
 
 addNamespace('maps', 2, {
@@ -60,7 +70,7 @@ addNamespace('maps', 2, {
   'door_locked_key': 'You need a magic key to unlock this door...',
   'door_unlock_key': 'You unlock the door with a magic key!',
   'sconce_lit_no_torch': 'The sconce burns brightly.',
-  'sconce_no_torch': 'Hmm... how do you light this sconce?',
+  'sconce_no_torch': 'Hmm... how do you light this?',
   'sconce_torch_not_lit': 'Your torch lacks a flame.',
 });
 
@@ -145,6 +155,7 @@ addNamespace('monster', 6, {
   'hit_resist': 'You resist, only %damage damage',
   'hit_vuln': "It's SUPER BAD! %damage damage!",
   'hit_crit': 'CRITICAL HIT! You take %damage damage!',
+  'does_nothing': '%monster %c does nothing.',
   'dummy_pre': 'Dummy %c stands still.',
   'dummy_post_heal': '"I will never die..."',
   'kobold_axe': 'Kobold %c raises a tiny axe...',

@@ -101,9 +101,59 @@ extern const char str_misc_dummy[];
 extern const char str_misc_kobold[];
 
 /**
+ * "Goblin"
+ */
+extern const char str_misc_goblin[];
+
+/**
+ * "Zombie"
+ */
+extern const char str_misc_zombie[];
+
+/**
+ * "Bugbear"
+ */
+extern const char str_misc_bugbear[];
+
+/**
+ * "Owlbear"
+ */
+extern const char str_misc_owlbear[];
+
+/**
+ * "G.Cube"
+ */
+extern const char str_misc_gelatinous_cube[];
+
+/**
+ * "D.Beast"
+ */
+extern const char str_misc_displacer_beast[];
+
+/**
+ * "W.O.Wisp"
+ */
+extern const char str_misc_will_o_wisp[];
+
+/**
+ * "D.Knight"
+ */
+extern const char str_misc_death_knight[];
+
+/**
+ * "M.Flayer"
+ */
+extern const char str_misc_mind_flayer[];
+
+/**
  * "Beholder"
  */
 extern const char str_misc_beholder[];
+
+/**
+ * "Dragon"
+ */
+extern const char str_misc_dragon[];
 
 /**
  * "The chest is locked."
@@ -166,7 +216,7 @@ extern const char str_maps_door_unlock_key[];
 extern const char str_maps_sconce_lit_no_torch[];
 
 /**
- * "Hmm... how do you light this sconce?"
+ * "Hmm... how do you light this?"
  */
 extern const char str_maps_sconce_no_torch[];
 
@@ -484,6 +534,11 @@ extern const char str_monster_hit_vuln[];
  * "CRITICAL HIT! You take %damage damage!"
  */
 extern const char str_monster_hit_crit[];
+
+/**
+ * "%monster %c does nothing."
+ */
+extern const char str_monster_does_nothing[];
 
 /**
  * "Dummy %c stands still."

@@ -17,6 +17,7 @@ const char str_monster_hit_immune[] = "But you\'re \ncompletely \nimmune!";
 const char str_monster_hit_resist[] = "You resist, only \n%u damage";
 const char str_monster_hit_vuln[] = "It\'s SUPER BAD! \n%u damage!";
 const char str_monster_hit_crit[] = "CRITICAL HIT! You \ntake %u damage!";
+const char str_monster_does_nothing[] = "%s %c does \nnothing.";
 const char str_monster_dummy_pre[] = "Dummy %c stands \nstill.";
 const char str_monster_dummy_post_heal[] = "\"I will never die\x60\n\"";
 const char str_monster_kobold_axe[] = "Kobold %c raises a \ntiny axe\x60";

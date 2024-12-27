@@ -133,6 +133,7 @@ const Chest floor_test_chests[] = {
     str_chest_item_regen_pot,
     chest_item_regen_pot,
   },
+  { CHEST_7, MAP_A, 10, 2, false, false, NULL, NULL, chest_add_torch },
   { END },
 };
 
@@ -269,6 +270,7 @@ const Sconce floor_test_sconces[] = {
   { SCONCE_2, MAP_A, 11, 1, true, FLAME_GREEN },
   { SCONCE_3, MAP_A, 16, 1, true, FLAME_BLUE },
   { SCONCE_4, MAP_A, 23, 1, true, FLAME_RED },
+  { SCONCE_5, MAP_A, 6, 1, false, FLAME_NONE },
   { END }
 };
 

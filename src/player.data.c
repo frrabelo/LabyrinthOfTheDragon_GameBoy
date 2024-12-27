@@ -22,7 +22,7 @@ const palette_color_t hero_colors[16] = {
   // Sorcerer
   RGB_BLACK,
   RGB8(200, 165, 45),
-  RGB8(180, 69, 61),
+  RGB8(144, 37, 49),
   RGB8(42, 14, 59),
 };
 

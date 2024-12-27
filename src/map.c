@@ -152,15 +152,11 @@ void init_hero(void) {
   move_sprite(2, hero_x + 8, hero_y + 8 + 16);
   move_sprite(3, hero_x + 8 + 8, hero_y + 8 + 16);
 
-  // TODO Load palettes/hero sprites based on class
-  core.load_hero_tiles(1);
-  const uint16_t hpal[4] = {
-    RGB(0, 0, 0),
-    RGB8(245, 213, 135),
-    RGB8(167, 75, 0),
-    RGB8(8, 46, 54),
-  };
-  core.load_sprite_palette(hpal, 0, 1);
+  PlayerClass pc = (player.player_class == CLASS_TEST) ?
+    CLASS_DRUID :
+    player.player_class;
+  core.load_hero_tiles(pc);
+  core.load_sprite_palette(hero_colors + 4 * pc, 0, 1);
 }
 
 /**

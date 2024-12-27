@@ -19,8 +19,9 @@ void reset_test(void) {
 }
 
 void init_test_player(uint8_t level) {
-  init_player(CLASS_TEST);
-  grant_ability(ABILITY_ALL);
+  // init_player(CLASS_TEST);
+  // grant_ability(ABILITY_ALL);
+  init_player(CLASS_SORCERER);
   set_player_level(level);
   sprintf(player.name, "Tester");
   player.message_speed = AUTO_PAGE_FAST;

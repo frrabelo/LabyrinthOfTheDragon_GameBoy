@@ -3,6 +3,29 @@
 #include "player.h"
 #include "strings.h"
 
+const palette_color_t hero_colors[16] = {
+  // Druid
+  RGB_BLACK,
+  RGB8(89, 60, 15),
+  RGB8(131, 146, 31),
+  RGB8(22, 27, 3),
+  // Fighter
+  RGB_BLACK,
+  RGB8(245, 213, 135),
+  RGB8(167, 75, 0),
+  RGB8(8, 46, 54),
+  // Monk
+  RGB_BLACK,
+  RGB8(109, 85, 28),
+  RGB8(217, 204, 64),
+  RGB8(33, 8, 41),
+  // Sorcerer
+  RGB_BLACK,
+  RGB8(200, 165, 45),
+  RGB8(180, 69, 61),
+  RGB8(42, 14, 59),
+};
+
 //------------------------------------------------------------------------------
 
 const Ability druid0 = {

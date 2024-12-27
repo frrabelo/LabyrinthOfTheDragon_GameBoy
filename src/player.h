@@ -318,6 +318,11 @@ inline bool has_leveled(void) {
   return player.next_level_exp >= player.exp;
 }
 
+/**
+ * Palettes for each of the hero classes.
+ */
+extern const palette_color_t hero_colors[];
+
 // Ability prototypes and externs
 
 void druid_base_attack(void);

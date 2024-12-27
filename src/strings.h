@@ -371,6 +371,11 @@ extern const char str_maps_chest_unlock_key[];
 extern const char str_maps_get_magic_key[];
 
 /**
+ * "You find a torch!"
+ */
+extern const char str_maps_get_torch[];
+
+/**
  * "It's stuck!"
  */
 extern const char str_maps_lever_stuck[];

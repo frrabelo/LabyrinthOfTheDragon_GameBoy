@@ -2,7 +2,7 @@
 *.sav
 
 # Ignore all build files
-obj/*
+obj/
 *.ihx
 
 # Prerequisites

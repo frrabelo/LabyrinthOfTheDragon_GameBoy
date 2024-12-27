@@ -106,6 +106,7 @@ addNamespace('maps', 2, {
   'chest_key_locked': "You need a magic key to unlock this chest...",
   'chest_unlock_key': "You unlock the chest with a magic key!",
   'get_magic_key': "You get a magic key!",
+  'get_torch': "You find a torch!",
   'lever_stuck': "It's stuck!",
   'lever_one_way': "Seems this lever was one and done.",
   'door_locked': 'The door is locked.',

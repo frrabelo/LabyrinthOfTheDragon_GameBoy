@@ -564,7 +564,7 @@ void map_fade_in(MapState to_state) {
  * @param x X-position in the map.
  * @param y Y-position in the map.
  */
-void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
+void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED CRITICAL {
   const int8_t w = (int8_t)map.active_map->width;
   const int8_t h = (int8_t)map.active_map->height;
 

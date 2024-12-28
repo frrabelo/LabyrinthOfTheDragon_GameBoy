@@ -194,7 +194,9 @@ const NPC floor_test2_npcs[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
-void floor_test2_on_init(void) {
+bool floor_test2_on_init(void) {
+  map_textbox("floor_test2\non_init()");
+  return true;
 }
 
 void floor_test2_on_update(void) {

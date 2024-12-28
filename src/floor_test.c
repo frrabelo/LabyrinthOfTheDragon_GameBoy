@@ -293,7 +293,8 @@ const NPC floor_test_npcs[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
-void floor_test_on_init(void) {
+bool floor_test_on_init(void) {
+  return false;
 }
 
 void floor_test_on_update(void) {

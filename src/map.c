@@ -1475,7 +1475,6 @@ void set_active_floor(Floor *floor) BANKED {
   set_hero_position(floor->default_x, floor->default_y);
   core.load_bg_palette(map.active_floor->palettes, 0, 7);
   reset_map_objects();
-  on_init();
 }
 
 /**
@@ -1498,13 +1497,15 @@ void initialize_world_map(void) {
   update_local_tiles();
   refresh_map_screen();
 
+  game_state = GAME_STATE_WORLD_MAP;
+
   DISPLAY_ON;
 }
 
 void init_world_map(void) NONBANKED {
   SWITCH_ROM(MAP_SYSTEM_BANK);
   initialize_world_map();
-  map.state = MAP_STATE_WAITING;
+  map.state = MAP_STATE_INIT;
 }
 
 void start_battle(void) {
@@ -1513,7 +1514,6 @@ void start_battle(void) {
 
 void return_from_battle(void) NONBANKED {
   SWITCH_ROM(MAP_SYSTEM_BANK);
-  game_state = GAME_STATE_WORLD_MAP;
   initialize_world_map();
   map_fade_in(MAP_STATE_WAITING);
 }
@@ -1522,7 +1522,17 @@ void update_world_map(void) NONBANKED {
   switch (map.state) {
   case MAP_STATE_INACTIVE:
     return;
+  case MAP_STATE_INIT:
+    if (on_init())
+      break;
+    map.state = MAP_STATE_WAITING;
+    break;
   case MAP_STATE_WAITING:
+    if (map.execute_on_init) {
+      map.execute_on_init = false;
+      if (on_init())
+        break;
+    }
     if (!check_action())
       check_map_move();
     break;
@@ -1548,6 +1558,7 @@ void update_world_map(void) NONBANKED {
     load_exit();
     break;
   case MAP_STATE_EXIT_LOADED:
+    map.execute_on_init = true;
     start_move(map.active_exit->heading);
     break;
   case MAP_STATE_START_BATTLE:

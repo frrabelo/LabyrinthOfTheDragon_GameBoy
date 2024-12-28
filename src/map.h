@@ -329,6 +329,10 @@ typedef enum MapState {
    * Map is returning from battle.
    */
   MAP_STATE_FROM_BATTLE,
+  /**
+   * Map system is being initialized for the first time.
+   */
+  MAP_STATE_INIT,
 } MapState;
 
 /**
@@ -741,7 +745,7 @@ typedef struct Floor {
   /**
    * Called when the map is initialized by the game engine.
    */
-  const void (*on_init)(void);
+  const bool (*on_init)(void);
   /**
    * Called on game loop update when the map is active.
    */
@@ -959,6 +963,11 @@ typedef struct MapSystem {
    * Whether or not the BG priority was set for the destination during a move.
    */
   bool bg_priority_set;
+  /**
+   * Whether or not to execute the `on_init` function after finishing the next
+   * map move.
+   */
+  bool execute_on_init;
 } MapSystem;
 
 /**
@@ -1073,9 +1082,10 @@ inline bool player_facing(uint8_t col, uint8_t row) {
 /**
  * Executes the active area's `on_init` callback if one is set.
  */
-inline void on_init(void) {
+inline bool on_init(void) {
   if (map.active_floor->on_init)
-    map.active_floor->on_init();
+    return map.active_floor->on_init();
+  return false;
 }
 
 /**
@@ -1262,7 +1272,7 @@ inline bool is_locked_door(DoorId id) {
  * @param id Id of the sconce to test.
  */
 inline bool is_sconce_lit(SconceId id) {
-  return id == map.flags_sconce_lit & id;
+  return map.flags_sconce_lit & id;
 }
 
 /**

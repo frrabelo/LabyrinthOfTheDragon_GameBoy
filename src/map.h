@@ -604,7 +604,6 @@ typedef struct Door {
  * Ids/Flags used to denote specific sconces.
  */
 typedef enum SconceId {
-  SCONCE_STATIC = 0,
   SCONCE_1 = FLAG(0),
   SCONCE_2 = FLAG(1),
   SCONCE_3 = FLAG(2),

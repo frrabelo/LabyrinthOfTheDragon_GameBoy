@@ -617,8 +617,12 @@ void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED CRITICAL {
     case HASH_TYPE_LEVER:
       Lever *lever = (Lever *)entry->data;
       tile->lever = lever;
-      if (is_lever_on(lever->id))
-        map_tile += 2;
+      if (!is_lever_on(lever->id))
+        break;
+      if (map_tile == 0x8E)
+        map_tile = 0xA0;
+      else
+        map_tile = 0x8C;
       break;
     case HASH_TYPE_DOOR:
       Door *door = (Door *)entry->data;

@@ -360,9 +360,12 @@ void update_flames(void) {
     }
   }
 
+  uint8_t flame_id = 0;
+
   const Sconce *sconce;
   for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
-    const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
+    const uint8_t sprite_id = FLAME_SPRITE_ID0 + flame_id; //get_sconce_flame_sprite(sconce->id);
+
     if (
       is_sconce_lit(sconce->id) &&
       sconce->map_id == map.active_map->id &&
@@ -371,7 +374,9 @@ void update_flames(void) {
       sconce->row >= map.y - 1 &&
       sconce->row < map.y + MAP_VERT_LOADS
     ) {
-      // Sconce is on the active screen.
+      flame_id++;
+
+      // Sconce is lit and on the active screen.
       uint8_t x = ((sconce->col - map.x + 1) << 4) - 4;
       uint8_t y = ((sconce->row - map.y + 1) << 4) + 2;
 
@@ -392,11 +397,19 @@ void update_flames(void) {
         }
       }
 
+      FlameColor color = sconce->id == SCONCE_STATIC ?
+        sconce->color :
+        sconce_colors[get_sconce_index(sconce->id)];
       move_sprite(sprite_id, x, y);
+      set_sprite_prop(sprite_id, FLAME_SPRITE_PROP | color);
     } else {
       // Sconce is offscreen
       move_sprite(sprite_id, 0, 0);
     }
+  }
+
+  for (; flame_id < MAX_FLAME_SPRITES; flame_id++) {
+    move_sprite(flame_id + FLAME_SPRITE_ID0, 0, 0);
   }
 }
 
@@ -1401,7 +1414,7 @@ void light_torch(FlameColor color) {
 void light_sconce(SconceId id, FlameColor color) {
   map.flags_sconce_lit |= id;
   sconce_colors[get_sconce_index(id)] = color;
-  set_sprite_prop(get_sconce_flame_sprite(id), 0b00001000 | color);
+  set_sprite_prop(get_sconce_flame_sprite(id), FLAME_SPRITE_PROP | color);
 
   // Call the "on_lit" handler
   const Sconce *sconce;
@@ -1424,11 +1437,14 @@ bool check_sconces(void) {
   if (!sconce)
     return false;
 
-  const uint8_t sconce_idx = get_sconce_index(sconce->id);
-
   if (is_sconce_lit(sconce->id)) {
     if (player.has_torch) {
-      light_torch(sconce_colors[sconce_idx]);
+      if (sconce->id == SCONCE_STATIC) {
+        light_torch(sconce->color);
+      } else {
+        const uint8_t sconce_idx = get_sconce_index(sconce->id);
+        light_torch(sconce_colors[sconce_idx]);
+      }
     } else {
       map_textbox(str_maps_sconce_lit_no_torch);
     }

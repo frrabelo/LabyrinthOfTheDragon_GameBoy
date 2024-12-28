@@ -105,6 +105,21 @@
 #define FLAME_TILE_2 0x14
 
 /**
+ * Base properties for all flame sprites.
+ */
+#define FLAME_SPRITE_PROP 0b00001000
+
+/**
+ * Id of the first designated flame sprite.
+ */
+#define FLAME_SPRITE_ID0 32
+
+/**
+ * Maximum number of flame sprites that can be on the screen at once.
+ */
+#define MAX_FLAME_SPRITES 8
+
+/**
  * Clear tile for sprites.
  */
 #define SPRITE_TILE_CLEAR 0x74
@@ -608,6 +623,7 @@ typedef struct Door {
  * Ids/Flags used to denote specific sconces.
  */
 typedef enum SconceId {
+  SCONCE_STATIC = 0,
   SCONCE_1 = FLAG(0),
   SCONCE_2 = FLAG(1),
   SCONCE_3 = FLAG(2),
@@ -1272,7 +1288,7 @@ inline bool is_locked_door(DoorId id) {
  * @param id Id of the sconce to test.
  */
 inline bool is_sconce_lit(SconceId id) {
-  return map.flags_sconce_lit & id;
+  return id == SCONCE_STATIC || map.flags_sconce_lit & id;
 }
 
 /**

@@ -1043,6 +1043,40 @@ void check_map_move(void) {
     start_move(RIGHT);
 }
 
+void draw_next_buffer_tile(void) CRITICAL {
+  if (map.buffer_pos >= map.buffer_max)
+    return;
+
+  MapTile *map_tile = tile_buf + map.buffer_pos;
+  uint8_t *vram = VRAM_BACKGROUND_XY(map.vram_col, map.vram_row);
+
+  const uint8_t tile = map_tile->blank ? 0 : map_tile->tile;
+  const uint8_t attr = map_tile->blank ? 0 :  map_tile->attr;
+
+  // Set tilemap attributes
+  VBK_REG = VBK_ATTRIBUTES;
+  *vram = attr;
+  *(vram + 1) = attr;
+  *(vram + 0x20) = attr;
+  *(vram + 0x20 + 1) = attr;
+
+  // Set tile from data
+  VBK_REG = VBK_TILES;
+  *vram = tile;
+  *(vram + 0x20) = tile + 16;
+  *(vram + 1) = tile + 1;
+  *(vram + 0x20 + 1) = tile + 16 + 1;
+
+  map.buffer_pos++;
+
+  map.vram_col += map.vram_d_col;
+  if (map.vram_col >= 32)
+    map.vram_col -= 32;
+  map.vram_row += map.vram_d_row;
+  if (map.vram_row >= 32)
+    map.vram_row -= 32;
+}
+
 /**
  * Update handler for when the player is moving.
  */
@@ -1062,20 +1096,7 @@ void update_map_move(void) {
     break;
   }
 
-  if (map.buffer_pos < map.buffer_max) {
-    MapTile *tile = tile_buf + map.buffer_pos;
-    uint8_t *vram = VRAM_BACKGROUND_XY(map.vram_col, map.vram_row);
-    draw_map_tile(vram, tile);
-
-    map.buffer_pos++;
-
-    map.vram_col += map.vram_d_col;
-    if (map.vram_col >= 32)
-      map.vram_col -= 32;
-    map.vram_row += map.vram_d_row;
-    if (map.vram_row >= 32)
-      map.vram_row -= 32;
-  }
+  draw_next_buffer_tile();
 
   move_bkg(map.scroll_x, map.scroll_y);
 

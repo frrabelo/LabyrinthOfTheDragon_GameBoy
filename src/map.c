@@ -12,8 +12,14 @@
 #include "core.h"
 #include "floor.h"
 #include "map.h"
+#include "sound.h"
 
 MapSystem map = { MAP_STATE_WAITING };
+
+/**
+ * Whether or not to initiate the wall hit sound effect.
+ */
+bool play_wall_hit = true;
 
 /**
  * Map tile data for the tile the hero currently occupies and those in every
@@ -718,7 +724,7 @@ void load_tile_buffer(void) {
  * @param vram Position in VRAM where the tile should be drawn.
  * @param map_tile Map tile data to draw.
  */
-void draw_map_tile(uint8_t *vram, MapTile *map_tile) {
+void draw_map_tile(uint8_t *vram, MapTile *map_tile) CRITICAL {
   const uint8_t tile = map_tile->blank ? 0 : map_tile->tile;
   const uint8_t attr = map_tile->blank ? 0 :  map_tile->attr;
 
@@ -926,7 +932,7 @@ void reset_map_objects(void) {
  * by the player.
  */
 void load_exit(void) {
-  lcd_off();
+  DISPLAY_OFF;
   const Exit *exit = map.active_exit;
 
   if (exit->to_floor)
@@ -940,7 +946,7 @@ void load_exit(void) {
   refresh_map_screen();
   clear_flames();
   map_fade_in(MAP_STATE_EXIT_LOADED);
-  lcd_on();
+  DISPLAY_ON;
 }
 
 /**
@@ -960,6 +966,7 @@ bool handle_exit(void) {
     if (exit->col != x || exit->row != y)
       continue;
 
+    sfx_stairs();
     map.active_exit = exit;
     map_fade_out(MAP_STATE_LOAD_EXIT);
     return true;
@@ -975,10 +982,19 @@ bool handle_exit(void) {
 void start_move(Direction d) {
   MapTile *destination = local_tiles + d;
 
-  map.hero_direction = d;
+  if (map.hero_direction != d) {
+    map.hero_direction = d;
+    play_wall_hit = true;
+  }
 
   if (destination->map_attr == MAP_WALL) {
+    if (play_wall_hit) {
+      sfx_wall_hit();
+      play_wall_hit = false;
+    }
     return;
+  } else {
+    play_wall_hit = true;
   }
 
   map.move_direction = d;
@@ -1465,7 +1481,7 @@ void set_active_floor(Floor *floor) BANKED {
  * Initializes the world map system.
  */
 void initialize_world_map(void) {
-  lcd_off();
+  DISPLAY_OFF;
 
   core.load_font();
   core.load_object_tiles();
@@ -1481,7 +1497,7 @@ void initialize_world_map(void) {
   update_local_tiles();
   refresh_map_screen();
 
-  lcd_on();
+  DISPLAY_ON;
 }
 
 void init_world_map(void) NONBANKED {
@@ -1535,7 +1551,7 @@ void update_world_map(void) NONBANKED {
     break;
   case MAP_STATE_START_BATTLE:
     map.state = MAP_STATE_INACTIVE;
-    lcd_off();
+    DISPLAY_OFF;
     init_battle();
     return;
   }

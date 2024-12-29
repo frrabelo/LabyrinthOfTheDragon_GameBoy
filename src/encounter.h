@@ -261,17 +261,6 @@ void reset_player_stats(void) NONBANKED;
 void monster_reset_stats(Monster *m) NONBANKED;
 
 /**
- * Handles status effect updates for the player.
- */
-void update_player_status_effects(void);
-
-/**
- * Handles status effect updates for a monster.
- * @param monster Monster for which to handle the effects.
- */
-void update_monster_status_effects(Monster *monster);
-
-/**
  * Applies a status effect and adds it to the given list.
  * @param list Effects lists.
  * @param effect Status effect to apply.

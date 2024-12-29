@@ -79,7 +79,7 @@ void next_turn(void) {
  * Updates a status effect duration and determines if it is still active.
  * @param effect Status effect to update.
  */
-inline void update_effect_duration(StatusEffectInstance *effect) {
+static inline void update_effect_duration(StatusEffectInstance *effect) {
   if (!effect->active)
     return;
 
@@ -114,7 +114,10 @@ void monster_reset_stats(Monster *m) NONBANKED {
   m->fled = false;
 }
 
-void update_player_status_effects(void) {
+/**
+ * Updates status effects for the player.
+ */
+static void update_player_status_effects(void) {
   player.buffs = 0;
   player.debuffs = 0;
 
@@ -164,7 +167,11 @@ void update_player_status_effects(void) {
   }
 }
 
-void update_monster_status_effects(Monster *monster) {
+/**
+ * Handles status effect updates for a monster.
+ * @param monster Monster for which to handle the effects.
+ */
+static void update_monster_status_effects(Monster *monster) {
   StatusEffectInstance *effect = monster->status_effects;
 
   monster->buffs = 0;
@@ -459,7 +466,7 @@ void apply_rewards(void) {
  * Resets a list of status effects.
  * @param effect List of status effects to reset.
  */
-inline void reset_status_effects(StatusEffectInstance *effect) {
+static inline void reset_status_effects(StatusEffectInstance *effect) {
   for (uint8_t k = 0; k < MAX_ACTIVE_EFFECTS; k++, effect++) {
     effect->active = false;
     effect->duration = 0;
@@ -496,7 +503,7 @@ void reset_encounter(MonsterLayout layout) NONBANKED {
  * @return The opposing status effect if defined.
  * @param effect Effect to for which to find opposition.
  */
-inline StatusEffect get_opposing_effect(StatusEffect effect) {
+static inline StatusEffect get_opposing_effect(StatusEffect effect) {
   switch (effect) {
   case DEBUFF_POISONED:
     return BUFF_REGEN;

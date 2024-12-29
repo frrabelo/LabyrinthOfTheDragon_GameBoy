@@ -20,7 +20,7 @@ uint8_t joypad_released;
  * Initializes the normal game. Abstracted out of `initialize` to make it easy
  * to switch between tests and the actual game while handling common setup.
  */
-void initialize_game(void) {
+static void initialize_game(void) {
   init_player(CLASS_DRUID);
   init_world_map();
   game_state = GAME_STATE_WORLD_MAP;
@@ -29,7 +29,7 @@ void initialize_game(void) {
 /**
  * Initializes the core game engine.
  */
-inline void initialize(void) {
+static inline void initialize(void) {
   ENABLE_RAM;
 
   initarand(RANDOM_SEED);
@@ -44,7 +44,7 @@ inline void initialize(void) {
 /**
  * Executes core gameloop logic.
  */
-inline void game_loop(void) {
+static inline void game_loop(void) {
   switch (game_state) {
   case GAME_STATE_TITLE:
     update_main_menu();
@@ -63,7 +63,7 @@ inline void game_loop(void) {
 /**
  * Executes rendering logic that must occur during a VBLANK.
  */
-inline void render(void) {
+static inline void render(void) {
   switch (game_state) {
   case GAME_STATE_TITLE:
     draw_main_menu();
@@ -82,7 +82,7 @@ inline void render(void) {
 /**
  * Reads and updates the joypad state.
  */
-inline void update_joypad(void) {
+static inline void update_joypad(void) {
   uint8_t last = joypad_down;
   joypad_down = joypad();
   joypad_pressed = ~last & joypad_down;

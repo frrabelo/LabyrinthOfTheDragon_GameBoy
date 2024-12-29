@@ -20,7 +20,10 @@ uint8_t player_num_abilities = 0;
 
 const Ability null_ability = { 0 };
 
-void ability_placeholder(void) {
+/**
+ * Used as a placeholder for abiltiies prior to implementation.
+ */
+static void ability_placeholder(void) {
   sprintf(battle_pre_message, "You try a thing.");
   sprintf(battle_post_message, "It doesn't work.");
 }
@@ -35,7 +38,7 @@ void ability_placeholder(void) {
  * @param mdef Power tier for mdef.
  * @param agl Power tier for agl.
  */
-void update_stats(
+static void update_stats(
   PowerTier hp,
   PowerTier sp,
   PowerTier atk,
@@ -59,7 +62,7 @@ void update_stats(
  * @param base_damage Base damage for the attack.
  * @param type Aspect for the damage.
  */
-void damage_monster(uint16_t base_damage, DamageAspect type) {
+static void damage_monster(uint16_t base_damage, DamageAspect type) {
   Monster *monster = encounter.target;
 
   if (!monster)
@@ -100,7 +103,7 @@ void damage_monster(uint16_t base_damage, DamageAspect type) {
  * @param type Aspect type for the damage.
  * @return Number of monsters hit by the attack.
  */
-uint8_t damage_all(
+static uint8_t damage_all(
   uint16_t base_damage,
   uint8_t atk,
   bool use_mdef,
@@ -145,7 +148,7 @@ uint8_t damage_all(
 // Class: Druid
 //------------------------------------------------------------------------------
 
-void druid_update_stats(void) {
+static void druid_update_stats(void) {
   update_stats(
     B_TIER,
     B_TIER,

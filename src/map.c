@@ -905,23 +905,23 @@ void load_tile_buffer(void) {
  * @param vram Position in VRAM where the tile should be drawn.
  * @param map_tile Map tile data to draw.
  */
-void draw_map_tile(uint8_t *vram, MapTile *map_tile) CRITICAL {
+void draw_map_tile(uint8_t *vram, MapTile *map_tile) {
   const uint8_t tile = map_tile->blank ? 0 : map_tile->tile;
   const uint8_t attr = map_tile->blank ? 0 :  map_tile->attr;
 
   // Set tilemap attributes
   VBK_REG = VBK_ATTRIBUTES;
-  *vram = attr;
-  *(vram + 1) = attr;
-  *(vram + 0x20) = attr;
-  *(vram + 0x20 + 1) = attr;
+  set_vram_byte(vram, attr);
+  set_vram_byte(vram + 1, attr);
+  set_vram_byte(vram + 0x20, attr);
+  set_vram_byte(vram + 0x20 + 1, attr);
 
   // Set tile from data
   VBK_REG = VBK_TILES;
-  *vram = tile;
-  *(vram + 0x20) = tile + 16;
-  *(vram + 1) = tile + 1;
-  *(vram + 0x20 + 1) = tile + 16 + 1;
+  set_vram_byte(vram, tile);
+  set_vram_byte(vram + 1, tile + 1);
+  set_vram_byte(vram + 32, tile + 16);
+  set_vram_byte(vram + 32 + 1, tile + 16 + 1);
 }
 
 /**
@@ -1199,7 +1199,7 @@ void start_move(Direction d) {
     map.bg_priority_set = true;
   }
 
-  // Note: this updated map.x & map.y
+  // Note: this updates map.x & map.y
   load_tile_buffer();
 }
 
@@ -1218,9 +1218,10 @@ void check_map_move(void) {
     start_move(RIGHT);
 }
 
-void draw_next_buffer_tile(void) CRITICAL {
-  if (map.buffer_pos >= map.buffer_max)
+void draw_next_buffer_tile(void) {
+  if (map.buffer_pos >= map.buffer_max) {
     return;
+  }
 
   MapTile *map_tile = tile_buf + map.buffer_pos;
   uint8_t *vram = VRAM_BACKGROUND_XY(map.vram_col, map.vram_row);
@@ -1228,19 +1229,17 @@ void draw_next_buffer_tile(void) CRITICAL {
   const uint8_t tile = map_tile->blank ? 0 : map_tile->tile;
   const uint8_t attr = map_tile->blank ? 0 :  map_tile->attr;
 
-  // Set tilemap attributes
   VBK_REG = VBK_ATTRIBUTES;
-  *vram = attr;
-  *(vram + 1) = attr;
-  *(vram + 0x20) = attr;
-  *(vram + 0x20 + 1) = attr;
+  set_vram_byte(vram, attr);
+  set_vram_byte(vram + 1, attr);
+  set_vram_byte(vram + 0x20, attr);
+  set_vram_byte(vram + 0x20 + 1, attr);
 
-  // Set tile from data
   VBK_REG = VBK_TILES;
-  *vram = tile;
-  *(vram + 0x20) = tile + 16;
-  *(vram + 1) = tile + 1;
-  *(vram + 0x20 + 1) = tile + 16 + 1;
+  set_vram_byte(vram, tile);
+  set_vram_byte(vram + 1, tile + 1);
+  set_vram_byte(vram + 0x20, tile + 16);
+  set_vram_byte(vram + 0x20 + 1, tile + 16 + 1);
 
   map.buffer_pos++;
 
@@ -1757,7 +1756,7 @@ void return_from_battle(void) NONBANKED {
   map_fade_in(MAP_STATE_WAITING);
 }
 
-void update_world_map(void) NONBANKED {
+void update_map(void) {
   switch (map.state) {
   case MAP_STATE_INACTIVE:
     return;
@@ -1797,11 +1796,6 @@ void update_world_map(void) NONBANKED {
   case MAP_STATE_EXIT_LOADED:
     start_move(map.active_exit->heading);
     break;
-  case MAP_STATE_START_BATTLE:
-    map.state = MAP_STATE_INACTIVE;
-    DISPLAY_OFF;
-    init_battle();
-    return;
   }
 
   if (update_timer(map.torch_timer)) {
@@ -1817,6 +1811,16 @@ void update_world_map(void) NONBANKED {
   update_flames();
   update_hud();
   update_npcs();
+}
+
+void update_world_map(void) NONBANKED {
+  if (map.state == MAP_STATE_START_BATTLE) {
+    map.state = MAP_STATE_INACTIVE;
+    DISPLAY_OFF;
+    init_battle();
+  } else {
+    update_map();
+  }
 }
 
 void draw_world_map(void) {

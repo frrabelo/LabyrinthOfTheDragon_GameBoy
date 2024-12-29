@@ -1214,7 +1214,7 @@ void initialize_battle(void) {
 
   // Reset the background, window, and sprites
   core.fill_bg(BATTLE_CLEAR_TILE, BATTLE_CLEAR_ATTR);
-  core.hide_sprites();
+  hide_sprites();
   hide_window();
 
   // Load palettes & fonts

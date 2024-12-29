@@ -1,3 +1,5 @@
+#pragma bank 2
+
 #include "core.h"
 #include "textbox.h"
 
@@ -25,10 +27,6 @@ void open_textbox(const char *text) {
   text_writer.clear();
   textbox.text = text;
   textbox.state = TEXT_BOX_OPENING;
-}
-
-void close_textbox(void) {
-  textbox.state = TEXT_BOX_CLOSING;
 }
 
 void update_textbox(void) {
@@ -67,7 +65,6 @@ void update_textbox(void) {
 TextBox textbox = {
   init_textbox,
   open_textbox,
-  close_textbox,
   update_textbox,
   TEXT_BOX_CLOSED,
   144

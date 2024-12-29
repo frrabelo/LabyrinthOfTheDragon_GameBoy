@@ -7,6 +7,7 @@
 
 #include "core.h"
 #include "item.h"
+#include "monster.h"
 #include "textbox.h"
 
 /**
@@ -185,6 +186,31 @@
 #define MAGIC_KEY_HUD_PALETTE 5
 
 /**
+ * Starting sprite id for NPC 1.
+ */
+#define NPC_SPRITE_1 4
+
+/**
+ * Starting sprite id for NPC 2.
+ */
+#define NPC_SPRITE_2 8
+
+/**
+ * Root tile number for the first sprite of NPC 1.
+ */
+#define NPC_1_TILE_ROOT 0x20
+
+/**
+ * Root tile number for the first sprite of NPC 2.
+ */
+#define NPC_2_TILE_ROOT 0x40
+
+/**
+ * Base property for NPC sprites.
+ */
+#define NPC_BASE_PROP 0x00
+
+/**
  * Sconce flame sprite ids.
  */
 typedef enum SconceFlames {
@@ -280,6 +306,10 @@ typedef struct MapTile {
    */
   const struct Sconce *sconce;
   /**
+   * If the tile contains an NPC, this point to it.
+   */
+  const struct NPC *npc;
+  /**
    * Whether or not the tile was marked as BG priority for rendering in the tile
    * source data.
    */
@@ -344,10 +374,6 @@ typedef enum MapState {
    * Map is returning from battle.
    */
   MAP_STATE_FROM_BATTLE,
-  /**
-   * Map system is being initialized for the first time.
-   */
-  MAP_STATE_INIT,
 } MapState;
 
 /**
@@ -684,22 +710,38 @@ typedef struct Sconce {
 typedef enum NpcId {
   NPC_1 = FLAG(0),
   NPC_2 = FLAG(1),
-  NPC_3 = FLAG(2),
-  NPC_4 = FLAG(3),
-  NPC_5 = FLAG(4),
-  NPC_6 = FLAG(5),
-  NPC_7 = FLAG(6),
-  NPC_8 = FLAG(7),
 } NpcId;
 
 /**
  * An NPC that can inhabit a map. WARNING: not yet implemented.
  */
 typedef struct NPC {
+  /**
+   * Unique ID for the NPC.
+   */
   NpcId id;
+  /**
+   * The map where the NPC should be placed.
+   */
   MapId map_id;
+  /**
+   * Column in the map for the NPC.
+   */
   int8_t col;
+  /**
+   * Row in the map for the NPC.
+   */
   int8_t row;
+  /**
+   * The type of monster that the NPC is (determines the NPC graphic).
+   */
+  MonsterType monster_type;
+  /**
+   * Scripting callback to execute when the player interacts with the NPC.
+   * @param npc The NPC that initiated the callback.
+   * @return `true` if the default action should be skipped.
+   */
+  bool (*on_action)(const struct NPC *npc);
 } NPC;
 
 /**
@@ -808,6 +850,7 @@ typedef enum TileHashType {
   HASH_TYPE_DOOR,
   HASH_TYPE_SIGN,
   HASH_TYPE_SCONCE,
+  HASH_TYPE_NPC,
 } TileHashType;
 
 /**
@@ -984,6 +1027,24 @@ typedef struct MapSystem {
    * map move.
    */
   bool execute_on_init;
+  /**
+   * Scripting callback to execute before closing the map textbox. This callback
+   * is cleared every time the textbox is closed.
+   * @return `true` to override default textbox closing behavior.
+   */
+  bool (*after_textbox)(void);
+  /**
+   * Whether or not NPCs are visible.
+   */
+  uint8_t npc_visible;
+  /**
+   * Walk animation timer for NPCs.
+   */
+  Timer npc_walk_timer;
+  /**
+   * Current walk frame for NPCs.
+   */
+  uint8_t npc_walk_frame;
 } MapSystem;
 
 /**
@@ -1062,6 +1123,16 @@ inline void map_textbox(const char *text) {
 }
 
 /**
+ * Opens a textbox that executes the given action as it is closed.
+ * @param text Text to display in the text box.
+ * @param action Action to execute.
+ */
+inline void map_textbox_with_action(const char *text, bool (*action)(void)) {
+  map.after_textbox = action;
+  map_textbox(text);
+}
+
+/**
  * @param c Column to check.
  * @param r Row to check.
  * @return `true` If the player is at the given column and row in the map.
@@ -1099,6 +1170,9 @@ inline bool player_facing(uint8_t col, uint8_t row) {
  * Executes the active area's `on_init` callback if one is set.
  */
 inline bool on_init(void) {
+  if (!map.execute_on_init)
+    return false;
+  map.execute_on_init = false;
   if (map.active_floor->on_init)
     return map.active_floor->on_init();
   return false;
@@ -1304,6 +1378,30 @@ void light_sconce(SconceId id, FlameColor color);
  */
 inline void extinguish_sconce(SconceId id) {
   map.flags_sconce_lit &= ~id;
+}
+
+/**
+ * @return `true` if the npc with the given id is visible.
+ * @param id Id of the NPC to check.
+ */
+inline bool is_npc_visible(NpcId id) {
+  return map.npc_visible & id;
+}
+
+/**
+ * Sets an NPC to be visible.
+ * @param id Id of the NPC to set.
+ */
+inline void set_npc_visible(NpcId id) {
+  map.npc_visible |= id;
+}
+
+/**
+ * Sets and NPC to be invisible.
+ * @param id Id of the NPC to set.
+ */
+inline void set_npc_invisible(NpcId id) {
+  map.npc_visible &= ~id;
 }
 
 #endif

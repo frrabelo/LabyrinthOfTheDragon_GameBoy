@@ -7,12 +7,12 @@
 //------------------------------------------------------------------------------
 
 #define FLOOR_TEST2_ID 98
-// #define FLOOR_TEST2_DEFAULT_X 2
-// #define FLOOR_TEST2_DEFAULT_Y 14
-// #define FLOOR_TEST2_DEFAULT_MAP MAP_A
-#define FLOOR_TEST2_DEFAULT_X 5
-#define FLOOR_TEST2_DEFAULT_Y 12
-#define FLOOR_TEST2_DEFAULT_MAP MAP_C
+#define FLOOR_TEST2_DEFAULT_X 2
+#define FLOOR_TEST2_DEFAULT_Y 14
+#define FLOOR_TEST2_DEFAULT_MAP MAP_A
+// #define FLOOR_TEST2_DEFAULT_X 5
+// #define FLOOR_TEST2_DEFAULT_Y 12
+// #define FLOOR_TEST2_DEFAULT_MAP MAP_C
 
 //------------------------------------------------------------------------------
 // Maps
@@ -189,8 +189,24 @@ const Sconce floor_test2_sconces[] = {
 // NPCs
 //------------------------------------------------------------------------------
 
+void floor2_boss_victory(void) NONBANKED {
+  set_door_open(DOOR_2);
+  set_npc_invisible(NPC_1);
+}
+
+bool floor2_boss_encounter(void) {
+  Monster *monster = encounter.monsters;
+  reset_encounter(MONSTER_LAYOUT_1);
+  kobold_generator(monster, player.level, A_TIER);
+  monster->id = 'A';
+  set_on_victory(floor2_boss_victory);
+  start_battle();
+  return true;
+}
+
 bool floor2_on_npc_action(const NPC *npc) {
   map_textbox("Growl\x60");
+  map_textbox_with_action("GROWL!", floor2_boss_encounter);
   return true;
 }
 

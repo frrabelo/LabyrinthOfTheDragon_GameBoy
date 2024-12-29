@@ -278,18 +278,11 @@ void load_monster_tiles(MonsterTiles tiles, MonsterTilePosition pos) {
     tileset = &monsters_tileset_page3;
   }
 
-  // const uint8_t row_width = 12;
-  // const uint8_t offset = player_class * row_width * 2;
-  // const uint8_t offset2 = offset + row_width;
-  // uint8_t *const vram = VRAM_SPRITE_TILES;
-  // uint8_t *const vram2 = vram + 16 * BYTES_PER_TILE;
-
   const uint8_t row_width = 12;
-
   const uint8_t offset = tiles * row_width * 2;
   const uint8_t offset2 = offset + row_width;
 
-  uint8_t *vram = 0x8000 + BYTES_PER_TILE * (0x20 + 0x20 * pos);
+  uint8_t *vram = (void *)(0x8000 + BYTES_PER_TILE * (0x20 + 0x20 * pos));
   uint8_t *vram2 = vram + 16 * BYTES_PER_TILE;
 
   VBK_REG = VBK_BANK_0;

@@ -1111,6 +1111,7 @@ static void reset_map_objects(void) {
   }
 
   // NPCs
+  init_npcs();
   map.npc_visible = 0;
   const NPC *npc;
   for (npc = map.active_floor->npcs; npc->id != END; npc++) {

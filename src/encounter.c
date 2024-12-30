@@ -491,6 +491,7 @@ void reset_encounter(MonsterLayout layout) NONBANKED {
   encounter.item_id = ITEM_INVALID;
   encounter.victory = false;
   reset_status_effects(encounter.player_status_effects);
+  reset_special();
 
   Monster *monster = encounter.monsters;
   for (uint8_t k = 0; k < 3; k++, monster++) {

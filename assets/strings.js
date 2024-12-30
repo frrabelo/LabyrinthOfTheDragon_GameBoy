@@ -97,8 +97,6 @@ addNamespace('battle', 0, {
   'level_up': 'LEVEL UP! You reach %level!',
 })
 
-
-
 addNamespace('maps', 2, {
   'chest_locked': "The chest is locked.",
   'chest_open': "You opened the chest!",
@@ -149,6 +147,7 @@ addNamespace('monster', 6, {
   'hit_resist': 'You resist, only %damage damage',
   'hit_vuln': "It's SUPER BAD! %damage damage!",
   'hit_crit': 'CRITICAL HIT! You take %damage damage!',
+  'hit_barkskin': 'Your barkskin protects you! %damage damage.',
   'does_nothing': '%monster %c does nothing.',
   'dummy_pre': 'Dummy %c stands still.',
   'dummy_post_heal': '"I will never die..."',

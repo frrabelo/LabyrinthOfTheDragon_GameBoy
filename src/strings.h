@@ -541,6 +541,11 @@ extern const char str_monster_hit_vuln[];
 extern const char str_monster_hit_crit[];
 
 /**
+ * "Your barkskin protects you! %damage damage."
+ */
+extern const char str_monster_hit_barkskin[];
+
+/**
  * "%monster %c does nothing."
  */
 extern const char str_monster_does_nothing[];

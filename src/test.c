@@ -30,7 +30,7 @@ void fill_inventory(uint8_t amt) {
 }
 
 void test_big_map(void) {
-  init_test_player(CLASS_TEST, 20);
+  init_test_player(CLASS_DRUID, 5);
   player.has_torch = true;
   set_active_floor(&floor_test);
   // set_active_floor(&floor_test2);

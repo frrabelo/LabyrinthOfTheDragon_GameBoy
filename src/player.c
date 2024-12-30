@@ -171,11 +171,11 @@ void druid_base_attack(void) {
 
   PowerTier damage_tier;
   if (player.level < 35)
-    damage_tier = C_TIER;
-  else if (player.level < 75)
     damage_tier = B_TIER;
-  else
+  else if (player.level < 75)
     damage_tier = A_TIER;
+  else
+    damage_tier = S_TIER;
 
   const uint16_t base_dmg = get_player_damage(player.level, damage_tier);
   damage_monster(base_dmg, DAMAGE_MAGICAL);
@@ -183,7 +183,7 @@ void druid_base_attack(void) {
 
 void druid_cure_wounds(void) {
   sprintf(battle_pre_message, str_battle_cure_wounds);
-  const uint16_t base_hp = get_player_heal(player.level, C_TIER);
+  const uint16_t base_hp = get_player_heal(player.level, B_TIER);
   const uint8_t roll = d16();
   const uint16_t hp = calc_damage(roll, base_hp);
 
@@ -198,7 +198,10 @@ void druid_cure_wounds(void) {
 }
 
 void druid_bark_skin(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_bark_skin);
+  skip_post_message = true;
+  apply_def_up(encounter.player_status_effects, B_TIER, 0);
+  apply_special(SPECIAL_BARKSKIN);
 }
 
 void druid_lightning(void) {

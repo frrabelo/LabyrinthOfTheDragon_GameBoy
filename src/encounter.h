@@ -456,18 +456,16 @@ inline StatusEffectResult apply_def_down(
  * @param list List of status effects for the entity.
  * @param tier Power tier for the effect (potency, basically).
  * @param duration Duration for the effect (0 means endless).
- * @param immune Debuff immunities for the entity.
  * @return The result of the status effect application.
  */
 inline StatusEffectResult apply_haste(
   StatusEffectInstance *list,
   PowerTier tier,
-  uint8_t duration,
-  uint8_t immune
+  uint8_t duration
 ) {
   const StatusEffect effect = BUFF_HASTE;
   const DebuffFlag flag = FLAG_BUFF_HASTE;
-  return apply_status_effect(list, effect, flag, tier, duration, immune);
+  return apply_status_effect(list, effect, flag, tier, duration, 0);
 }
 
 /**
@@ -475,18 +473,16 @@ inline StatusEffectResult apply_haste(
  * @param list List of status effects for the entity.
  * @param tier Power tier for the effect (potency, basically).
  * @param duration Duration for the effect (0 means endless).
- * @param immune Debuff immunities for the entity.
  * @return The result of the status effect application.
  */
 inline StatusEffectResult apply_regen(
   StatusEffectInstance *list,
   PowerTier tier,
-  uint8_t duration,
-  uint8_t immune
+  uint8_t duration
 ) {
   const StatusEffect effect = BUFF_REGEN;
   const DebuffFlag flag = FLAG_BUFF_REGEN;
-  return apply_status_effect(list, effect, flag, tier, duration, immune);
+  return apply_status_effect(list, effect, flag, tier, duration, 0);
 }
 
 /**
@@ -494,18 +490,16 @@ inline StatusEffectResult apply_regen(
  * @param list List of status effects for the entity.
  * @param tier Power tier for the effect (potency, basically).
  * @param duration Duration for the effect (0 means endless).
- * @param immune Debuff immunities for the entity.
  * @return The result of the status effect application.
  */
 inline StatusEffectResult apply_agl_up(
   StatusEffectInstance *list,
   PowerTier tier,
-  uint8_t duration,
-  uint8_t immune
+  uint8_t duration
 ) {
   const StatusEffect effect = BUFF_AGL_UP;
   const DebuffFlag flag = FLAG_BUFF_AGL_UP;
-  return apply_status_effect(list, effect, flag, tier, duration, immune);
+  return apply_status_effect(list, effect, flag, tier, duration, 0);
 }
 
 /**
@@ -513,18 +507,16 @@ inline StatusEffectResult apply_agl_up(
  * @param list List of status effects for the entity.
  * @param tier Power tier for the effect (potency, basically).
  * @param duration Duration for the effect (0 means endless).
- * @param immune Debuff immunities for the entity.
  * @return The result of the status effect application.
  */
 inline StatusEffectResult apply_atk_up(
   StatusEffectInstance *list,
   PowerTier tier,
-  uint8_t duration,
-  uint8_t immune
+  uint8_t duration
 ) {
   const StatusEffect effect = BUFF_ATK_UP;
   const DebuffFlag flag = FLAG_BUFF_ATK_UP;
-  return apply_status_effect(list, effect, flag, tier, duration, immune);
+  return apply_status_effect(list, effect, flag, tier, duration, 0);
 }
 
 /**
@@ -532,18 +524,16 @@ inline StatusEffectResult apply_atk_up(
  * @param list List of status effects for the entity.
  * @param tier Power tier for the effect (potency, basically).
  * @param duration Duration for the effect (0 means endless).
- * @param immune Debuff immunities for the entity.
  * @return The result of the status effect application.
  */
 inline StatusEffectResult apply_def_up(
   StatusEffectInstance *list,
   PowerTier tier,
-  uint8_t duration,
-  uint8_t immune
+  uint8_t duration
 ) {
   const StatusEffect effect = BUFF_DEF_UP;
   const DebuffFlag flag = FLAG_BUFF_DEF_UP;
-  return apply_status_effect(list, effect, flag, tier, duration, immune);
+  return apply_status_effect(list, effect, flag, tier, duration, 0);
 }
 
 #endif

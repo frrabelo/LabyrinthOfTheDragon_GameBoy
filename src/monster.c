@@ -63,16 +63,27 @@ static void damage_player(uint16_t base_damage, DamageAspect type) {
   uint16_t damage = calc_damage(roll, base_damage);
   bool critical = roll >= 12;
 
-  if (critical) {
-    sprintf(battle_post_message, str_monster_hit_crit, damage);
-  } else  if (player.aspect_resist & type) {
+  bool barskin = has_special(SPECIAL_BARKSKIN) && type != DAMAGE_FIRE;
+
+  if (barskin)
     damage >>= 1;
-    sprintf(battle_post_message, str_monster_hit_resist, damage);
-  } else if (player.aspect_vuln & type) {
+
+  if (player.aspect_resist & type)
+    damage >>= 1;
+  else if (player.aspect_vuln & type)
     damage <<= 1;
-  } else if (type == DAMAGE_PHYSICAL) {
+
+  if (barskin)
+    sprintf(battle_post_message, str_monster_hit_barkskin, damage);
+  else if (critical)
+    sprintf(battle_post_message, str_monster_hit_crit, damage);
+  else if (player.aspect_resist & type)
+    sprintf(battle_post_message, str_monster_hit_resist, damage);
+  else if (player.aspect_vuln & type)
+    sprintf(battle_post_message, str_monster_hit_vuln, damage);
+  else if (type == DAMAGE_PHYSICAL)
     sprintf(battle_post_message, str_monster_hit, damage);
-  } else {
+  else {
     const char *aspect = damage_aspect_name(type);
     sprintf(battle_post_message, str_monster_hit_aspect, damage, aspect);
   }

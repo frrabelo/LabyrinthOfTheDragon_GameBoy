@@ -77,17 +77,18 @@ uint16_t calc_damage(uint8_t d16_roll, uint16_t base_dmg) BANKED {
 }
 
 uint16_t calc_monster_exp(uint8_t mlevel, PowerTier tier) BANKED {
-  // If the monster is 8 levels or greater: 2x rewards
-  if (mlevel >= player.level + 8)
-    return get_monster_exp(mlevel, tier) << 1;
 
-  // No experience from monsters seven levels below
-  if (player.level >= mlevel + 7)
+  int8_t diff = (int8_t)mlevel - (int8_t)player.level;
+
+  if (diff <= -8)
     return 0;
 
-  uint16_t k = xp_mod[mlevel - player.level + 8];
+  if (diff >= 7)
+    return get_monster_exp(mlevel, tier) << 1;
+
+  uint16_t k = (uint16_t)xp_mod[diff + 8];
   k *= get_monster_exp(mlevel, tier);
-  k >>= 4;
+  k /= 16;
 
   return k;
 }

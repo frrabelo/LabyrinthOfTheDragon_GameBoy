@@ -313,14 +313,22 @@ bool floor_test_on_action(void) {
 }
 
 bool floor_test_on_special(void) {
+  Monster *monster = encounter.monsters;
+
   switch (map.active_map->id) {
   case MAP_A:
     if (player_at(3, 8)) {
-      Monster *monster = encounter.monsters;
       reset_encounter(MONSTER_LAYOUT_2);
       beholder_generator(monster, player.level, C_TIER);
       monster->id = 'A';
       dragon_generator(++monster, player.level, C_TIER);
+      monster->id = 'A';
+      start_battle();
+      return true;
+    }
+    if (player_at(3, 4)) {
+      reset_encounter(MONSTER_LAYOUT_1);
+      kobold_generator(monster, 7, C_TIER);
       monster->id = 'A';
       start_battle();
       return true;

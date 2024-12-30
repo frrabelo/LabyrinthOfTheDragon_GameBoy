@@ -145,6 +145,7 @@ static void update_player_status_effects(void) {
     case DEBUFF_DEF_DOWN:
       player.def = def_down(player.def_base, effect->tier);
       break;
+    case BUFF_HASTE:
     case BUFF_AGL_UP:
       player.agl = agl_up(player.agl_base, effect->tier);
       break;
@@ -244,6 +245,8 @@ void check_status_effects(void) {
 }
 
 inline void player_turn(void) {
+  remove_special(SPECIAL_HASTE);
+
   StatusEffectInstance *effect = encounter.player_status_effects;
   for (uint8_t k = 0; k < MAX_ACTIVE_EFFECTS; k++, effect++) {
     if (!effect->active)
@@ -264,6 +267,9 @@ inline void player_turn(void) {
         player.hp = player.max_hp;
       else
         player.hp += regen;
+      break;
+    case BUFF_HASTE:
+      apply_special(SPECIAL_HASTE);
       break;
     }
   }

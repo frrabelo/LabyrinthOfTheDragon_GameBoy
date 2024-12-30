@@ -88,6 +88,7 @@ typedef struct Ability {
  */
 typedef enum SpecialFlags {
   SPECIAL_BARKSKIN = FLAG(0),
+  SPECIAL_HASTE = FLAG(1),
 } SpecialFlags;
 
 /**

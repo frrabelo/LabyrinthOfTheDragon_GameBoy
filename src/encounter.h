@@ -239,17 +239,6 @@ inline Monster *get_monster(uint8_t idx) {
 }
 
 /**
- * Heals the player without going over max HP.
- * @param hp Amount of HP to heal the player.
- */
-inline void heal_player(uint16_t hp) {
-  if (player.hp + hp > player.max_hp)
-    player.hp = player.max_hp;
-  else
-    player.hp += hp;
-}
-
-/**
  * Resets player combat stats and flags at the start of each round.
  */
 void reset_player_stats(void) NONBANKED;

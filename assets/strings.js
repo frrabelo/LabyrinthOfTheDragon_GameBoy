@@ -155,7 +155,8 @@ addNamespace('monster', 6, {
   'kobold_fire': 'Kobold %c spits a glob of fire...',
   'kobold_dazed': 'Kobold %c looks dazed...',
   'kobold_does_nothing': 'And does nothing!',
-  'kobold_miss': 'But instead it falls back and hiccups!',
+  'kobold_miss': 'But instead it falls over and hiccups!',
+  'kobold_get_up': 'Kobold %c gets up.',
 })
 
 // Export the namespaces

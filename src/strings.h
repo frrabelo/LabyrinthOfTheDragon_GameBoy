@@ -581,8 +581,13 @@ extern const char str_monster_kobold_dazed[];
 extern const char str_monster_kobold_does_nothing[];
 
 /**
- * "But instead it falls back and hiccups!"
+ * "But instead it falls over and hiccups!"
  */
 extern const char str_monster_kobold_miss[];
+
+/**
+ * "Kobold %c climbs to its feet."
+ */
+extern const char str_monster_kobold_get_up[];
 
 #endif

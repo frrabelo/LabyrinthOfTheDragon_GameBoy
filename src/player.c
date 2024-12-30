@@ -76,6 +76,10 @@ static void damage_monster(uint16_t base_damage, DamageAspect type) {
   uint8_t roll = d16();
   uint16_t damage = calc_damage(roll, base_damage);
   bool critical = is_critical(roll);
+  bool hasted = has_special(SPECIAL_HASTE);
+
+  if (hasted)
+    damage += calc_damage(d16(), base_damage);
 
   if (critical) {
     sprintf(battle_post_message, str_battle_player_hit_crit, damage);
@@ -112,6 +116,9 @@ static uint8_t damage_all(
   uint8_t dam_roll = d16();
   uint16_t damage = calc_damage(dam_roll, base_damage);
 
+  if (has_special(SPECIAL_HASTE))
+    damage += calc_damage(d16(), base_damage);
+
   Monster *monster = encounter.monsters;
   uint8_t atk_roll = d256();
   uint8_t hits = 0;
@@ -143,6 +150,23 @@ static uint8_t damage_all(
 
   return hits;
 }
+
+/**
+ * Heals the player without going over max HP.
+ * @param hp Amount of HP to heal the player.
+ */
+uint8_t heal_player(uint8_t d16_roll, uint16_t base_hp) {
+  uint16_t hp = calc_damage(d16_roll, base_hp);
+  if (has_special(SPECIAL_HASTE))
+    hp += calc_damage(d16(), base_hp);
+
+  if (player.hp + hp > player.max_hp)
+    hp = player.max_hp - player.hp;
+  player.hp += hp;
+
+  return hp;
+}
+
 
 //------------------------------------------------------------------------------
 // Class: Druid
@@ -183,15 +207,21 @@ void druid_base_attack(void) {
 
 void druid_cure_wounds(void) {
   sprintf(battle_pre_message, str_battle_cure_wounds);
-  const uint16_t base_hp = get_player_heal(player.level, B_TIER);
-  const uint8_t roll = d16();
-  const uint16_t hp = calc_damage(roll, base_hp);
 
-  heal_player(hp);
+  uint8_t heal_tier = B_TIER;
+
+  if (player.level > 80)
+    heal_tier = S_TIER;
+  else if (player.level > 50)
+    heal_tier = A_TIER;
+
+  const uint16_t base_hp = get_player_heal(player.level, heal_tier);
+  const uint8_t roll = d16();
+  const uint8_t hp = heal_player(roll, base_hp);
 
   if (is_critical(roll))
     sprintf(battle_post_message, str_battle_player_heal_crit, hp);
-  else if (is_fumble(roll))
+  else if (is_fumble(roll) && !has_special(SPECIAL_HASTE))
     sprintf(battle_post_message, str_battle_player_heal_fumble, hp);
   else
     sprintf(battle_post_message, str_battle_player_heal, hp);
@@ -465,6 +495,10 @@ void init_player(PlayerClass player_class) BANKED {
   grant_ability(ABILITY_0);
   set_player_level(1);
   reset_player_stats();
+
+  player.aspect_immune = 0;
+  player.aspect_resist = 0;
+  player.aspect_vuln = 0;
 
   // TODO Move these assignments into the character creator
   sprintf(player.name, "Hero");

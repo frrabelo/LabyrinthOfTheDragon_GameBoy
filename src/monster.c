@@ -120,76 +120,47 @@ void monster_take_turn(Monster *monster) BANKED {
 }
 
 // -----------------------------------------------------------------------------
-// Monster 255 - Test Dummy
-// -----------------------------------------------------------------------------
-
-static void dummy_take_turn(Monster *dummy) {
-  sprintf(battle_pre_message, str_monster_dummy_pre, dummy->id);
-
-  switch (dummy->parameter) {
-  case DUMMY_INVINCIBLE:
-    dummy->target_hp = dummy->max_hp;
-    sprintf(battle_post_message, str_monster_dummy_post_heal);
-    break;
-  case DUMMY_COWARD:
-    monster_flee(dummy);
-    break;
-  case DUMMY_AGGRESSIVE:
-    sprintf(battle_pre_message, str_monster_attack,
-      dummy->name, dummy->id);
-    if (roll_attack(dummy->atk, player.def)) {
-      const uint16_t base = get_monster_dmg(dummy->level, dummy->exp_tier);
-      damage_player(base, DAMAGE_PHYSICAL);
-    } else {
-      sprintf(battle_post_message, str_monster_miss);
-    }
-    break;
-  default:
-    skip_post_message = true;
-    break;
-  }
-}
-
-void dummy_generator(Monster *m, uint8_t level, TestDummyType type) BANKED {
-  monster_init_instance(
-    m,
-    MONSTER_DUMMY,
-    str_misc_dummy,
-    &test_dummy_tileset
-  );
-
-  PowerTier tier = C_TIER;
-
-  m->palette = dummy_palette;
-  m->exp_tier = tier;
-  m->level = level;
-
-  m->max_hp = get_monster_hp(level, tier);
-  m->hp = m->max_hp;
-
-  m->atk_base = get_monster_atk(level, tier);
-  m->def_base = get_monster_def(level, tier);
-  m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
-  m->agl_base = get_agl(1, C_TIER);
-
-  m->parameter = type;
-  m->take_turn = dummy_take_turn;
-
-  monster_reset_stats(m);
-}
-
-// -----------------------------------------------------------------------------
 // Monster 1 - Kobold
 // -----------------------------------------------------------------------------
 
+#define KOBOLD_PRONE_FLAG FLAG(7)
+
 static void kobold_take_turn(Monster *m) {
+  uint8_t daze_chance;
+  uint8_t prone_chance;
+
+  switch (m->exp_tier) {
+  case C_TIER:
+    daze_chance = 13;
+    prone_chance = 14;
+    break;
+  case B_TIER:
+    daze_chance = 14;
+    prone_chance = 15;
+    break;
+  case A_TIER:
+    daze_chance = 15;
+    prone_chance = 16;
+    break;
+  default:
+    daze_chance = 16;
+    prone_chance = 16;
+  }
+
+  if (m->parameter & KOBOLD_PRONE_FLAG) {
+    // If they fell prone, they spend a whole turn getting up
+    m->parameter &= ~KOBOLD_PRONE_FLAG;
+    sprintf(battle_pre_message, str_monster_kobold_get_up, m->id);
+    skip_post_message = true;
+    return;
+  }
+
   const uint8_t move_roll = d16();
 
-  // Dazed (silly kobolds being dazed 6.25% of the time)
-  if (move_roll == 15) {
+  // Kobolds sometimes space out entirely
+  if (move_roll >= daze_chance) {
     sprintf(battle_pre_message, str_monster_kobold_dazed, m->id);
-    sprintf(battle_post_message, str_monster_kobold_does_nothing);
+    skip_post_message = true;
     return;
   }
 
@@ -212,9 +183,11 @@ static void kobold_take_turn(Monster *m) {
 
   if (roll_attack(atk, def)) {
     damage_player(get_monster_dmg(m->level, m->exp_tier), type);
-  } else if (!d16()) {
-    // Silly kobolds falling over on their ass 6.25% of the time
+  } else if (d16() >= prone_chance) {
+    // Not only did they miss, but they fell prone and need to spend a turn
+    // getting back up...
     sprintf(battle_post_message, str_monster_kobold_miss);
+    m->parameter |= KOBOLD_PRONE_FLAG;
   } else {
     sprintf(battle_post_message, str_monster_miss);
   }
@@ -227,13 +200,13 @@ void kobold_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->exp_tier = tier;
   m->level = level;
 
-  m->max_hp = get_monster_hp(level_offset(level, 2), tier);
+  m->max_hp = get_monster_hp(level_offset(level, -2), tier);
   m->hp = m->max_hp;
 
-  m->atk_base = get_monster_atk(level_offset(level, 3), tier);
-  m->def_base = get_monster_def(level_offset(level, -1), tier);
+  m->atk_base = get_monster_atk(level_offset(level, -3), tier);
+  m->def_base = get_monster_def(level_offset(level, -2), tier);
   m->matk_base = get_monster_atk(level_offset(level, -1), tier);
-  m->mdef_base = get_monster_def(level_offset(level, -2), tier);
+  m->mdef_base = get_monster_def(level_offset(level, -4), tier);
   m->agl_base = get_agl(level_offset(level, 2), tier == C_TIER ? B_TIER : tier);
 
   m->aspect_resist = DAMAGE_EARTH;
@@ -619,6 +592,66 @@ void dragon_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->aspect_resist = 0;
   m->aspect_vuln = 0;
   m->debuff_immune = 0;
+
+  monster_reset_stats(m);
+}
+
+// -----------------------------------------------------------------------------
+// Monster 255 - Test Dummy
+// -----------------------------------------------------------------------------
+
+static void dummy_take_turn(Monster *dummy) {
+  sprintf(battle_pre_message, str_monster_dummy_pre, dummy->id);
+
+  switch (dummy->parameter) {
+  case DUMMY_INVINCIBLE:
+    dummy->target_hp = dummy->max_hp;
+    sprintf(battle_post_message, str_monster_dummy_post_heal);
+    break;
+  case DUMMY_COWARD:
+    monster_flee(dummy);
+    break;
+  case DUMMY_AGGRESSIVE:
+    sprintf(battle_pre_message, str_monster_attack,
+      dummy->name, dummy->id);
+    if (roll_attack(dummy->atk, player.def)) {
+      const uint16_t base = get_monster_dmg(dummy->level, dummy->exp_tier);
+      damage_player(base, DAMAGE_PHYSICAL);
+    } else {
+      sprintf(battle_post_message, str_monster_miss);
+    }
+    break;
+  default:
+    skip_post_message = true;
+    break;
+  }
+}
+
+void dummy_generator(Monster *m, uint8_t level, TestDummyType type) BANKED {
+  monster_init_instance(
+    m,
+    MONSTER_DUMMY,
+    str_misc_dummy,
+    &test_dummy_tileset
+  );
+
+  PowerTier tier = C_TIER;
+
+  m->palette = dummy_palette;
+  m->exp_tier = tier;
+  m->level = level;
+
+  m->max_hp = get_monster_hp(level, tier);
+  m->hp = m->max_hp;
+
+  m->atk_base = get_monster_atk(level, tier);
+  m->def_base = get_monster_def(level, tier);
+  m->matk_base = get_monster_atk(level, tier);
+  m->mdef_base = get_monster_def(level, tier);
+  m->agl_base = get_agl(1, C_TIER);
+
+  m->parameter = type;
+  m->take_turn = dummy_take_turn;
 
   monster_reset_stats(m);
 }

@@ -88,6 +88,7 @@ static void damage_monster(uint16_t base_damage, DamageAspect type) {
     sprintf(battle_post_message, str_battle_player_hit_resist, damage);
   } else if (monster->aspect_vuln & type) {
     damage <<= 1;
+    sprintf(battle_post_message, str_battle_player_hit_vuln, damage);
   } else {
     sprintf(battle_post_message, str_battle_player_hit, damage);
   }

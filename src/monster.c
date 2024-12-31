@@ -282,7 +282,7 @@ void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->take_turn = goblin_take_turn;
 
   m->exp_tier = tier;
-  m->level = level + 2;
+  m->level = level + 1;
 
   m->max_hp = get_monster_hp(level_offset(level, 0), tier);
   m->hp = m->max_hp;
@@ -356,7 +356,7 @@ void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->take_turn = zombie_take_turn;
 
   m->exp_tier = tier;
-  m->level = level + 3;
+  m->level = level + 2;
 
   m->max_hp = get_monster_hp(level_offset(level, 2), tier);
   m->hp = m->max_hp;

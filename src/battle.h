@@ -132,7 +132,7 @@
 /**
  * Denotes the starting row in the background where the submenu graphics begin.
  */
-#define SUBMENU_Y 18
+#define SUBMENU_Y 0x14
 
 /**
  * Row where submenu body text begins.

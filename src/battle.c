@@ -580,7 +580,7 @@ static void select_next_enemy(void) {
  * Draws the "EMPTY..." message in the middle of an empty battle_menu.
  */
 static inline void draw_menu_empty_text(void) {
-  core.draw_text(VRAM_BACKGROUND_XY(7, 20), str_misc_empty, 6);
+  core.draw_text(VRAM_BACKGROUND_XY(7, SUBMENU_Y + 2), str_misc_empty, 6);
 }
 
 /**
@@ -602,7 +602,7 @@ static inline void draw_submenu_heading(void) {
     start_tile = SUMMON_ICON;
     len = 5;
   }
-  uint8_t *vram = VRAM_BACKGROUND_XY(1, 18);
+  uint8_t *vram = VRAM_BACKGROUND_XY(1, SUBMENU_Y);
   uint8_t k;
   for (k = 0; k < len; k++, start_tile++, vram++)
     set_vram_byte(vram, start_tile);
@@ -705,25 +705,25 @@ static void draw_submenu_scroll_arrows(void) {
   const uint8_t border_tile = 0x91;
 
   if (battle_menu.max_scroll == 0) {
-    set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x12), border_tile);
-    set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x17), border_tile);
+    set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y), border_tile);
+    set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y + 5), border_tile);
     return;
   }
 
   if (battle_menu.scroll == 0) {
-    set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x12), border_tile);
-    set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x17), arrow_tile);
+    set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y), border_tile);
+    set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y + 5), arrow_tile);
     return;
   }
 
   if (battle_menu.scroll < battle_menu.max_scroll) {
-    set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x12), arrow_tile);
-    set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x17), arrow_tile);
+    set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y), arrow_tile);
+    set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y + 5), arrow_tile);
     return;
   }
 
-  set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x12), arrow_tile);
-  set_vram_byte(VRAM_BACKGROUND_XY(0x12, 0x17), border_tile);
+  set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y), arrow_tile);
+  set_vram_byte(VRAM_BACKGROUND_XY(0x12, SUBMENU_Y + 5), border_tile);
 }
 
 /**
@@ -865,7 +865,17 @@ static void open_battle_menu(BattleMenuType m) {
   battle_menu.active_menu = m;
   switch (m) {
   case BATTLE_MENU_MAIN:
-    move_screen_cursor(prev_menu - 1);
+    uint8_t cursor_memory;
+    switch (prev_menu) {
+    case BATTLE_MENU_ABILITY:
+      move_screen_cursor(BATTLE_CURSOR_MAIN_ABILITY);
+      break;
+    case BATTLE_MENU_ITEM:
+      move_screen_cursor(BATTLE_CURSOR_MAIN_ITEM);
+      break;
+    default:
+      move_screen_cursor(BATTLE_CURSOR_MAIN_FIGHT);
+    }
     break;
   case BATTLE_ABILITY_MONSTER_SELECT:
   case BATTLE_MENU_FIGHT:
@@ -1218,7 +1228,7 @@ static void fight_menu_isr(void) {
     battle_menu.active_menu != BATTLE_MENU_MAIN &&
     battle_menu.active_menu != BATTLE_MENU_FIGHT
   ) {
-    SCY_REG = 48;
+    SCY_REG = 64;
     return;
   }
 }
@@ -1275,7 +1285,7 @@ void initialize_battle(void) {
 
   // Attach an LCY=LY interrupt to handle the menu display.
   CRITICAL {
-    LYC_REG = 87 + 8;
+    LYC_REG = 90;
     STAT_REG = STATF_LYC;
     add_LCD(fight_menu_isr);
     add_LCD(nowait_int_handler);

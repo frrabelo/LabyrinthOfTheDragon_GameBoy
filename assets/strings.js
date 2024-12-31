@@ -71,7 +71,7 @@ addNamespace('battle', 0, {
   'lightning': 'Bolts of lighting fall!',
   'heal': 'Radiant green light descends...',
   'heal_complete': "You're fully healed!",
-  'insect_plague': 'Locusts swarm your enemies!',
+  'insect_plague': 'Locusts swarm!',
   'regen': 'You surge with vitality!',
   'monster_scared_frozen': '%monster %c shivers in fear...',
   'monster_paralyzed': "%monster %c can't move!",

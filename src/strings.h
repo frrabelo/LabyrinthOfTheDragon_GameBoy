@@ -221,7 +221,7 @@ extern const char str_battle_heal[];
 extern const char str_battle_heal_complete[];
 
 /**
- * "Locusts swarm your enemies!"
+ * "Locusts swarm!"
  */
 extern const char str_battle_insect_plague[];
 

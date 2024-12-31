@@ -67,6 +67,56 @@ typedef enum Turn {
 } Turn;
 
 /**
+ * Encounter table entry for the random encounter system.
+ */
+typedef struct EncounterTable {
+  /**
+   * Odds out of 256 that this encounter will be chosen.
+   */
+  Odds odds;
+  /**
+   * Encounter layout.
+   */
+  MonsterLayout layout;
+  /**
+   * Monster type for the first monster.
+   */
+  MonsterType monster1;
+  /**
+   * Level for the first monster.
+   */
+  uint8_t monster1_level;
+  /**
+   * Tier for the first monster.
+   */
+  PowerTier monster1_tier;
+  /**
+   * Monster type for the second monster.
+   */
+  MonsterType monster2;
+  /**
+   * Level for the second monster.
+   */
+  uint8_t monster2_level;
+  /**
+   * Power tier for the second monster.
+   */
+  PowerTier monster2_tier;
+  /**
+   * Type for the third monster.
+   */
+  MonsterType monster3;
+  /**
+   * Level for the third monster.
+   */
+  uint8_t monster3_level;
+  /**
+   * Tier for the third monster.
+   */
+  PowerTier monster3_tier;
+} EncounterTable;
+
+/**
  * Data structure detailing the current encounter.
  */
 typedef struct Encounter {
@@ -165,6 +215,12 @@ inline void on_victory(void) {
     encounter.on_victory = NULL;
   }
 }
+
+/**
+ * Generates a random encounter from the given encounter table.
+ * @param table Table to use when generating the encounter.
+ */
+void generate_encounter(EncounterTable *table) NONBANKED;
 
 /**
  * Sets the player's next action to a basic attack.

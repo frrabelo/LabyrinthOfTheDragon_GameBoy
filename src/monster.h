@@ -30,6 +30,7 @@ typedef enum MonsterType {
   MONSTER_MINDFLAYER,
   MONSTER_BEHOLDER,
   MONSTER_DRAGON,
+  MONSTER_NONE = 0xFE,
   MONSTER_DUMMY = 0xFF,
 } MonsterType;
 

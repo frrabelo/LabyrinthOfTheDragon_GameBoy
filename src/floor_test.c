@@ -295,6 +295,54 @@ const NPC floor_test_npcs[] = {
 };
 
 //------------------------------------------------------------------------------
+// Random Encounter Table
+//------------------------------------------------------------------------------
+
+static const EncounterTable random_encounters[] = {
+  {
+    ODDS_1P, MONSTER_LAYOUT_1,
+    MONSTER_ZOMBIE, 7, B_TIER
+  },
+  {
+    ODDS_2P, MONSTER_LAYOUT_1,
+    MONSTER_GOBLIN, 7, B_TIER
+  },
+  {
+    ODDS_3P, MONSTER_LAYOUT_1,
+    MONSTER_KOBOLD, 7, B_TIER
+  },
+  {
+    ODDS_4P, MONSTER_LAYOUT_3S,
+    MONSTER_KOBOLD, 6, C_TIER,
+    MONSTER_GOBLIN, 7, C_TIER,
+    MONSTER_KOBOLD, 6, C_TIER,
+  },
+  {
+    ODDS_10P, MONSTER_LAYOUT_2,
+    MONSTER_KOBOLD, 6, C_TIER,
+    MONSTER_GOBLIN, 7, C_TIER,
+  },
+  {
+    ODDS_15P, MONSTER_LAYOUT_2,
+    MONSTER_KOBOLD, 6, C_TIER,
+    MONSTER_KOBOLD, 5, C_TIER,
+  },
+  {
+    ODDS_15P, MONSTER_LAYOUT_1,
+    MONSTER_GOBLIN, 7, C_TIER,
+  },
+  {
+    ODDS_25P, MONSTER_LAYOUT_1,
+    MONSTER_KOBOLD, 7, C_TIER,
+  },
+  {
+    ODDS_25P, MONSTER_LAYOUT_1,
+    MONSTER_KOBOLD, 5, C_TIER,
+  },
+  { END }
+};
+
+//------------------------------------------------------------------------------
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
@@ -327,11 +375,7 @@ bool floor_test_on_special(void) {
       return true;
     }
     if (player_at(3, 4)) {
-      reset_encounter(MONSTER_LAYOUT_1);
-      zombie_generator(monster, 5, A_TIER);
-      monster->id = 'A';
-      // kobold_generator(++monster, 5, C_TIER);
-      // monster->id = 'B';
+      generate_encounter(random_encounters);
       start_battle();
       return true;
     }

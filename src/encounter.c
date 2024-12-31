@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include "encounter.h"
+#include "monster.h"
 
 void before_round(void) {
   encounter.round_complete = false;
@@ -113,6 +114,7 @@ void monster_reset_stats(Monster *m) NONBANKED {
   m->hp_delta = 0;
   m->fled = false;
 }
+
 
 /**
  * Updates status effects for the player.

@@ -374,6 +374,10 @@ typedef enum MapState {
    * Map is returning from battle.
    */
   MAP_STATE_FROM_BATTLE,
+  /**
+   * The map menu is being shown or animated.
+   */
+  MAP_STATE_MENU,
 } MapState;
 
 /**
@@ -900,6 +904,35 @@ typedef struct TileHashEntry {
 } TileHashEntry;
 
 /**
+ * Enumeration of map menu states.
+ */
+typedef enum MapMenuState {
+  MAP_MENU_CLOSED,
+  MAP_MENU_OPEN,
+} MapMenuState;
+
+/**
+ * Cursor positions for the map menu.
+ */
+typedef enum MapMenuCursor {
+  MAP_MENU_CURSOR_SAVE,
+  MAP_MENU_CURSOR_QUIT,
+} MapMenuCursor;
+
+/**
+ * Map menu state data.
+ */
+typedef struct MapMenu {
+  MapMenuState state;
+  MapMenuCursor cursor;
+} MapMenu;
+
+/**
+ * Map menu global state.
+ */
+extern MapMenu map_menu;
+
+/**
  * Map system main state. Holds all global memory values used in the system.
  */
 typedef struct MapSystem {
@@ -1127,6 +1160,31 @@ void return_from_battle(void) NONBANKED;
  * @param id Id of the door to open.
  */
 void open_door_by_id(DoorId id);
+
+/**
+ * Clears all active map sprites.
+ */
+void clear_map_sprites(void);
+
+/**
+ * Initializes the map menu.
+ */
+void init_map_menu(void);
+
+/**
+ * Performs game loop updates for the map menu.
+ */
+void update_map_menu(void);
+
+/**
+ * Opens the map menu.
+ */
+void show_map_menu(void);
+
+/**
+ * Closes the map menu.
+ */
+void hide_map_menu(void);
 
 /**
  * Opens a textbox while on the world map.

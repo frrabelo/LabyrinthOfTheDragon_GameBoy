@@ -52,6 +52,10 @@ addNamespace('misc', 0, {
   'mind_flayer': 'M.Flayer',
   'beholder': 'Beholder',
   'dragon': 'Dragon',
+  'druid_short':    'DRU',
+  'fighter_short':  'FTR',
+  'monk_short':     'MNK',
+  'sorcerer_short': 'SORC',
 })
 
 addNamespace('ability', 0, {

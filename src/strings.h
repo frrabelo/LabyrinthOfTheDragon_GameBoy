@@ -156,6 +156,26 @@ extern const char str_misc_beholder[];
 extern const char str_misc_dragon[];
 
 /**
+ * "DRU"
+ */
+extern const char str_misc_druid_short[];
+
+/**
+ * "FTR"
+ */
+extern const char str_misc_fighter_short[];
+
+/**
+ * "MNK"
+ */
+extern const char str_misc_monk_short[];
+
+/**
+ * "SORC"
+ */
+extern const char str_misc_sorcerer_short[];
+
+/**
  * "Poison Spray "
  */
 extern const char str_ability_druid_poison_spray[];

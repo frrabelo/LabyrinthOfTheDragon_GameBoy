@@ -30,22 +30,22 @@ const palette_color_t blank_palette[4] = {
 /**
  * Font tileset.
  */
-const Tileset tileset_font = { 128, 10, tile_data_font };
+static const Tileset tileset_font = { 128, 10, tile_data_font };
 
 /**
  * Battle tileset.
  */
-const Tileset tileset_battle = { 5 * 16, 10, tile_battle };
+static const Tileset tileset_battle = { 5 * 16, 10, tile_battle };
 
 /**
  * Common objects tileset.
  */
-const Tileset objects_tileset = { 128, 10, tile_data_objects };
+static const Tileset objects_tileset = { 128, 10, tile_data_objects };
 
 /**
  * Dungeon level tileset (page 1).
  */
-const Tileset dungeon_tileset_page1 = {
+static const Tileset dungeon_tileset_page1 = {
   128,
   12,
   tile_data_dungeon
@@ -54,7 +54,7 @@ const Tileset dungeon_tileset_page1 = {
 /**
  * Dungeon level tileset (page 2).
  */
-const Tileset dungeon_tileset_page2 = {
+static const Tileset dungeon_tileset_page2 = {
   128,
   12,
   tile_data_dungeon + BYTES_PER_TILE * 128
@@ -63,7 +63,7 @@ const Tileset dungeon_tileset_page2 = {
 /**
  * Dungeon level tileset (page 2).
  */
-const Tileset dungeon_tileset_page3 = {
+static const Tileset dungeon_tileset_page3 = {
   128,
   12,
   tile_data_dungeon + BYTES_PER_TILE * 128 * 2
@@ -72,26 +72,26 @@ const Tileset dungeon_tileset_page3 = {
 /**
  * Hero sprites tileset.
  */
-const Tileset hero_tileset = { 12 * 8, 10, tile_data_hero };
+static const Tileset hero_tileset = { 12 * 8, 10, tile_data_hero };
 
 /**
  * Monster map character tiles, page1.
  */
-const Tileset monsters_tileset_page1 = {
+static const Tileset monsters_tileset_page1 = {
   96, 15, tile_monsters
 };
 
 /**
  * Monster map character tiles, page2.
  */
-const Tileset monsters_tileset_page2 = {
+static const Tileset monsters_tileset_page2 = {
   96, 15, tile_monsters + BYTES_PER_TILE * 96
 };
 
 /**
  * Monster map character tiles, page2.
  */
-const Tileset monsters_tileset_page3 = {
+static const Tileset monsters_tileset_page3 = {
   96, 15, tile_monsters + BYTES_PER_TILE * 96 * 2
 };
 
@@ -222,7 +222,7 @@ static void draw_text(uint8_t *vram, const char *text, uint8_t max) NONBANKED {
 }
 
 static void print_fraction(uint8_t *vram, uint16_t n, uint16_t d) {
-  char buf[10];
+  char buf[16];
   sprintf(buf, "%u/%u", n, d);
   draw_text(vram, buf, 7);
 }

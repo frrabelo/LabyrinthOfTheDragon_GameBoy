@@ -34,5 +34,5 @@ const char str_battle_player_flee_attempt[] = "You attempt to \nflee\x60";
 const char str_battle_player_flee_success[] = "And get away!";
 const char str_battle_player_flee_failure[] = "But are blocked!";
 const char str_battle_victory[] = "Victory! You gain \n%u XP!";
-const char str_battle_victory_no_xp[] = "Victory! You gain \nno XP.\fMust have \nbeen too weak\x60";
+const char str_battle_victory_no_xp[] = "Victory! But you \ngain no XP\x60";
 const char str_battle_level_up[] = "LEVEL UP! You \nreach %u!";

@@ -94,7 +94,7 @@ addNamespace('battle', 0, {
   'player_flee_success': 'And get away!',
   'player_flee_failure': 'But are blocked!',
   'victory': 'Victory! You gain %exp XP!',
-  'victory_no_xp': 'Victory! You gain no XP.\fMust have been too weak...',
+  'victory_no_xp': 'Victory! But you gain no XP...',
   'level_up': 'LEVEL UP! You reach %level!',
 })
 

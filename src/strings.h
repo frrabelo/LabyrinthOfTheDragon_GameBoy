@@ -336,7 +336,7 @@ extern const char str_battle_player_flee_failure[];
 extern const char str_battle_victory[];
 
 /**
- * "Victory! You gain no XP.\fMust have been too weak..."
+ * "Victory! But you gain no XP..."
  */
 extern const char str_battle_victory_no_xp[];
 

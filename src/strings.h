@@ -281,7 +281,7 @@ extern const char str_battle_player_hit_immune[];
 extern const char str_battle_player_hit_resist[];
 
 /**
- * "It's SUPER EFFECTIVE dealing %damage damage!"
+ * "SUPER EFFECTIVE %damage damage!"
  */
 extern const char str_battle_player_hit_vuln[];
 
@@ -604,5 +604,25 @@ extern const char str_monster_goblin_attack[];
  * "Goblin %c shoots an acid arrow!"
  */
 extern const char str_monster_goblin_acid_arrow[];
+
+/**
+ * "Hrrnng... brains."
+ */
+extern const char str_monster_zombie_brains[];
+
+/**
+ * "Zombie %c's bite barely misses!"
+ */
+extern const char str_monster_zombie_bite_miss[];
+
+/**
+ * "Zombie %c bites and poisons you!"
+ */
+extern const char str_monster_zombie_bite_hit[];
+
+/**
+ * "Zombie %c swipes at you!"
+ */
+extern const char str_monster_zombie_slam[];
 
 #endif

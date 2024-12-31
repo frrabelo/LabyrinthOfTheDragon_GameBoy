@@ -303,10 +303,51 @@ void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 // Monster 3 - Zombie
 // -----------------------------------------------------------------------------
 
+#define ZOMBIE_BITE_HIT_FLAG FLAG(7)
+
 static void zombie_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
+  uint8_t bite_chance = 15;
+  if (monster->exp_tier == B_TIER)
+    bite_chance = 14;
+  if (monster->exp_tier == A_TIER)
+    bite_chance = 12;
+  if (monster->exp_tier == S_TIER)
+    bite_chance = 8;
+
+  // Zombies will only try to bite if they haven't hit with it yet
+  if (
+    !(monster->parameter & ZOMBIE_BITE_HIT_FLAG) &&
+    d16() >= bite_chance
+  ) {
+    sprintf(battle_pre_message, str_monster_zombie_brains);
+    if (roll_attack(monster->atk, player.def)) {
+      monster->parameter |= ZOMBIE_BITE_HIT_FLAG;
+      uint8_t duration = 2;
+      PowerTier poison_tier = C_TIER;
+      if (monster->exp_tier > C_TIER) {
+        duration = 4;
+        poison_tier = B_TIER;
+      }
+      apply_poison(
+        encounter.player_status_effects,
+        poison_tier,
+        duration,
+        player.debuff_immune);
+      sprintf(battle_post_message, str_monster_zombie_bite_hit, monster->id);
+    } else {
+      sprintf(battle_post_message, str_monster_zombie_bite_miss, monster->id);
+    }
+    return;
+  }
+
+  sprintf(battle_pre_message, str_monster_zombie_slam, monster->id);
+
+  if (roll_attack(monster->atk, player.def)) {
+    damage_player(
+      get_monster_dmg(monster->level, monster->exp_tier), DAMAGE_PHYSICAL);
+  }
+  else
+    sprintf(battle_post_message, str_monster_miss);
 }
 
 void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
@@ -315,18 +356,18 @@ void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->take_turn = zombie_take_turn;
 
   m->exp_tier = tier;
-  m->level = level;
+  m->level = level + 3;
 
-  m->max_hp = get_monster_hp(level, tier);
+  m->max_hp = get_monster_hp(level_offset(level, 2), tier);
   m->hp = m->max_hp;
-  m->atk_base = get_monster_atk(level, tier);
-  m->def_base = get_monster_def(level, tier);
-  m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
-  m->agl_base = get_agl(level, tier);
+  m->atk_base = get_monster_atk(level_offset(level, -2), tier);
+  m->def_base = get_monster_def(level_offset(level, -3), tier);
+  m->matk_base = get_monster_atk(level_offset(level, -2), tier);
+  m->mdef_base = get_monster_def(level_offset(level, -3), tier);
+  m->agl_base = get_agl(level_offset(level, -5), tier);
 
-  m->aspect_resist = 0;
-  m->aspect_vuln = 0;
+  m->aspect_resist = DAMAGE_DARK;
+  m->aspect_vuln = DAMAGE_FIRE | DAMAGE_MAGICAL;
   m->debuff_immune = 0;
 
   monster_reset_stats(m);

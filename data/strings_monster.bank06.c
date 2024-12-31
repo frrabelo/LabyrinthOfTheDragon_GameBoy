@@ -30,3 +30,7 @@ const char str_monster_kobold_get_up[] = "Kobold %c gets up.";
 const char str_monster_goblin_nose_pick[] = "Goblin %c picks its\n nose.";
 const char str_monster_goblin_attack[] = "Goblin %c swings a \nshortsword!";
 const char str_monster_goblin_acid_arrow[] = "Goblin %c shoots an\n acid arrow!";
+const char str_monster_zombie_brains[] = "Hrrnng\x60 brains.";
+const char str_monster_zombie_bite_miss[] = "Zombie %c\'s bite \nbarely misses!";
+const char str_monster_zombie_bite_hit[] = "Zombie %c bites and\n poisons you!";
+const char str_monster_zombie_slam[] = "Zombie %c swipes at\n you!";

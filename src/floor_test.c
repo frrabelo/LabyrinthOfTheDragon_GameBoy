@@ -328,7 +328,7 @@ bool floor_test_on_special(void) {
     }
     if (player_at(3, 4)) {
       reset_encounter(MONSTER_LAYOUT_1);
-      goblin_generator(monster, 5, A_TIER);
+      zombie_generator(monster, 5, A_TIER);
       monster->id = 'A';
       // kobold_generator(++monster, 5, C_TIER);
       // monster->id = 'B';

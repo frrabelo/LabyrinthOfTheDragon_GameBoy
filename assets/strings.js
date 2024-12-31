@@ -83,7 +83,7 @@ addNamespace('battle', 0, {
   'player_hit': 'You deal %damage damage!',
   'player_hit_immune': "They're completely immune!",
   'player_hit_resist': "They resist your attack, only %damage damage...",
-  'player_hit_vuln': "It's SUPER EFFECTIVE dealing %damage damage!",
+  'player_hit_vuln': "SUPER EFFECTIVE %damage damage!",
   'player_hit_crit': 'CRITICAL HIT! You deal %damage damage!',
   'player_heal': 'You heal %damage HP.',
   'player_heal_crit': 'CRITICAL! You heal a whopping %damage HP!',
@@ -160,6 +160,10 @@ addNamespace('monster', 6, {
   'goblin_nose_pick': 'Goblin %c picks its nose.',
   'goblin_attack': "Goblin %c swings a shortsword!",
   'goblin_acid_arrow': "Goblin %c shoots an acid arrow!",
+  'zombie_brains': 'Hrrnng... brains.',
+  'zombie_bite_miss': "Zombie %c's bite barely misses!",
+  'zombie_bite_hit': "Zombie %c bites and poisons you!",
+  'zombie_slam': "Zombie %c swipes at you!",
 })
 
 // Export the namespaces

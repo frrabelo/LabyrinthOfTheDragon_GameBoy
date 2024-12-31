@@ -19,25 +19,25 @@ MapSystem map = { MAP_STATE_WAITING };
 /**
  * Whether or not to initiate the wall hit sound effect.
  */
-bool play_wall_hit = true;
+static bool play_wall_hit = true;
 
 /**
  * Map tile data for the tile the hero currently occupies and those in every
  * cardinal direction (index this with a `Direction`).
  */
-MapTile local_tiles[5];
+static MapTile local_tiles[5];
 
 /**
  * Stores a buffer of tiles to be progressively loaded over the animation frames
  * of a move.
  */
-MapTile tile_buf[2 * MAP_HORIZ_LOADS];
+static MapTile tile_buf[2 * MAP_HORIZ_LOADS];
 
 /**
  * Map game object hashtable. Makes it easy to lookup game objects based on the
  * map and tile position in the map.
  */
-TileHashEntry tile_object_hashtable[TILE_HASHTABLE_SIZE];
+static TileHashEntry tile_object_hashtable[TILE_HASHTABLE_SIZE];
 
 /**
  * Holds the color of the flames for the sconces in the current floor.
@@ -494,14 +494,22 @@ static void init_flames(void) {
   const Sconce *sconce;
   for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
     const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
-    sconce_colors[get_sconce_index(sconce->id)] = sconce->color;
+
+    if (sconce->is_lit || sconce->id == SCONCE_STATIC)
+      sconce_colors[get_sconce_index(sconce->id)] = sconce->color;
+
     switch (sconce->color) {
+    case FLAME_RED_PROP:
+      set_sprite_prop(sprite_id, FLAME_RED_PROP);
+      break;
     case FLAME_GREEN:
-      set_sprite_prop(sprite_id, 0b00001010);
+      set_sprite_prop(sprite_id, FLAME_GREEN_PROP);
       break;
     case FLAME_BLUE:
-      set_sprite_prop(sprite_id, 0b00001011);
+      set_sprite_prop(sprite_id, FLAME_BLUE_PROP);
       break;
+    default:
+      set_sprite_prop(sprite_id, FLAME_RED_PROP);
     }
   }
 }

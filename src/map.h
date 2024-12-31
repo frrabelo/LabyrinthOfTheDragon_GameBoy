@@ -671,6 +671,21 @@ typedef enum FlameColor {
 } FlameColor;
 
 /**
+ * Sprite property to use for red flames.
+ */
+#define FLAME_RED_PROP 0b00001001
+
+/**
+ * Sprite property to use for green flames.
+ */
+#define FLAME_GREEN_PROP 0b00001010
+
+/**
+ * Sprite property to use for blue flames.
+ */
+#define FLAME_BLUE_PROP 0b00001011
+
+/**
  * A sconce that can be lit. WARNING: Not yet implemented.
  */
 typedef struct Sconce {

@@ -825,6 +825,7 @@ static void submenu_cursor_up(void) {
       battle_menu.scroll--;
       redraw_submenu_text();
       draw_submenu_scroll_arrows();
+      sfx_menu_move();
     }
   }
 }
@@ -850,6 +851,7 @@ static void submenu_cursor_down(void) {
       battle_menu.scroll++;
       redraw_submenu_text();
       draw_submenu_scroll_arrows();
+      sfx_menu_move();
     }
   }
 }

@@ -61,8 +61,7 @@ static void damage_player(uint16_t base_damage, DamageAspect type) {
 
   uint8_t roll = d16();
   uint16_t damage = calc_damage(roll, base_damage);
-  bool critical = roll >= 12;
-
+  bool critical = is_critical(roll);
   bool barskin = has_special(SPECIAL_BARKSKIN) && type != DAMAGE_FIRE;
 
   if (barskin)
@@ -182,7 +181,9 @@ static void kobold_take_turn(Monster *m) {
   }
 
   if (roll_attack(atk, def)) {
-    damage_player(get_monster_dmg(m->level, m->exp_tier), type);
+    uint16_t base_damage = get_monster_dmg(m->level, m->exp_tier);
+    clear_debug();
+    damage_player(base_damage, type);
   } else if (d16() >= prone_chance) {
     // Not only did they miss, but they fell prone and need to spend a turn
     // getting back up...

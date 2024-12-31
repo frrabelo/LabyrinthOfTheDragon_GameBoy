@@ -577,4 +577,16 @@ extern const uint8_t map_tile_lookup[];
  */
 extern uint8_t *debug;
 
+/**
+ * Debug address for 16-bit values.
+ */
+extern uint16_t *debug16;
+
+inline void clear_debug(void) {
+  uint8_t *d = debug;
+  for (uint8_t k = 0; k < 16; k++)
+    *d++ = 0xFF;
+  debug = (void *)0xB000;
+}
+
 #endif

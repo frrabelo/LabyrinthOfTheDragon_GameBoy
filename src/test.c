@@ -30,11 +30,10 @@ void fill_inventory(uint8_t amt) {
 }
 
 void test_big_map(void) {
-  init_test_player(CLASS_DRUID, 30);
-  player.has_torch = true;
-  grant_ability(ABILITY_ALL);
-  set_active_floor(&floor_test);
-  // set_active_floor(&floor_test2);
+  init_test_player(CLASS_DRUID, 5);
+  // grant_ability(ABILITY_ALL);
+  // set_active_floor(&floor_test);
+  set_active_floor(&floor_test2);
   init_world_map();
   game_state = GAME_STATE_WORLD_MAP;
 }

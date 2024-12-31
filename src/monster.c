@@ -222,9 +222,58 @@ void kobold_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 // -----------------------------------------------------------------------------
 
 static void goblin_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
+  uint8_t nose_pick_chance = 14;
+  uint8_t flee_chance = 12;
+
+  if (monster->exp_tier > C_TIER) {
+    nose_pick_chance = 15;
+    flee_chance = 14;
+  }
+
+  if (monster->exp_tier > B_TIER)
+    nose_pick_chance = 16;
+
+  // See if the goblin forgets it's fighting and picks its nose
+  if (d16() >= nose_pick_chance) {
+    sprintf(battle_pre_message, str_monster_goblin_nose_pick, monster->id);
+    skip_post_message = true;
+    return;
+  }
+
+  // Goblins sometimes flee at B_TIER and lower
+  if (monster->exp_tier <= B_TIER) {
+    uint16_t hp_pct = monster->hp * 16;
+    hp_pct /= monster->max_hp;
+    if (hp_pct <= 4 && d16() >= flee_chance) {
+      monster_flee(monster);
+      return;
+    }
+  }
+
+  uint8_t atk, def;
+  DamageAspect type;
+  PowerTier damage_tier;
+
+  if (d16() >= 12) {
+    // Acid Arrow
+    sprintf(battle_pre_message, str_monster_goblin_acid_arrow, monster->id);
+    atk = monster->atk;
+    def = player.mdef;
+    type = DAMAGE_MAGICAL;
+    damage_tier = (monster->exp_tier == C_TIER) ? B_TIER : monster->exp_tier;
+  } else {
+    // Shortsword
+    sprintf(battle_pre_message, str_monster_goblin_attack, monster->id);
+    atk = monster->atk;
+    def = player.def;
+    type = DAMAGE_PHYSICAL;
+    damage_tier = monster->exp_tier;
+  }
+
+  if (roll_attack(atk, def))
+    damage_player(get_monster_dmg(monster->level - 1, damage_tier), type);
+  else
+    sprintf(battle_post_message, str_monster_miss);
 }
 
 void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
@@ -233,14 +282,14 @@ void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->take_turn = goblin_take_turn;
 
   m->exp_tier = tier;
-  m->level = level;
+  m->level = level + 2;
 
-  m->max_hp = get_monster_hp(level, tier);
+  m->max_hp = get_monster_hp(level_offset(level, 0), tier);
   m->hp = m->max_hp;
   m->atk_base = get_monster_atk(level, tier);
-  m->def_base = get_monster_def(level, tier);
-  m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
+  m->def_base = get_monster_def(level_offset(level, -2), tier);
+  m->matk_base = get_monster_atk(level_offset(level, -1), tier);
+  m->mdef_base = get_monster_def(level_offset(level, -3), tier);
   m->agl_base = get_agl(level, tier);
 
   m->aspect_resist = 0;

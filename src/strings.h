@@ -586,8 +586,23 @@ extern const char str_monster_kobold_does_nothing[];
 extern const char str_monster_kobold_miss[];
 
 /**
- * "Kobold %c climbs to its feet."
+ * "Kobold %c gets up."
  */
 extern const char str_monster_kobold_get_up[];
+
+/**
+ * "Goblin %c picks its nose."
+ */
+extern const char str_monster_goblin_nose_pick[];
+
+/**
+ * "Goblin %c swings a shortsword!"
+ */
+extern const char str_monster_goblin_attack[];
+
+/**
+ * "Goblin %c shoots an acid arrow!"
+ */
+extern const char str_monster_goblin_acid_arrow[];
 
 #endif

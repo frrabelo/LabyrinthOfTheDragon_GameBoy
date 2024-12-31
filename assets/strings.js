@@ -157,6 +157,9 @@ addNamespace('monster', 6, {
   'kobold_does_nothing': 'And does nothing!',
   'kobold_miss': 'But instead it falls over and hiccups!',
   'kobold_get_up': 'Kobold %c gets up.',
+  'goblin_nose_pick': 'Goblin %c picks its nose.',
+  'goblin_attack': "Goblin %c swings a shortsword!",
+  'goblin_acid_arrow': "Goblin %c shoots an acid arrow!",
 })
 
 // Export the namespaces

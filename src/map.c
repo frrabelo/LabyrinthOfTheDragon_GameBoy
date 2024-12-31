@@ -349,8 +349,6 @@ static void update_npcs(void) {
       npc->row >= map.y - 1 &&
       npc->row < map.y + MAP_VERT_LOADS
     ) {
-      *debug = *debug + 1;
-
       const uint8_t tile_root =
         NPC_1_TILE_ROOT + 0x20 * pos + map.npc_walk_frame;
 

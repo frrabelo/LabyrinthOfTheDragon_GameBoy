@@ -35,27 +35,27 @@ const Ability druid0 = {
 
 const Ability druid1 = {
   2, str_ability_druid_bark_skin,
-  TARGET_SELF, 12, druid_bark_skin,
+  TARGET_SELF, 10, druid_bark_skin,
 };
 
 const Ability druid2 = {
   3, str_ability_druid_ligtning,
-  TARGET_SINGLE, 18, druid_lightning,
+  TARGET_SINGLE, 16, druid_lightning,
 };
 
 const Ability druid3 = {
    4, str_ability_druid_heal,
-   TARGET_SELF, 20, druid_heal,
+   TARGET_SELF, 22, druid_heal,
 };
 
 const Ability druid4 = {
    5, str_ability_druid_insect_plague,
-   TARGET_ALL, 45, druid_insect_plague,
+   TARGET_ALL, 34, druid_insect_plague,
 };
 
 const Ability druid5 = {
    6, str_ability_druid_regen,
-   TARGET_SELF, 30, druid_regen
+   TARGET_SELF, 40, druid_regen
 };
 
 //------------------------------------------------------------------------------

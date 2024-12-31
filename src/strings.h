@@ -211,9 +211,14 @@ extern const char str_battle_bark_skin[];
 extern const char str_battle_lightning[];
 
 /**
- * "Radiant blue light falls upon you..."
+ * "Radiant green light descends..."
  */
 extern const char str_battle_heal[];
+
+/**
+ * "You're fully healed!"
+ */
+extern const char str_battle_heal_complete[];
 
 /**
  * "Locusts swarm your enemies!"

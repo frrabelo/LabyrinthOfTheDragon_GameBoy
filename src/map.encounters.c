@@ -55,15 +55,10 @@ void generate_encounter(EncounterTable *table) {
 
   while (table->odds != END) {
     odds += table->odds;
-    *debug++ = odds;
     if (roll <= odds)
       break;
     table++;
   }
-
-  *debug++ = 0xAA;
-  *debug++ = table->odds;
-  *debug++ = table->layout;
 
   reset_encounter(table->layout);
   Monster *monster = encounter.monsters;

@@ -236,21 +236,65 @@ void druid_bark_skin(void) {
 }
 
 void druid_lightning(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_lightning);
+
+  Monster *target = encounter.target;
+  if (!roll_attack(player.matk, target->mdef)) {
+    sprintf(battle_post_message, str_battle_player_miss);
+    return;
+  }
+
+  PowerTier damage_tier = A_TIER;
+  if (player.level > 55)
+    damage_tier = S_TIER;
+
+  const uint16_t base_dmg = get_player_damage(
+    level_offset(player.level, 5), damage_tier);
+
+  damage_monster(base_dmg, DAMAGE_AIR);
 }
 
 void druid_heal(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_heal);
+
+  uint16_t heal_hp = player.max_hp / 2;
+  const uint8_t roll = d16();
+  if (is_critical(roll))
+    heal_hp = player.max_hp;
+
+  if (player.hp + heal_hp > player.max_hp) {
+    player.hp = player.max_hp;
+    sprintf(battle_post_message, str_battle_heal_complete);
+  } else {
+    sprintf(battle_post_message, str_battle_player_heal, heal_hp);
+  }
 }
 
 void druid_insect_plague(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_insect_plague);
+
+  PowerTier tier = B_TIER;
+  if (player.level > 75)
+    tier = S_TIER;
+  else if (player.level > 35)
+    tier = A_TIER;
+
+  const uint8_t level = level_offset(player.level, 5);
+  const uint16_t base_damage = get_player_damage(level, tier);
+  uint8_t hits = damage_all(base_damage, player.matk, true, DAMAGE_MAGICAL);
+
+  if (hits == 0)
+    sprintf(battle_post_message, str_battle_player_miss_all);
+  else
+    skip_post_message = true;
 }
 
 void druid_regen(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_regen);
+  skip_post_message = true;
+  PowerTier tier = player.level > 75 ? S_TIER : A_TIER;
+  apply_regen(encounter.player_status_effects, tier, 0);
 }
-
 
 //------------------------------------------------------------------------------
 // Class: Fighter

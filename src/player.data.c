@@ -60,12 +60,35 @@ const Ability druid5 = {
 
 //------------------------------------------------------------------------------
 
-const Ability fighter0 = { 1 };
-const Ability fighter1 = { 2 };
-const Ability fighter2 = { 3 };
-const Ability fighter3 = { 4 };
-const Ability fighter4 = { 5 };
-const Ability fighter5 = { 6 };
+const Ability fighter0 = {
+  1, str_ability_fighter_second_wind,
+  TARGET_SELF, 7, fighter_second_wind,
+};
+
+const Ability fighter1 = {
+  2, str_ability_fighter_action_surge,
+  TARGET_SINGLE, 12, fighter_action_surge,
+};
+
+const Ability fighter2 = {
+  3, str_ability_fighter_cleave,
+  TARGET_ALL, 17, fighter_cleave,
+};
+
+const Ability fighter3 = {
+  4, str_ability_fighter_trip_attack,
+  TARGET_SINGLE, 23, fighter_trip_attack,
+};
+
+const Ability fighter4 = {
+  5, str_ability_fighter_menace,
+  TARGET_ALL, 28, fighter_menace,
+};
+
+const Ability fighter5 = {
+  6, str_ability_fighter_indomitable,
+  TARGET_SELF, 35, fighter_indomitable
+};
 
 //------------------------------------------------------------------------------
 

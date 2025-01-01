@@ -384,6 +384,12 @@ extern const Ability druid4;
 extern const Ability druid5;
 
 void fighter_base_attack(void);
+void fighter_second_wind(void);
+void fighter_action_surge(void);
+void fighter_cleave(void);
+void fighter_trip_attack(void);
+void fighter_menace(void);
+void fighter_indomitable(void);
 
 extern const Ability fighter0;
 extern const Ability fighter1;

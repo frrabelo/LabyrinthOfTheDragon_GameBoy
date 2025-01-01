@@ -173,6 +173,11 @@ typedef struct Monster {
    */
   uint8_t parameter;
   /**
+   * Number of turns the monster stays "tripped" (this can be set by various
+   * player abilities).
+   */
+  uint8_t trip_turns;
+  /**
    * Routine to determine how the monster acts on its turn.
    */
   void (*take_turn)(struct Monster *m);

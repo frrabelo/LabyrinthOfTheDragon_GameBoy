@@ -313,7 +313,117 @@ void fighter_update_stats(void) {
 }
 
 void fighter_base_attack(void) {
-  // Sword
+  sprintf(battle_pre_message, str_battle_fighter_attack);
+
+  Monster *target = encounter.target;
+  if (!roll_attack(player.atk, target->def)) {
+    sprintf(battle_post_message, str_battle_player_miss);
+    return;
+  }
+
+  PowerTier damage_tier;
+  if (player.level < 25)
+    damage_tier = B_TIER;
+  else if (player.level < 50)
+    damage_tier = A_TIER;
+  else
+    damage_tier = S_TIER;
+
+  const uint8_t attack_level = level_offset(player.level, 3);
+  const uint16_t base_dmg = get_player_damage(attack_level, damage_tier);
+  damage_monster(base_dmg, DAMAGE_PHYSICAL);
+}
+
+void fighter_second_wind(void) {
+  uint16_t heal_hp = 3 * player.max_hp;
+  heal_hp /= 8;
+  if (player.hp + heal_hp > player.max_hp)
+    heal_hp = player.max_hp - player.hp;
+  sprintf(battle_pre_message, str_battle_second_wind, heal_hp);
+  skip_post_message = true;
+}
+
+void fighter_action_surge(void) {
+  sprintf(battle_pre_message, str_battle_action_surge);
+
+  PowerTier tier = B_TIER;
+  if (player.level > 20)
+    tier = A_TIER;
+  if (player.level > 40)
+    tier = S_TIER;
+
+  Monster *target = encounter.target;
+  const uint8_t attack_level = level_offset(player.level, 3);
+  uint16_t base_dmg = get_player_damage(attack_level, tier);
+  damage_monster(base_dmg * 2, DAMAGE_PHYSICAL);
+}
+
+void fighter_cleave(void) {
+  sprintf(battle_pre_message, str_battle_cleave);
+
+  PowerTier tier = C_TIER;
+  if (player.level > 20)
+    tier = B_TIER;
+  if (player.level > 50)
+    tier = A_TIER;
+  if (player.level > 75)
+    tier = S_TIER;
+
+  const uint8_t level = level_offset(player.level, -2);
+  const uint16_t base_damage = get_player_damage(level, tier);
+  uint8_t hits = damage_all(base_damage, player.matk, true, DAMAGE_MAGICAL);
+
+  if (hits == 0)
+    sprintf(battle_post_message, str_battle_player_miss_all);
+  else
+    skip_post_message = true;
+}
+
+void fighter_trip_attack(void) {
+  sprintf(battle_pre_message, str_battle_trip_attack);
+
+  Monster *target = encounter.target;
+  uint8_t def = get_monster_def(level_offset(target->level, -5), C_TIER);
+  if (!roll_attack(player.atk, def)) {
+    sprintf(battle_post_message, str_battle_player_miss);
+    return;
+  }
+
+  uint8_t turns = 2;
+  if (player.level > 60)
+    turns = 4;
+  else if (player.level > 30)
+    turns = 3;
+
+  target->trip_turns = turns;
+  sprintf(battle_post_message, str_battle_trip_attack_hit);
+}
+
+void fighter_menace(void) {
+  sprintf(battle_pre_message, str_battle_menace);
+  skip_post_message = true;
+
+  PowerTier tier = A_TIER;
+  uint8_t turns = 2;
+  if (player.level > 30)
+    turns = 3;
+  if (player.level > 60) {
+    turns = 4;
+    tier = S_TIER;
+  }
+
+  Monster *monster = encounter.monsters;
+  for (uint8_t k = 0; k < 3; k++, monster++) {
+    if (!monster->active)
+      continue;
+    apply_scared(monster->status_effects, tier, turns, monster->debuff_immune);
+  }
+}
+
+void fighter_indomitable(void) {
+  sprintf(battle_pre_message, str_battle_indomitable);
+  skip_post_message = true;
+  player.aspect_resist = 0xFF;
 }
 
 //------------------------------------------------------------------------------

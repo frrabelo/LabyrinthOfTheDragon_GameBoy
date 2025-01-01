@@ -46,6 +46,7 @@ static void monster_init_instance(
   monster->can_flee = true;
   monster->fled = false;
   monster->parameter = 0;
+  monster->trip_turns = 0;
 }
 
 /**

@@ -59,16 +59,26 @@ addNamespace('misc', 0, {
 })
 
 addNamespace('ability', 0, {
-  'druid_poison_spray':  'Poison Spray ',
-  'druid_cure_wounds':   'Cure Wounds  ',
-  'druid_bark_skin':     'Bark Skin    ',
-  'druid_ligtning':      'Lightning    ',
-  'druid_heal':          'Heal         ',
-  'druid_insect_plague': 'Insect Plague',
-  'druid_regen':         'Regenerate   ',
+  // Druid Attack & Abilities
+  'druid_poison_spray':   'Poison Spray ',
+  'druid_cure_wounds':    'Cure Wounds  ',
+  'druid_bark_skin':      'Bark Skin    ',
+  'druid_ligtning':       'Lightning    ',
+  'druid_heal':           'Heal         ',
+  'druid_insect_plague':  'Insect Plague',
+  'druid_regen':          'Regenerate   ',
+  // Fighter Attack & Abilities
+  'fighter_attack':       'Melee Attack ',
+  'fighter_second_wind':  'Second Wind  ',
+  'fighter_action_surge': 'Action Surge ',
+  'fighter_cleave':       'Cleave       ',
+  'fighter_trip_attack':  'Trip Attack  ',
+  'fighter_menace':       'Menace       ',
+  'fighter_indomitable':  'Indomitable  ',
 });
 
 addNamespace('battle', 0, {
+  // Druid abilities
   'poison_spray': 'Poison gas erupts from your palm!',
   'cure_wounds': "You're enveloped in blue light...",
   'bark_skin': 'Your skin grows hard as wood.',
@@ -77,12 +87,24 @@ addNamespace('battle', 0, {
   'heal_complete': "You're fully healed!",
   'insect_plague': 'Locusts swarm!',
   'regen': 'You surge with vitality!',
+  // Fighter abilities
+  'fighter_attack': 'You rush forward!',
+  'second_wind': 'You heal %damage HP!',
+  'action_surge': 'You surge forth!',
+  'cleave': 'You cleave through your enemies!',
+  'trip_attack': 'You sweep your legs low...',
+  'trip_attack_hit': 'You topple your foe!',
+  'menace': 'You growl menacingly!',
+  'indomitable': 'You feel invincible!',
+  // Monster / Player common
   'monster_scared_frozen': '%monster %c shivers in fear...',
   'monster_paralyzed': "%monster %c can't move!",
   'monster_poison_death': '%monster %c succumbs to the poison!',
   'monster_confuse_attack_self': 'Confused, %monster %c attacks itself!',
   'monster_confuse_attack_other': 'Confused, %monster %c attacks any ally!',
   'monster_confuse_stupor': '%monster %c stares aimlessly.',
+  'monster_lies_prone': '%monster %c lies prone!',
+  'monter_gets_up': '%monster %c gets up.',
   'player_miss': 'But you miss!',
   'player_magic_miss': 'But it has no effect!',
   'player_hit': 'You deal %damage damage!',

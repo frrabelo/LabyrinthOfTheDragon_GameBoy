@@ -301,6 +301,21 @@ inline void monster_turn(void) {
   if (!monster->active)
     return;
 
+  // Special monster "tripped" status
+  if (monster->trip_turns > 0) {
+    monster->trip_turns--;
+    if (monster->trip_turns == 0) {
+      sprintf(battle_pre_message, str_battle_monter_gets_up,
+        monster->name, monster->id);
+    } else {
+      sprintf(battle_pre_message, str_battle_monster_lies_prone,
+        monster->name, monster->id);
+      monster->def = get_monster_def(level_offset(monster->level, -10), C_TIER);
+    }
+    skip_post_message = true;
+    return;
+  }
+
   StatusEffectInstance *effect = monster->status_effects;
   for (uint8_t k = 0; k < MAX_ACTIVE_EFFECTS; k++, effect++) {
     if (!effect->active)
@@ -506,6 +521,8 @@ void reset_encounter(MonsterLayout layout) NONBANKED {
     reset_status_effects(monster->status_effects);
     monster_deactivate(monster);
   }
+
+  player.aspect_resist = 0;
 }
 
 /**

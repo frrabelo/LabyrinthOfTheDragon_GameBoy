@@ -211,6 +211,41 @@ extern const char str_ability_druid_insect_plague[];
 extern const char str_ability_druid_regen[];
 
 /**
+ * "Melee Attack "
+ */
+extern const char str_ability_fighter_attack[];
+
+/**
+ * "Second Wind  "
+ */
+extern const char str_ability_fighter_second_wind[];
+
+/**
+ * "Action Surge "
+ */
+extern const char str_ability_fighter_action_surge[];
+
+/**
+ * "Cleave       "
+ */
+extern const char str_ability_fighter_cleave[];
+
+/**
+ * "Trip Attack  "
+ */
+extern const char str_ability_fighter_trip_attack[];
+
+/**
+ * "Menace       "
+ */
+extern const char str_ability_fighter_menace[];
+
+/**
+ * "Indomitable  "
+ */
+extern const char str_ability_fighter_indomitable[];
+
+/**
  * "Poison gas erupts from your palm!"
  */
 extern const char str_battle_poison_spray[];
@@ -251,6 +286,46 @@ extern const char str_battle_insect_plague[];
 extern const char str_battle_regen[];
 
 /**
+ * "You rush forward!"
+ */
+extern const char str_battle_fighter_attack[];
+
+/**
+ * "You heal %damage HP!"
+ */
+extern const char str_battle_second_wind[];
+
+/**
+ * "You surge forth!"
+ */
+extern const char str_battle_action_surge[];
+
+/**
+ * "You cleave through your enemies!"
+ */
+extern const char str_battle_cleave[];
+
+/**
+ * "You sweep your legs low..."
+ */
+extern const char str_battle_trip_attack[];
+
+/**
+ * "You topple your foe!"
+ */
+extern const char str_battle_trip_attack_hit[];
+
+/**
+ * "You growl menacingly!"
+ */
+extern const char str_battle_menace[];
+
+/**
+ * "You feel invincible!"
+ */
+extern const char str_battle_indomitable[];
+
+/**
  * "%monster %c shivers in fear..."
  */
 extern const char str_battle_monster_scared_frozen[];
@@ -279,6 +354,16 @@ extern const char str_battle_monster_confuse_attack_other[];
  * "%monster %c stares aimlessly."
  */
 extern const char str_battle_monster_confuse_stupor[];
+
+/**
+ * "%monster %c lies prone!"
+ */
+extern const char str_battle_monster_lies_prone[];
+
+/**
+ * "%monster %c gets up."
+ */
+extern const char str_battle_monter_gets_up[];
 
 /**
  * "But you miss!"

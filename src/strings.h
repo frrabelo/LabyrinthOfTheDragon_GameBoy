@@ -246,6 +246,76 @@ extern const char str_ability_fighter_menace[];
 extern const char str_ability_fighter_indomitable[];
 
 /**
+ * "Unarmed Atk. "
+ */
+extern const char str_ability_monk_attack[];
+
+/**
+ * "Evasion      "
+ */
+extern const char str_ability_monk_evasion[];
+
+/**
+ * "Open Palm    "
+ */
+extern const char str_ability_monk_open_palm[];
+
+/**
+ * "Still Mind   "
+ */
+extern const char str_ability_monk_still_mind[];
+
+/**
+ * "Flurry       "
+ */
+extern const char str_ability_monk_flurry[];
+
+/**
+ * "Diamond Body "
+ */
+extern const char str_ability_monk_diamond_body[];
+
+/**
+ * "Quiver. Palm "
+ */
+extern const char str_ability_monk_quivering_palm[];
+
+/**
+ * "Magic Missle "
+ */
+extern const char str_ability_sorc_attack[];
+
+/**
+ * "Darkness     "
+ */
+extern const char str_ability_sorc_darkness[];
+
+/**
+ * "Fireball     "
+ */
+extern const char str_ability_sorc_fireball[];
+
+/**
+ * "Haste        "
+ */
+extern const char str_ability_sorc_haste[];
+
+/**
+ * "Sleetstorm   "
+ */
+extern const char str_ability_sorc_sleetstorm[];
+
+/**
+ * "Disintegrate "
+ */
+extern const char str_ability_sorc_disintigrate[];
+
+/**
+ * "Wild Magic   "
+ */
+extern const char str_ability_sorc_wild_magic[];
+
+/**
  * "Poison gas erupts from your palm!"
  */
 extern const char str_battle_poison_spray[];
@@ -326,6 +396,51 @@ extern const char str_battle_menace[];
 extern const char str_battle_indomitable[];
 
 /**
+ * "You strike with your fists!"
+ */
+extern const char str_battle_monk_attack[];
+
+/**
+ * "You feel light on your feet!"
+ */
+extern const char str_battle_monk_evasion[];
+
+/**
+ * "You strike with an open palm!"
+ */
+extern const char str_battle_monk_open_palm[];
+
+/**
+ * "You trip %monster %c!"
+ */
+extern const char str_battle_monk_open_palm_trip[];
+
+/**
+ * "You become one..."
+ */
+extern const char str_battle_monk_still_mind[];
+
+/**
+ * "You attack with a flurry of blows!"
+ */
+extern const char str_battle_monk_flurry_of_blows[];
+
+/**
+ * "You become tough as diamond."
+ */
+extern const char str_battle_monk_diamond_body[];
+
+/**
+ * "You attack their very essence!"
+ */
+extern const char str_battle_monk_quivering_palm[];
+
+/**
+ * "And end them."
+ */
+extern const char str_battle_monk_quivering_kill[];
+
+/**
  * "%monster %c shivers in fear..."
  */
 extern const char str_battle_monster_scared_frozen[];
@@ -364,6 +479,11 @@ extern const char str_battle_monster_lies_prone[];
  * "%monster %c gets up."
  */
 extern const char str_battle_monter_gets_up[];
+
+/**
+ * "But you evade!"
+ */
+extern const char str_battle_monster_miss_evaded[];
 
 /**
  * "But you miss!"

@@ -60,6 +60,19 @@ static void damage_player(uint16_t base_damage, DamageAspect type) {
     return;
   }
 
+  // Monk evasion
+  if (player.special_flags & SPECIAL_EVASION) {
+    uint8_t evade_chance = MONK_EVADE_CHANCE_LOW;
+    if (player.level > 70)
+      evade_chance = MONK_EVADE_CHANCE_HIGH;
+    else if (player.level > 30)
+      evade_chance = MONK_EVADE_CHANCE_MID;
+    if (d8() < evade_chance) {
+      sprintf(battle_post_message, str_battle_monster_miss_evaded);
+      return;
+    }
+  }
+
   uint8_t roll = d16();
   uint16_t damage = calc_damage(roll, base_damage);
   bool critical = is_critical(roll);

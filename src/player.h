@@ -5,6 +5,38 @@
 
 #include "map.h"
 
+#define DRUID_SP_CURE_WOUNDS  4
+#define DRUID_SP_BARK_SKIN 10
+#define DRUID_SP_LIGHTNING 16
+#define DRUID_SP_HEAL 22
+#define DRUID_SP_INSECT_PLAGUE 34
+#define DRUID_SP_REGEN 40
+
+#define FIGHTER_SP_SECOND_WIND 7
+#define FIGHTER_SP_ACTION_SURGE 12
+#define FIGHTER_SP_CLEAVE 17
+#define FIGHTER_SP_TRIP_ATTACK 23
+#define FIGHTER_SP_MENACE 28
+#define FIGHTER_SP_INDOMITABLE 35
+
+#define MONK_EVASION 3
+#define MONK_OPEN_PALM 10
+#define MONK_STILL_MIND 8
+#define MONK_FLURRY 15
+#define MONK_DIAMOND_BODY 18
+#define MONK_QUIVERING_PALM 30
+
+#define MONK_EVADE_CHANCE_LOW 3
+#define MONK_EVADE_CHANCE_MID 4
+#define MONK_EVADE_CHANCE_HIGH 5
+
+#define SORC_DARKNESS 4
+#define SORC_FIREBALL 8
+#define SORC_HASTE 12
+#define SORC_SLEETSTORM 16
+#define SORC_DISINTEGRATE 20
+#define SORC_WILD_MAGIC 25
+
 /**
  * Maximum number of abilities a player can acquire.
  */
@@ -89,6 +121,7 @@ typedef struct Ability {
 typedef enum SpecialFlags {
   SPECIAL_BARKSKIN = FLAG(0),
   SPECIAL_HASTE = FLAG(1),
+  SPECIAL_EVASION = FLAG(2),
 } SpecialFlags;
 
 /**
@@ -399,6 +432,12 @@ extern const Ability fighter4;
 extern const Ability fighter5;
 
 void monk_base_attack(void);
+void monk_evasion(void);
+void monk_open_palm(void);
+void monk_still_mind(void);
+void monk_flurry(void);
+void monk_diamond_body(void);
+void monk_quivering_palm(void);
 
 extern const Ability monk0;
 extern const Ability monk1;
@@ -408,6 +447,12 @@ extern const Ability monk4;
 extern const Ability monk5;
 
 void sorcerer_base_attack(void);
+void sorcerer_darkness(void);
+void sorcerer_fireball(void);
+void sorcerer_haste(void);
+void sorcerer_sleetstorm(void);
+void sorcerer_disintegrate(void);
+void sorcerer_wild_magic(void);
 
 extern const Ability sorcerer0;
 extern const Ability sorcerer1;

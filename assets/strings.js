@@ -75,6 +75,22 @@ addNamespace('ability', 0, {
   'fighter_trip_attack':  'Trip Attack  ',
   'fighter_menace':       'Menace       ',
   'fighter_indomitable':  'Indomitable  ',
+  // Monk Attack & Abilities
+  'monk_attack':          'Unarmed Atk. ',
+  'monk_evasion':         'Evasion      ',
+  'monk_open_palm':       'Open Palm    ',
+  'monk_still_mind':      'Still Mind   ',
+  'monk_flurry':          'Flurry       ',
+  'monk_diamond_body':    'Diamond Body ',
+  'monk_quivering_palm':  'Quiver. Palm ',
+  // Sorcerer Attack & Ability
+  'sorc_attack':          'Magic Missle ',
+  'sorc_darkness':        'Darkness     ',
+  'sorc_fireball':        'Fireball     ',
+  'sorc_haste':           'Haste        ',
+  'sorc_sleetstorm':      'Sleetstorm   ',
+  'sorc_disintigrate':    'Disintegrate ',
+  'sorc_wild_magic':      'Wild Magic   ',
 });
 
 addNamespace('battle', 0, {
@@ -96,6 +112,17 @@ addNamespace('battle', 0, {
   'trip_attack_hit': 'You topple your foe!',
   'menace': 'You growl menacingly!',
   'indomitable': 'You feel invincible!',
+  // Monk abilities
+  'monk_attack': 'You strike with your fists!',
+  'monk_evasion': 'You feel light on your feet!',
+  'monk_open_palm': 'You strike with an open palm!',
+  'monk_open_palm_trip': 'You trip %monster %c!',
+  'monk_still_mind': 'You become one...',
+  'monk_flurry_of_blows': 'You attack with a flurry of blows!',
+  'monk_diamond_body': 'You become tough as diamond.',
+  'monk_quivering_palm': 'You attack their very essence!',
+  'monk_quivering_kill': 'And end them.',
+  // Sorcerer abilities
   // Monster / Player common
   'monster_scared_frozen': '%monster %c shivers in fear...',
   'monster_paralyzed': "%monster %c can't move!",
@@ -105,6 +132,7 @@ addNamespace('battle', 0, {
   'monster_confuse_stupor': '%monster %c stares aimlessly.',
   'monster_lies_prone': '%monster %c lies prone!',
   'monter_gets_up': '%monster %c gets up.',
+  'monster_miss_evaded': 'But you evade!',
   'player_miss': 'But you miss!',
   'player_magic_miss': 'But it has no effect!',
   'player_hit': 'You deal %damage damage!',

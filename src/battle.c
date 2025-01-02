@@ -21,7 +21,6 @@ BattleState battle_state;
 BattleMenu battle_menu;
 uint8_t status_effect_x[3] = { 7, 7, 7 };
 
-// TODO convert these into a single battle_buffer object?
 char battle_pre_message[64];
 char battle_post_message[64];
 char rewards_buf[64];
@@ -29,11 +28,6 @@ bool skip_post_message = false;
 
 // TODO covert these into a single BattleAnimation state structure
 BattleAnimation battle_animation;
-
-// TODO Was gonna animate these but my drawing routine is too slow, don't have
-// the time for a deep optiization dive :(
-// Timer status_effect_timer;
-const uint8_t status_effect_frame = 1;
 
 bool flee_sound_played = false;
 

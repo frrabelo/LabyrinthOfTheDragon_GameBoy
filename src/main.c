@@ -95,9 +95,11 @@ static inline void update_joypad(void) {
  * joypad state updates.
  */
 void main(void) {
-  // TODO Send to "YOU NEED GBC screen if not"
   if (_cpu == CGB_TYPE)
     cpu_fast();
+  else {
+    while(1) {}
+  }
 
   disable_interrupts();
   DISPLAY_OFF;

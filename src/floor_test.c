@@ -1,6 +1,7 @@
 #pragma bank 2
 
 #include "floor.h"
+#include "sound.h"
 
 //------------------------------------------------------------------------------
 // Floorwide settings
@@ -360,6 +361,12 @@ bool floor_test_on_action(void) {
   return false;
 }
 
+const Exit no_no_exit = {
+  MAP_A, 0, 0,
+  MAP_A, 24, 5,
+  LEFT
+};
+
 bool floor_test_on_special(void) {
   Monster *monster = encounter.monsters;
 
@@ -385,6 +392,13 @@ bool floor_test_on_special(void) {
       start_battle();
       return true;
     }
+
+    if (player_at(7, 8)) {
+      sfx_no_no_square();
+      take_exit(&no_no_exit);
+      return true;
+    }
+
     break;
   }
   return false;

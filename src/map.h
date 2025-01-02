@@ -1187,6 +1187,13 @@ void show_map_menu(void);
 void hide_map_menu(void);
 
 /**
+ * Forces the player to take an exit.
+ * @param exit Exit to force down the player's throat. Even if they don't want
+ *   it.
+ */
+void take_exit(Exit *exit);
+
+/**
  * Opens a textbox while on the world map.
  * @param text Text to display in the text box.
  */

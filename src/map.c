@@ -1193,6 +1193,11 @@ static void load_exit(void) {
   DISPLAY_ON;
 }
 
+void take_exit(Exit *exit) {
+  map.active_exit = exit;
+  map_fade_out(MAP_STATE_LOAD_EXIT);
+}
+
 /**
  * Handles state updates when the player moves into an exit tile.
  * @return `true` if default move behavior should be prevented.

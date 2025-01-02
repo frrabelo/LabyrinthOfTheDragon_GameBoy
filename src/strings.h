@@ -726,6 +726,36 @@ extern const char str_maps_sconce_no_torch[];
 extern const char str_maps_sconce_torch_not_lit[];
 
 /**
+ * "This skull is so metal!"
+ */
+extern const char str_floor_test_metal_skull[];
+
+/**
+ * "A pair of glowing eyes peers back..."
+ */
+extern const char str_floor_test_glowing_eyes[];
+
+/**
+ * "You hear a click..."
+ */
+extern const char str_floor_test_click[];
+
+/**
+ * "The other lever creaks."
+ */
+extern const char str_floor_test_creak[];
+
+/**
+ * "The other lever groans."
+ */
+extern const char str_floor_test_groan[];
+
+/**
+ * "The chest clicks."
+ */
+extern const char str_floor_test_chest_click[];
+
+/**
  * "You get 2 potions and an ether!"
  */
 extern const char str_chest_item_2pot_1eth[];

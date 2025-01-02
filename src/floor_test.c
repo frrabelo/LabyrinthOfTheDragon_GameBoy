@@ -79,7 +79,7 @@ static const Chest chests[] = {
     false,      // If locked, can it be opened using a magic key?
     "Nice!",    // Message to display when the chest is opened
     NULL,       // Item list contents (optional)
-    NULL,       // Scripting "on open" callback (optional)
+    NULL,       // on_open callback (must be defined on bank 2)
   }
   */
   // Basic items chest, contains some stuffs
@@ -175,8 +175,8 @@ static const Sign signs[] = {
     "Hi there!" // The message to display
   }
   */
-  { MAP_A, 4, 1, UP, "This skull\x60\nIs so metal." },
-  { MAP_A, 7, 1, UP, "A pair of glowing\neyes peers back\x60" },
+  { MAP_A, 4, 1, UP, str_floor_test_metal_skull },
+  { MAP_A, 7, 1, UP, str_floor_test_glowing_eyes },
 
   { END },
 };
@@ -187,22 +187,22 @@ static const Sign signs[] = {
 
 static void on_lever(const Lever *lever) {
   if (lever->id == LEVER_1) {
-    map_textbox("You hear a click\x60");
+    map_textbox(str_floor_test_click);
     set_chest_unlocked(CHEST_2);
   }
 
   if (lever->id == LEVER_2) {
     if (is_lever_stuck(LEVER_3)) {
-      map_textbox("The other lever\ncreaks.");
+      map_textbox(str_floor_test_creak);
       unstick_lever(LEVER_3);
     } else {
-      map_textbox("The other lever\ngroans.");
+      map_textbox(str_floor_test_groan);
       stick_lever(LEVER_3);
     }
   }
 
   if (lever->id == LEVER_3) {
-    map_textbox("The chest clicks.");
+    map_textbox(str_floor_test_chest_click);
     set_chest_unlocked(CHEST_6);
   }
 
@@ -276,9 +276,11 @@ static const Sconce sconces[] = {
 static const NPC npcs[] = {
   /*
   {
-    NPC_1,    // Use NPC_* constants for ids.
-    MAP_A,    // Map for the npc
-    0, 0      // (x, y) tile for the npc
+    NPC_1,            // Use NPC_* constants for ids.
+    MAP_A,            // Map for the npc
+    0, 0              // (x, y) tile for the npc
+    MONSTER_KOBOLD,   // Monster type
+    on_monster_action // Action callback
   }
   */
   { END }
@@ -301,39 +303,21 @@ static bool on_init(void) {
 }
 
 static bool on_special(void) {
-  Monster *monster = encounter.monsters;
+  if (map.active_map->id != MAP_A)
+    return false;
 
-  switch (map.active_map->id) {
-  case MAP_A:
-    if (player_at(3, 8)) {
-      reset_encounter(MONSTER_LAYOUT_3S);
-      dummy_generator(monster, 10, DUMMY_COWARD);
-      monster->id = 'A';
-      dummy_generator(++monster, 10, DUMMY_COWARD);
-      monster->id = 'B';
-      dummy_generator(++monster, 10, DUMMY_COWARD);
-      monster->id = 'C';
-      start_battle();
-      return true;
-    }
-    if (player_at(3, 4)) {
-      // generate_encounter(random_encounters);
-
-      reset_encounter(MONSTER_LAYOUT_1);
-      owlbear_generator(monster, 26, C_TIER);
-      monster->id = 'A';
-      start_battle();
-      return true;
-    }
-
-    if (player_at(7, 8)) {
-      // sfx_no_no_square();
-      // take_exit(&no_no_exit);
-      // return true;
-    }
-
-    break;
+  if (player_at(3, 4)) {
+    reset_encounter(MONSTER_LAYOUT_1);
+    Monster *monster = encounter.monsters;
+    dummy_generator(monster, 10, DUMMY_NORMAL);
+    monster->id = 'A';
+    start_battle();
   }
+
+  if (player_at(7, 8)) {
+    teleport(MAP_A, 26, 21, UP);
+  }
+
   return false;
 }
 

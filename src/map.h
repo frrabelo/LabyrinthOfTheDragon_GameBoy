@@ -403,9 +403,18 @@ typedef enum MapState {
    */
   MAP_STATE_LOAD,
   /**
+   * Denotes that the textbox should be opened with the preset text.
+   */
+  MAP_STATE_TEXTBOX_OPEN,
+  /**
    * Denotes that the textbox is currently displayed.
    */
   MAP_STATE_TEXTBOX,
+  /**
+   * Denotes that battle was initiated from outside the map system and that
+   * gameplay should be transitioned.
+   */
+  MAP_STATE_INITIATE_BATTLE,
   /**
    * Map is being transitioned to the battle system.
    */
@@ -418,6 +427,10 @@ typedef enum MapState {
    * The map menu is being shown or animated.
    */
   MAP_STATE_MENU,
+  /**
+   * The map should teleport the player to the specified location.
+   */
+  MAP_STATE_TELEPORT,
 } MapState;
 
 /**
@@ -678,7 +691,7 @@ typedef enum DoorType {
 } DoorType;
 
 /**
- * A door that can be opened, closed, and locked. WARNING: NOT IMPLEMENTED YET.
+ * A door that can be opened, closed, and locked.
  */
 typedef struct Door {
   DoorId id;
@@ -730,7 +743,7 @@ typedef enum FlameColor {
 #define FLAME_BLUE_PROP 0b00001011
 
 /**
- * A sconce that can be lit. WARNING: Not yet implemented.
+ * A sconce that can be lit.
  */
 typedef struct Sconce {
   /**
@@ -772,7 +785,7 @@ typedef enum NpcId {
 } NpcId;
 
 /**
- * An NPC that can inhabit a map. WARNING: not yet implemented.
+ * An NPC that can inhabit a map.
  */
 typedef struct NPC {
   /**
@@ -1125,12 +1138,21 @@ typedef struct MapSystem {
    * Current walk frame for NPCs.
    */
   uint8_t npc_walk_frame;
+  /**
+   * Message to set when opening the map textbox.
+   */
+  const char *textbox_message;
 } MapSystem;
 
 /**
  * Main state for the map system.
  */
 extern MapSystem map;
+
+/**
+ * Exit used for the `teleport` function.
+ */
+extern Exit teleport_exit;
 
 /**
  * Sets the position of the active map. Note this method will not re-render the
@@ -1180,7 +1202,9 @@ void draw_world_map(void);
  * called by area handlers to start battle after initalizing the `encounter`
  * state used by the battle system.
  */
-void start_battle(void);
+inline void start_battle(void) {
+  map.state = MAP_STATE_INITIATE_BATTLE;
+}
 
 /**
  * Called when returning to the map system from the battle system.
@@ -1226,12 +1250,32 @@ void hide_map_menu(void);
 void take_exit(Exit *exit);
 
 /**
+ * Transports a player to the given map, column, and row.
+ * @param map Id of the map.
+ * @param col Column in the map.
+ * @param row Row in the map.
+ * @param heading Direction the player should "walk out" of the destination.
+ */
+inline void teleport(
+  MapId to_map,
+  uint8_t col,
+  uint8_t row,
+  Direction heading
+) {
+  teleport_exit.to_map = to_map;
+  teleport_exit.to_col = col;
+  teleport_exit.to_row = row;
+  teleport_exit.heading = heading;
+  map.state = MAP_STATE_TELEPORT;
+}
+
+/**
  * Opens a textbox while on the world map.
  * @param text Text to display in the text box.
  */
 inline void map_textbox(const char *text) {
-  map.state = MAP_STATE_TEXTBOX;
-  textbox.open(text);
+  map.state = MAP_STATE_TEXTBOX_OPEN;
+  map.textbox_message = text;
 }
 
 /**

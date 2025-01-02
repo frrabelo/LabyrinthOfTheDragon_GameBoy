@@ -15,6 +15,7 @@
 #include "sound.h"
 
 MapSystem map = { MAP_STATE_WAITING };
+Exit teleport_exit;
 
 /**
  * Whether or not to initiate the wall hit sound effect.
@@ -106,6 +107,7 @@ static uint8_t default_x;
  * Default Y position for a floor.
  */
 static uint8_t default_y;
+
 
 /**
  * Copies data from a source list to a destination list in memory.
@@ -202,12 +204,7 @@ static bool on_special(void) NONBANKED {
  * Calls the `on_open` callback for a chest.
  */
 static bool on_open(Chest *chest) NONBANKED {
-  const uint8_t _prev_bank = CURRENT_BANK;
-  bool value;
-  SWITCH_ROM(floor_bank->bank);
-  value = chest->on_open(chest);
-  SWITCH_ROM(_prev_bank);
-  return value;
+  return chest->on_open(chest);
 }
 
 /**
@@ -1401,11 +1398,6 @@ static void load_exit(void) {
   DISPLAY_ON;
 }
 
-void take_exit(Exit *exit) {
-  map.active_exit = exit;
-  map_fade_out(MAP_STATE_LOAD_EXIT);
-}
-
 /**
  * Handles state updates when the player moves into an exit tile.
  * @return `true` if default move behavior should be prevented.
@@ -2004,14 +1996,27 @@ void init_world_map(void) NONBANKED {
   map.state = MAP_STATE_WAITING;
 }
 
-void start_battle(void) {
-  map_fade_out(MAP_STATE_START_BATTLE);
-}
-
 void return_from_battle(void) NONBANKED {
   SWITCH_ROM(MAP_SYSTEM_BANK);
   initialize_world_map();
   map_fade_in(MAP_STATE_WAITING);
+}
+
+bool after_textbox(void) NONBANKED{
+  if (!map.after_textbox)
+    return false;
+  if (textbox.state != TEXT_BOX_CLOSING)
+    return false;
+
+  bool (*callback)(void) = map.after_textbox;
+  map.after_textbox = NULL;
+
+  uint8_t _prev_bank = CURRENT_BANK;
+  SWITCH_ROM(floor_bank->bank);
+  bool result = callback();
+  SWITCH_ROM(_prev_bank);
+
+  return result;
 }
 
 void update_map(void) {
@@ -2031,14 +2036,14 @@ void update_map(void) {
   case MAP_STATE_MOVING:
     update_map_move();
     break;
+  case MAP_STATE_TEXTBOX_OPEN:
+    textbox.open(map.textbox_message);
+    map.state = MAP_STATE_TEXTBOX;
+    // Intentionally fall through...
   case MAP_STATE_TEXTBOX:
     textbox.update();
-    if (textbox.state == TEXT_BOX_CLOSING && map.after_textbox) {
-      bool (*callback)(void) = map.after_textbox;
-      map.after_textbox = NULL;
-      if (callback())
-        break;
-    }
+    if (after_textbox())
+      break;
     if (textbox.state == TEXT_BOX_CLOSED)
       map.state = MAP_STATE_WAITING;
     break;
@@ -2068,6 +2073,14 @@ void update_map(void) {
       init_npcs();
       break;
     }
+    return;
+  case MAP_STATE_INITIATE_BATTLE:
+    map_fade_out(MAP_STATE_START_BATTLE);
+    return;
+  case MAP_STATE_TELEPORT:
+    map.active_exit = &teleport_exit;
+    map_fade_out(MAP_STATE_LOAD_EXIT);
+    sfx_no_no_square();
     return;
   }
 

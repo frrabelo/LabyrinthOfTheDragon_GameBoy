@@ -186,6 +186,15 @@ addNamespace('maps', 2, {
   'sconce_torch_not_lit': 'Your torch lacks a flame.',
 });
 
+addNamespace('floor_test', 2, {
+  'metal_skull': 'This skull is so metal!',
+  'glowing_eyes': 'A pair of glowing eyes peers back...',
+  'click': 'You hear a click...',
+  'creak': 'The other lever creaks.',
+  'groan': 'The other lever groans.',
+  'chest_click': 'The chest clicks.',
+})
+
 addNamespace('chest_item', 2, {
   '2pot_1eth': 'You get 2 potions and an ether!',
   'haste_pot': 'You get a haste potion!',

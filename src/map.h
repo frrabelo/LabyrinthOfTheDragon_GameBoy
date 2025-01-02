@@ -211,6 +211,46 @@
 #define NPC_BASE_PROP 0x00
 
 /**
+ * Maximum maps per floor.
+ */
+#define MAX_MAPS 4 + 1
+
+/**
+ * Maximum exits per floor.
+ */
+#define MAX_EXITS 24 + 1
+
+/**
+ * Maximum chests per floor.
+ */
+#define MAX_CHESTS 8 + 1
+
+/**
+ * Maximum signs per floor.
+ */
+#define MAX_SIGNS 8 + 1
+
+/**
+ * Maximum levers per floor.
+ */
+#define MAX_LEVERS 8 + 1
+
+/**
+ * Max sconces per floor.
+ */
+#define MAX_SCONCES 16 + 1
+
+/**
+ * Max NPCs per floor.
+ */
+#define MAX_NPCS 2 + 1
+
+/**
+ * Max doors per floor.
+ */
+#define MAX_DOORS 12 + 1
+
+/**
  * Sconce flame sprite ids.
  */
 typedef enum SconceFlames {
@@ -472,7 +512,7 @@ typedef struct Exit {
   /**
    * Floor for the destination (optional).
    */
-  struct Floor *to_floor;
+  struct FloorBank *to_floor;
 } Exit;
 
 /**
@@ -772,10 +812,6 @@ typedef struct Floor {
    */
   uint8_t id;
   /**
-   * Index of the starting map for the floor.
-   */
-  uint8_t default_map;
-  /**
    * Default starting column for the player on the starting map.
    */
   uint8_t default_x;
@@ -784,9 +820,9 @@ typedef struct Floor {
    */
   uint8_t default_y;
   /**
-   * Palettes to use for the dungeon.
+   * Color palettes for the area.
    */
-  const palette_color_t *palettes;
+  palette_color_t *palettes;
   /**
    * List of all maps for the floor.
    */
@@ -824,28 +860,10 @@ typedef struct Floor {
    */
   const bool (*on_init)(void);
   /**
-   * Called on game loop update when the map is active.
-   */
-  const void (*on_update)(void);
-  /**
-   * Called on VBLANK draw when the map is active.
-   */
-  const void (*on_draw)(void);
-  /**
-   * Called when the player interacts by pressing the "A" button.
-   * @return `true` to prevent the default action behavior.
-   */
-  const bool (*on_action)(void);
-  /**
    * Called when the map is active and the player moves into a special tile.
    * @return `true` if the map should prevent default behavior.
    */
   const bool (*on_special)(void);
-  /**
-   * Called when the map is active and the player moves into an "exit" tile.
-   * @return `true` if the map should prevent default behavior.
-   */
-  const bool (*on_exit)(void);
   /**
    * Called when the map is active and the player moves into a floor tile.
    * @param col The column for the tile.
@@ -854,6 +872,20 @@ typedef struct Floor {
    */
   const bool (*on_move)(void);
 } Floor;
+
+/**
+ * Data bank / floor data pair for the map system's floor loader.
+ */
+typedef struct FloorBank {
+  /**
+   * Bank the floor is on.
+   */
+  uint8_t bank;
+  /**
+   * Pointer to the floor's data.
+   */
+  Floor *floor;
+} FloorBank;
 
 /**
  * Number of entries in the map object hash table.
@@ -1126,7 +1158,7 @@ inline void set_hero_position(int8_t x, int8_t y) {
  * to initializing map system controller.
  * @param floor Floor to set.
  */
-void set_active_floor(Floor *floor) BANKED;
+void set_active_floor(FloorBank *f) BANKED;
 
 /**
  * Initialize the world map controller.
@@ -1244,70 +1276,6 @@ inline bool player_facing(uint8_t col, uint8_t row) {
     player_at_facing(col, row - 1, DOWN) ||
     player_at_facing(col, row + 1, UP)
   );
-}
-
-/**
- * Executes the active area's `on_init` callback if one is set.
- */
-inline bool on_init(void) {
-  if (!map.execute_on_init)
-    return false;
-  map.execute_on_init = false;
-  if (map.active_floor->on_init)
-    return map.active_floor->on_init();
-  return false;
-}
-
-/**
- * Executes the active area's `on_update` callback if one is set.
- */
-inline void on_update(void) {
-  if (map.active_floor->on_update)
-    map.active_floor->on_update();
-}
-
-/**
- * Executes the active area's `on_draw` callback if one is set.
- */
-inline void on_draw(void) {
-  if (map.active_floor->on_draw)
-    map.active_floor->on_draw();
-}
-
-/**
- * Executes the active area's `on_action` callback if one is set.
- */
-inline bool on_action(void) {
-  if (map.active_floor->on_action)
-    return map.active_floor->on_action();
-  return false;
-}
-
-/**
- * Executes the active area's `on_special` callback if one is set.
- */
-inline bool on_special(void) {
-  if (map.active_floor->on_special)
-    return map.active_floor->on_special();
-  return false;
-}
-
-/**
- * Executes the active area's `on_exit` callback if one is set.
- */
-inline bool on_exit(void) {
-  if (map.active_floor->on_exit)
-    return map.active_floor->on_exit();
-  return false;
-}
-
-/**
- * Executes the active area's `on_move` callback if one is set.
- */
-inline bool on_move(void) {
-  if (map.active_floor->on_move)
-    return map.active_floor->on_move();
-  return false;
 }
 
 /**

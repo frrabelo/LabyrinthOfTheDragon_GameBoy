@@ -48,6 +48,201 @@ FlameColor sconce_colors[8] = {
 };
 
 /**
+ * Bank for the current floor.
+ */
+static FloorBank *floor_bank;
+
+/**
+ * Maps for the current floor.
+ */
+static Map maps[MAX_MAPS];
+
+/**
+ * Exits for the current floor.
+ */
+static Exit exits[MAX_EXITS];
+
+/**
+ * Chests for the current floor.
+ */
+static Chest chests[MAX_CHESTS];
+
+/**
+ * Signs for the current floor.
+ */
+static Sign signs[MAX_SIGNS];
+
+/**
+ * Levers for the current floor.
+ */
+static Lever levers[MAX_LEVERS];
+
+/**
+ * Sconces for the current floor.
+ */
+static Sconce sconces[MAX_SCONCES];
+
+/**
+ * NPCs for the current floor.
+ */
+static NPC npcs[MAX_NPCS];
+
+/**
+ * Doors for the current floor.
+ */
+static Door doors[MAX_DOORS];
+
+/**
+ * Palettes for a floor.
+ */
+static palette_color_t floor_palettes[7 * 4];
+
+/**
+ * Default X position for a floor.
+ */
+static uint8_t default_x;
+
+/**
+ * Default Y position for a floor.
+ */
+static uint8_t default_y;
+
+/**
+ * Copies data from a source list to a destination list in memory.
+ * @param src Source data.
+ * @param dst Destination memory.
+ * @param max Max number of entries.
+ * @param item_len Size (in bytes) for each entry.
+ */
+static void list_copy(
+  void *src,
+  void *dst,
+  uint8_t max,
+  size_t item_len
+) NONBANKED {
+  uint8_t *source = (uint8_t *)src;
+  uint8_t *dest = (uint8_t *)dst;
+  for (uint8_t k = 0; k < max; k++) {
+    const uint8_t record_id = *source;
+    size_t len = item_len;
+    while (len > 0) {
+      *dest++ = *source++;
+      len--;
+    }
+    if (record_id == END) break;
+  }
+}
+
+/**
+ * Copies a floor data to RAM.
+ */
+static void load_floor(FloorBank *f) NONBANKED {
+  floor_bank = f;
+
+  *debug = f->bank;
+
+  const uint8_t _prev_bank = CURRENT_BANK;
+  SWITCH_ROM(f->bank);
+
+  const Floor *floor = f->floor;
+
+  default_x = floor->default_x;
+  default_y = floor->default_y;
+
+  list_copy(floor->maps, maps, MAX_MAPS, sizeof(Map));
+  list_copy(floor->exits, exits, MAX_EXITS, sizeof(Map));
+  list_copy(floor->signs, signs, MAX_SIGNS, sizeof(Sign));
+  list_copy(floor->chests, chests, MAX_CHESTS, sizeof(Chest));
+  list_copy(floor->levers, levers, MAX_LEVERS, sizeof(Lever));
+  list_copy(floor->doors, doors, MAX_DOORS, sizeof(Door));
+  list_copy(floor->sconces, sconces, MAX_SCONCES, sizeof(Sconce));
+  list_copy(floor->npcs, npcs, MAX_NPCS, sizeof(NPC));
+  list_copy(floor->palettes, floor_palettes, 7 * 4, sizeof(palette_color_t));
+
+  SWITCH_ROM(_prev_bank);
+}
+
+/**
+ * Switches to the floors bank and calls its `on_init` function.
+ */
+static bool on_init(void) NONBANKED {
+  const uint8_t _prev_bank = CURRENT_BANK;
+  bool value;
+  SWITCH_ROM(floor_bank->bank);
+  value = floor_bank->floor->on_init();
+  SWITCH_ROM(_prev_bank);
+  return value;
+}
+
+/**
+ * Switches to the floors bank and calls its `on_move` function.
+ */
+static bool on_move(void) NONBANKED {
+  const uint8_t _prev_bank = CURRENT_BANK;
+  bool value;
+  SWITCH_ROM(floor_bank->bank);
+  value = floor_bank->floor->on_move();
+  SWITCH_ROM(_prev_bank);
+  return value;
+}
+
+/**
+ * Switches to the floors bank and calls its `on_special` function.
+ */
+static bool on_special(void) NONBANKED {
+  const uint8_t _prev_bank = CURRENT_BANK;
+  bool value;
+  SWITCH_ROM(floor_bank->bank);
+  value = floor_bank->floor->on_special();
+  SWITCH_ROM(_prev_bank);
+  return value;
+}
+
+/**
+ * Calls the `on_open` callback for a chest.
+ */
+static bool on_open(Chest *chest) NONBANKED {
+  const uint8_t _prev_bank = CURRENT_BANK;
+  bool value;
+  SWITCH_ROM(floor_bank->bank);
+  value = chest->on_open(chest);
+  SWITCH_ROM(_prev_bank);
+  return value;
+}
+
+/**
+ * Calls the `on_pull` callback for a lever.
+ */
+static void on_pull(Lever *lever) NONBANKED {
+  const uint8_t _prev_bank = CURRENT_BANK;
+  SWITCH_ROM(floor_bank->bank);
+  lever->on_pull(lever);
+  SWITCH_ROM(_prev_bank);
+}
+
+/**
+ * Calls the `on_lit` callback for a sconce.
+ */
+static void on_lit(Sconce *sconce) NONBANKED {
+  const uint8_t _prev_bank = CURRENT_BANK;
+  SWITCH_ROM(floor_bank->bank);
+  sconce->on_lit(sconce);
+  SWITCH_ROM(_prev_bank);
+}
+
+/**
+ * Calls the `on_action` callback for an npc.
+ */
+static bool on_npc_action(NPC *npc) NONBANKED {
+  const uint8_t _prev_bank = CURRENT_BANK;
+  bool value;
+  SWITCH_ROM(floor_bank->bank);
+  value = npc->on_action(npc);
+  SWITCH_ROM(_prev_bank);
+  return value;
+}
+
+/**
  * Hash function for positions in floor maps.
  * @param map_id Id of the map for the position.
  * @param x X position in the map.
@@ -293,8 +488,8 @@ static void init_npcs(void) {
   MonsterTilePosition pos = MONSTER_TILE_POSITION1;
   const NPC *npc;
   for (
-    npc = map.active_floor->npcs;
-    pos <= MONSTER_TILE_POSITION2 && npc->id != END;
+    npc = npcs;
+    pos <= MAX_NPCS && npc->id != END;
     npc++, pos++
   ) {
     MonsterTiles monster_tiles = monster_tiles_by_type(npc->monster_type);
@@ -333,7 +528,7 @@ static void update_npcs(void) {
   MonsterTilePosition pos = MONSTER_TILE_POSITION1;
   const NPC *npc;
   for (
-    npc = map.active_floor->npcs;
+    npc = npcs;
     pos <= MONSTER_TILE_POSITION2 && npc->id != END;
     npc++, pos++
   ) {
@@ -490,13 +685,15 @@ static void init_flames(void) {
     move_sprite(k, 0, 0);
   }
 
-  const Sconce *sconce;
-  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+  const Sconce *sconce = sconces;
+  for (uint8_t k = 0; k < MAX_SCONCES && sconce->id != END; k++, sconce++) {
+    // if (sconce->is_lit || sconce->id == SCONCE_STATIC)
+    //   sconce_colors[get_sconce_index(sconce->id)] = sconce->color;
+
+    *debug++ = sconce->id;
+    // *debug++ = get_sconce_index(sconce->id);
+
     const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
-
-    if (sconce->is_lit || sconce->id == SCONCE_STATIC)
-      sconce_colors[get_sconce_index(sconce->id)] = sconce->color;
-
     switch (sconce->color) {
     case FLAME_RED_PROP:
       set_sprite_prop(sprite_id, FLAME_RED_PROP);
@@ -511,6 +708,11 @@ static void init_flames(void) {
       set_sprite_prop(sprite_id, FLAME_RED_PROP);
     }
   }
+
+  // const Sconce *sconce = sconces;
+  // for (uint8_t k = 0; k < MAX_SCONCES && sconce->id != END; k++, sconce++) {
+
+  // }
 }
 
 /**
@@ -529,7 +731,7 @@ static void update_flames(void) {
   uint8_t flame_id = 0;
 
   const Sconce *sconce;
-  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+  for (sconce = sconces; sconce->id != END; sconce++) {
     const uint8_t sprite_id = FLAME_SPRITE_ID0 + flame_id; //get_sconce_flame_sprite(sconce->id);
 
     if (
@@ -1122,7 +1324,7 @@ static void reset_map_objects(void) {
   map.flags_chest_locked = 0;
 
   const Chest *chest;
-  for (chest = map.active_floor->chests; chest->id != END; chest++) {
+  for (chest = chests; chest->id != END; chest++) {
     if (chest->locked)
       set_chest_locked(chest->id);
     hash_object(HASH_TYPE_CHEST, chest, chest->map_id, chest->col, chest->row);
@@ -1133,7 +1335,7 @@ static void reset_map_objects(void) {
   map.flags_lever_stuck = 0;
 
   const Lever *lever;
-  for (lever = map.active_floor->levers; lever->id != END; lever++) {
+  for (lever = levers; lever->id != END; lever++) {
     if (lever->stuck)
       stick_lever(lever->id);
     hash_object(HASH_TYPE_LEVER, lever, lever->map_id, lever->col, lever->row);
@@ -1143,20 +1345,20 @@ static void reset_map_objects(void) {
   map.flags_door_locked = 0;
 
   const Door *door;
-  for (door = map.active_floor->doors; door->id != END; door++) {
+  for (door = doors; door->id != END; door++) {
     set_door_locked(door->id);
     hash_object(HASH_TYPE_DOOR, door, door->map_id, door->col, door->row);
   }
 
   // Signs
   const Sign *sign;
-  for (sign = map.active_floor->signs; sign->map_id != END; sign++)
+  for (sign = signs; sign->map_id != END; sign++)
     hash_object(HASH_TYPE_SIGN, sign, sign->map_id, sign->col, sign->row);
 
   // Sconces
   map.flags_sconce_lit = 0;
   const Sconce *sconce;
-  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+  for (sconce = sconces; sconce->id != END; sconce++) {
     hash_object(HASH_TYPE_SCONCE, sconce,
       sconce->map_id, sconce->col, sconce->row);
     if (sconce->is_lit) {
@@ -1168,7 +1370,7 @@ static void reset_map_objects(void) {
   init_npcs();
   map.npc_visible = 0;
   const NPC *npc;
-  for (npc = map.active_floor->npcs; npc->id != END; npc++) {
+  for (npc = npcs; npc->id != END; npc++) {
     hash_object(HASH_TYPE_NPC, npc, npc->map_id, npc->col, npc->row);
     set_npc_visible(npc->id);
   }
@@ -1187,7 +1389,7 @@ static void load_exit(void) {
     set_active_floor(exit->to_floor);
   }
 
-  map.active_map = map.active_floor->maps + exit->to_map;
+  map.active_map = maps + exit->to_map;
   map.hero_direction = exit->heading;
 
   set_hero_position(exit->to_col, exit->to_row);
@@ -1213,7 +1415,7 @@ static bool handle_exit(void) {
   uint8_t y = map.y + HERO_Y_OFFSET;
 
   const Exit *exit;
-  for (exit = map.active_floor->exits; exit->map_id != END; exit++) {
+  for (exit = exits; exit->map_id != END; exit++) {
     if (exit->map_id == 0xFF)
       break;
     if (exit->map_id != map.active_map->id)
@@ -1360,8 +1562,6 @@ static void update_map_move(void) {
 
   switch (here->map_attr) {
   case MAP_EXIT:
-    if (on_exit())
-      return;
     if (handle_exit())
       return;
     break;
@@ -1460,9 +1660,8 @@ static bool check_chests(void) {
 
 
   if (chest->on_open) {
-    if (chest->on_open(chest)) {
+    if (on_open(chest))
       open_chest(tile);
-    }
     return true;
   }
 
@@ -1579,7 +1778,7 @@ static uint8_t *get_vram_at(int8_t tx, int8_t ty) {
 
 void open_door_by_id(DoorId id) {
   const Door *door;
-  for (door = map.active_floor->doors; door->id != END; door++) {
+  for (door = doors; door->id != END; door++) {
     if (door->id == id)
       break;
   }
@@ -1625,7 +1824,7 @@ static bool check_levers(void) {
   toggle_lever(tile);
 
   if (lever->on_pull)
-    lever->on_pull(lever);
+    on_pull(lever);
 
   return true;
 }
@@ -1678,11 +1877,11 @@ void light_sconce(SconceId id, FlameColor color) {
 
   // Call the "on_lit" handler
   const Sconce *sconce;
-  for (sconce = map.active_floor->sconces; sconce->id != END; sconce++) {
+  for (sconce = sconces; sconce->id != END; sconce++) {
     if (sconce->id != id)
       continue;
     if (sconce->on_lit)
-      sconce->on_lit(sconce);
+      on_lit(sconce);
     break;
   }
 }
@@ -1737,9 +1936,9 @@ static bool check_npcs(void) {
     return false;
 
   if (!npc->on_action)
-    return false;
+    return on_npc_action(npc);
 
-  return npc->on_action(npc);
+  return false;
 }
 
 /**
@@ -1749,8 +1948,6 @@ static bool check_npcs(void) {
  */
 static bool check_action(void) {
   if (was_pressed(J_A)) {
-    if (on_action())
-      return true;
     if (check_signs())
       return true;
     if (check_chests())
@@ -1766,11 +1963,10 @@ static bool check_action(void) {
   return false;
 }
 
-void set_active_floor(Floor *floor) BANKED {
-  map.active_floor = floor;
-  map.active_map = &floor->maps[floor->default_map];
-  set_hero_position(floor->default_x, floor->default_y);
-  core.load_bg_palette(map.active_floor->palettes, 0, 7);
+void set_active_floor(FloorBank *f) BANKED {
+  load_floor(f);
+  map.active_map = &maps[0];
+  set_hero_position(default_x, default_y);
   reset_map_objects();
 }
 
@@ -1783,7 +1979,7 @@ static void initialize_world_map(void) {
   core.load_font();
   core.load_object_tiles();
   core.load_dungeon_tiles();
-  core.load_bg_palette(map.active_floor->palettes, 0, 7);
+  core.load_bg_palette(floor_palettes, 0, 7);
 
   text_writer.auto_page = AUTO_PAGE_OFF;
   textbox.init();

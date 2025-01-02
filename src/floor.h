@@ -8,7 +8,7 @@
 
 // IMPORTANT if you add a new floor, add an extern here
 extern const Floor floor_test;
-extern const Floor floor_test2;
+extern const FloorBank bank_floor_test;
 
 /**
  * Set this as a custom chest handler to have the chest give the player a

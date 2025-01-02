@@ -1,4 +1,4 @@
-#pragma bank 2
+#pragma bank 31
 
 #include "floor.h"
 #include "sound.h"
@@ -7,20 +7,19 @@
 // Floorwide settings
 //------------------------------------------------------------------------------
 
-#define FLOOR_TEST_ID 99
-#define FLOOR_TEST_DEFAULT_X 4
-#define FLOOR_TEST_DEFAULT_Y 4
-#define FLOOR_TEST_DEFAULT_MAP MAP_A
+#define ID 99
+#define DEFAULT_X 4
+#define DEFAULT_Y 4
 
 //------------------------------------------------------------------------------
 // Maps
 //------------------------------------------------------------------------------
 
-const Map floor_test_maps[] = {
+static const Map maps[] = {
   // id, bank, data, width, height
-  { MAP_A, BANK_9, floor_test_data, 32, 32 },
-  { MAP_B, BANK_9, floor_test_mini, 8, 8 },
-  { MAP_C, BANK_9, floor_test_17x12, 17, 12 },
+  { MAP_A, BANK_31, floor_test_data, 32, 32 },
+  { MAP_B, BANK_31, floor_test_mini, 8, 8 },
+  { MAP_C, BANK_31, floor_test_17x12, 17, 12 },
   { END },
 };
 
@@ -28,7 +27,7 @@ const Map floor_test_maps[] = {
 // Palette Colors
 //------------------------------------------------------------------------------
 
-const uint16_t floor_test_palettes[] = {
+static const uint16_t palettes[] = {
   // Palette 1 - Core background tiles
   RGB8(190, 200, 190),
   RGB8(100, 100, 140),
@@ -70,17 +69,7 @@ const uint16_t floor_test_palettes[] = {
 // Chests
 //------------------------------------------------------------------------------
 
-bool floor_test_custom_chest(Chest *c) {
-  switch (c->id) {
-  case CHEST_5:
-    player.got_magic_key = true;
-    player.magic_keys++;
-    break;
-  }
-  return false;
-}
-
-const Chest floor_test_chests[] = {
+static const Chest chests[] = {
   /*
   {
     CHEST_1,    // Always use a CHEST_* here cause it acts like a flag
@@ -142,7 +131,7 @@ const Chest floor_test_chests[] = {
 // Exits
 //------------------------------------------------------------------------------
 
-const Exit floor_test_exits[] = {
+static const Exit exits[] = {
   /*
   {
     MAP_A,        // Map the exit is on
@@ -168,7 +157,7 @@ const Exit floor_test_exits[] = {
   { MAP_C, 4, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
   { MAP_C, 3, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &floor_test2 },
+  // { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &floor_test2 },
 
   { END },
 };
@@ -177,7 +166,7 @@ const Exit floor_test_exits[] = {
 // Exits
 //------------------------------------------------------------------------------
 
-const Sign floor_test_signs[] = {
+static const Sign signs[] = {
   /*
   {
     MAP_A,      // Id of the map
@@ -196,7 +185,7 @@ const Sign floor_test_signs[] = {
 // Levers
 //------------------------------------------------------------------------------
 
-void floor_test_on_lever(const Lever *lever) {
+static void on_lever(const Lever *lever) {
   if (lever->id == LEVER_1) {
     map_textbox("You hear a click\x60");
     set_chest_unlocked(CHEST_2);
@@ -222,7 +211,7 @@ void floor_test_on_lever(const Lever *lever) {
   }
 }
 
-const Lever floor_test_levers[] = {
+static const Lever levers[] = {
   /*
   {
     LEVER_1,  // Use the LEVER_* constants for ids (again, used as flags)
@@ -233,10 +222,10 @@ const Lever floor_test_levers[] = {
     NULL,     // Scripting callback for the lever
   }
   */
-  { LEVER_1, MAP_A, 12, 3, true, false, floor_test_on_lever },
-  { LEVER_2, MAP_A, 22, 3, false, false, floor_test_on_lever },
-  { LEVER_3, MAP_A, 20, 3, true, true, floor_test_on_lever },
-  { LEVER_4, MAP_A, 5, 2, false, false, floor_test_on_lever },
+  { LEVER_1, MAP_A, 12, 3, true, false, on_lever },
+  { LEVER_2, MAP_A, 22, 3, false, false, on_lever },
+  { LEVER_3, MAP_A, 20, 3, true, true, on_lever },
+  { LEVER_4, MAP_A, 5, 2, false, false, on_lever },
   { END },
 };
 
@@ -244,7 +233,7 @@ const Lever floor_test_levers[] = {
 // Doors (NOT YET IMPLEMENTED)
 //------------------------------------------------------------------------------
 
-const Door floor_test_doors[] = {
+static const Door doors[] = {
   /*
   {
     DOOR_1,           // Use DOOR_* constants for ids.
@@ -262,7 +251,7 @@ const Door floor_test_doors[] = {
 // Sconces (NOT YET IMPLEMENTED)
 //------------------------------------------------------------------------------
 
-const Sconce floor_test_sconces[] = {
+static const Sconce sconces[] = {
   /*
   {
     SCONCE_1,   // Use SCONCE_* constants for ids.
@@ -281,10 +270,10 @@ const Sconce floor_test_sconces[] = {
 };
 
 //------------------------------------------------------------------------------
-// Doors (NOT YET IMPLEMENTED)
+// NPCs
 //------------------------------------------------------------------------------
 
-const NPC floor_test_npcs[] = {
+static const NPC npcs[] = {
   /*
   {
     NPC_1,    // Use NPC_* constants for ids.
@@ -300,46 +289,6 @@ const NPC floor_test_npcs[] = {
 //------------------------------------------------------------------------------
 
 static const EncounterTable random_encounters[] = {
-  {
-    ODDS_1P, MONSTER_LAYOUT_1,
-    MONSTER_ZOMBIE, 7, B_TIER
-  },
-  {
-    ODDS_2P, MONSTER_LAYOUT_1,
-    MONSTER_GOBLIN, 7, B_TIER
-  },
-  {
-    ODDS_3P, MONSTER_LAYOUT_1,
-    MONSTER_KOBOLD, 7, B_TIER
-  },
-  {
-    ODDS_4P, MONSTER_LAYOUT_3S,
-    MONSTER_KOBOLD, 6, C_TIER,
-    MONSTER_GOBLIN, 7, C_TIER,
-    MONSTER_KOBOLD, 6, C_TIER,
-  },
-  {
-    ODDS_10P, MONSTER_LAYOUT_2,
-    MONSTER_KOBOLD, 6, C_TIER,
-    MONSTER_GOBLIN, 7, C_TIER,
-  },
-  {
-    ODDS_15P, MONSTER_LAYOUT_2,
-    MONSTER_KOBOLD, 6, C_TIER,
-    MONSTER_KOBOLD, 5, C_TIER,
-  },
-  {
-    ODDS_15P, MONSTER_LAYOUT_1,
-    MONSTER_GOBLIN, 7, C_TIER,
-  },
-  {
-    ODDS_25P, MONSTER_LAYOUT_1,
-    MONSTER_KOBOLD, 7, C_TIER,
-  },
-  {
-    ODDS_25P, MONSTER_LAYOUT_1,
-    MONSTER_KOBOLD, 5, C_TIER,
-  },
   { END }
 };
 
@@ -347,27 +296,11 @@ static const EncounterTable random_encounters[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
-bool floor_test_on_init(void) {
+static bool on_init(void) {
   return false;
 }
 
-void floor_test_on_update(void) {
-}
-
-void floor_test_on_draw(void) {
-}
-
-bool floor_test_on_action(void) {
-  return false;
-}
-
-const Exit no_no_exit = {
-  MAP_A, 0, 0,
-  MAP_A, 24, 5,
-  LEFT
-};
-
-bool floor_test_on_special(void) {
+static bool on_special(void) {
   Monster *monster = encounter.monsters;
 
   switch (map.active_map->id) {
@@ -394,9 +327,9 @@ bool floor_test_on_special(void) {
     }
 
     if (player_at(7, 8)) {
-      sfx_no_no_square();
-      take_exit(&no_no_exit);
-      return true;
+      // sfx_no_no_square();
+      // take_exit(&no_no_exit);
+      // return true;
     }
 
     break;
@@ -404,11 +337,7 @@ bool floor_test_on_special(void) {
   return false;
 }
 
-bool floor_test_on_exit(void) {
-  return false;
-}
-
-bool floor_test_on_move(void) {
+static bool on_move(void) {
   return false;
 }
 
@@ -416,24 +345,18 @@ bool floor_test_on_move(void) {
 // Area Definition (shouldn't have to touch this)
 //------------------------------------------------------------------------------
 const Floor floor_test = {
-  FLOOR_TEST_ID,                              // Id
-  FLOOR_TEST_DEFAULT_MAP,                     // Default Map
-  FLOOR_TEST_DEFAULT_X, FLOOR_TEST_DEFAULT_Y, // Default Starting (x, y)
-  floor_test_palettes,                        // Palettes
-  floor_test_maps,
-  floor_test_exits,
-  floor_test_chests,
-  floor_test_signs,
-  floor_test_levers,
-  floor_test_doors,
-  floor_test_sconces,
-  floor_test_npcs,
-  floor_test_on_init,
-  floor_test_on_update,
-  floor_test_on_draw,
-  floor_test_on_action,
-  floor_test_on_special,
-  floor_test_on_exit,
-  floor_test_on_move,
+  ID, DEFAULT_X, DEFAULT_Y,
+  palettes,
+  maps,
+  exits,
+  chests,
+  signs,
+  levers,
+  doors,
+  sconces,
+  npcs,
+  on_init,
+  on_special,
+  on_move,
 };
 

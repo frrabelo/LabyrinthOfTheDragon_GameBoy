@@ -654,6 +654,12 @@ static void init_hud(void) {
  */
 static void update_hud(void) {
   if (player.has_torch) {
+    move_sprite(TORCH_GAUGE_FLAME, TORCH_GAUGE_X, TORCH_GAUGE_Y);
+    move_sprite(TORCH_GAUGE_BODY_1, TORCH_GAUGE_X + 10, TORCH_GAUGE_Y);
+    move_sprite(TORCH_GAUGE_BODY_2, TORCH_GAUGE_X + 18, TORCH_GAUGE_Y);
+    move_sprite(TORCH_GAUGE_BODY_3, TORCH_GAUGE_X + 26, TORCH_GAUGE_Y);
+    move_sprite(TORCH_GAUGE_BODY_4, TORCH_GAUGE_X + 34, TORCH_GAUGE_Y);
+
     if (player.torch_gauge > 0) {
       set_sprite_tile(TORCH_GAUGE_FLAME,
         map.flame_frame ? FLAME_TILE_1 : FLAME_TILE_2);

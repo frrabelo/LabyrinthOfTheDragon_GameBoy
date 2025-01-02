@@ -333,6 +333,24 @@ typedef struct BattleMenu {
   uint8_t inventory_entries;
 } BattleMenu;
 
+typedef enum AnimationState {
+  ANIMATION_PREAMBLE,
+  ANIMATION_EFFECT,
+  ANIMATION_RESULT,
+  ANIMATION_COMPLETE,
+} AnimationState;
+
+typedef enum MonsterDeathAnimation {
+  MONSTER_DEATH_START,
+  MONSTER_DEATH_ANIMATE,
+  MONSTER_DEATH_DONE,
+} MonsterDeathAnimation;
+
+#define ANIMATION_HP_DELTA_FACTOR 4
+#define MONSTER_DEATH_INITIAL_DELAY 23
+#define MONSTER_DEATH_FADE_DELAY 5
+
+
 /**
  * Default palettes for the battle system.
  */

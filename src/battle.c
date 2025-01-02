@@ -26,10 +26,14 @@ char battle_post_message[64];
 char rewards_buf[64];
 bool skip_post_message = false;
 
-// TODO covert these into a single BattleAnimation state structure
-BattleAnimation battle_animation;
-
 bool flee_sound_played = false;
+
+BattleAnimation battle_animation;
+AnimationState animation_state = ANIMATION_PREAMBLE;
+Timer effect_delay_timer;
+Timer monster_death_timer;
+uint8_t monster_death_step = 0;
+MonsterDeathAnimation monster_death_state = MONSTER_DEATH_START;
 
 /**
  * Finds the monster currently selected by the screen cursor.
@@ -859,7 +863,6 @@ static void open_battle_menu(BattleMenuType m) {
   battle_menu.active_menu = m;
   switch (m) {
   case BATTLE_MENU_MAIN:
-    uint8_t cursor_memory;
     switch (prev_menu) {
     case BATTLE_MENU_ABILITY:
       move_screen_cursor(BATTLE_CURSOR_MAIN_ABILITY);
@@ -1019,22 +1022,6 @@ static inline void update_battle_menu(void) {
   }
 }
 
-//------------------------------------------------------------------------------
-// TODO Organize animation code elsewhere
-//------------------------------------------------------------------------------
-
-typedef enum AnimationState {
-  ANIMATION_PREAMBLE,
-  ANIMATION_EFFECT,
-  ANIMATION_RESULT,
-  ANIMATION_COMPLETE,
-} AnimationState;
-
-#define ANIMATION_HP_DELTA_FACTOR 4
-
-AnimationState animation_state = ANIMATION_PREAMBLE;
-Timer effect_delay_timer;
-
 static inline uint16_t tween_hp(uint16_t hp, uint16_t target, int16_t delta) {
   if (hp == target)
     return target;
@@ -1070,19 +1057,6 @@ static inline bool animate_monster_hp_bars(void) {
   }
   return updated;
 }
-
-typedef enum MonsterDeathAnimation {
-  MONSTER_DEATH_START,
-  MONSTER_DEATH_ANIMATE,
-  MONSTER_DEATH_DONE,
-} MonsterDeathAnimation;
-
-#define MONSTER_DEATH_INITIAL_DELAY 23
-#define MONSTER_DEATH_FADE_DELAY 5
-
-Timer monster_death_timer;
-uint8_t monster_death_step = 0;
-MonsterDeathAnimation monster_death_state = MONSTER_DEATH_START;
 
 static inline void reset_monster_death_animation(void) {
   monster_death_step = 0;
@@ -1187,10 +1161,6 @@ static void animate_action_result(void) {
     break;
   }
 }
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
 
 /**
  * Checks for status effect changes and updates UI accordingly.

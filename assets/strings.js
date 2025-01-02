@@ -161,6 +161,8 @@ addNamespace('battle', 0, {
   'player_flee_success': 'And get away!',
   'player_flee_failure': 'But are blocked!',
   'player_scared': 'You shiver with fear!',
+  'player_prone': 'You lie prone!',
+  'player_get_up': 'You get up!',
   'victory': 'Victory! You gain %exp XP!',
   'victory_no_xp': 'Victory! But you gain no XP...',
   'level_up': 'LEVEL UP! You reach %level!',
@@ -237,11 +239,17 @@ addNamespace('monster', 6, {
   'zombie_bite_hit': "Zombie %c bites and poisons you!",
   'zombie_slam': "Zombie %c swipes at you!",
   // Bugbear special
-  'bugbear_for_hruggek': 'Bugbear %c screams: "FOR HRUGGEK!"',
+  'bugbear_for_hruggek': 'Bugbear %c screams "FOR HRUGGEK!"',
   'bugbear_for_hruggek_hit': 'You shiver with fear!',
   'bugbear_for_hruggek_miss': 'You are unimpressed.',
   'bugbear_javelin': 'Bugbear %c throws a javelin!',
   'bugbead_club': 'Bugbear %c swings a club!',
+  // Owlbear special
+  'owlbear_pounce': 'Owlbear %c pounces!',
+  'owlbear_pounce_topple': 'You take %damage damage and fall prone!',
+  'owlbear_pounce_miss': 'You barely jump out of the way!',
+  'owlbear_multi': 'Owlbear %c tears at you with beak and claw!',
+  'owlbear_beak': 'Owlbear %c nips at you!',
 })
 
 // Export the namespaces

@@ -380,7 +380,7 @@ bool floor_test_on_special(void) {
       // generate_encounter(random_encounters);
 
       reset_encounter(MONSTER_LAYOUT_1);
-      bugbear_generator(monster, 19, C_TIER);
+      owlbear_generator(monster, 26, C_TIER);
       monster->id = 'A';
       start_battle();
       return true;

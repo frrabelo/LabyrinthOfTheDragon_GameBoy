@@ -237,6 +237,9 @@ inline void player_turn(void) {
       continue;
     switch (effect->effect) {
     case DEBUFF_SCARED:
+      if (player.trip_turns > 0)
+        break;
+
       const uint8_t scared_roll = d256();
       if (fear_flee_roll(effect->tier)) {
         player_flee();
@@ -267,6 +270,17 @@ inline void player_turn(void) {
       apply_special(SPECIAL_HASTE);
       break;
     }
+  }
+
+  // Player tripped / prone
+  if (player.trip_turns > 0) {
+    player.trip_turns--;
+    if (player.trip_turns == 0)
+      sprintf(battle_pre_message, str_battle_player_get_up);
+    else
+      sprintf(battle_pre_message, str_battle_player_prone);
+    skip_post_message = true;
+    return;
   }
 
   // If the target died prior to the player's turn, hit a different target
@@ -548,6 +562,7 @@ void reset_encounter(MonsterLayout layout) NONBANKED {
   }
 
   player.aspect_resist = 0;
+  player.trip_turns = 0;
 }
 
 /**

@@ -240,6 +240,10 @@ typedef struct Player {
    * Special battle flags that the player can have.
    */
   uint8_t special_flags;
+  /**
+   * Number of turns the player is tripped and prone.
+   */
+  uint8_t trip_turns;
 } Player;
 
 /**

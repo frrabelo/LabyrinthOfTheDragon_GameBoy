@@ -626,6 +626,16 @@ extern const char str_battle_player_flee_failure[];
 extern const char str_battle_player_scared[];
 
 /**
+ * "You lie prone!"
+ */
+extern const char str_battle_player_prone[];
+
+/**
+ * "You get up!"
+ */
+extern const char str_battle_player_get_up[];
+
+/**
  * "Victory! You gain %exp XP!"
  */
 extern const char str_battle_victory[];
@@ -926,7 +936,7 @@ extern const char str_monster_zombie_bite_hit[];
 extern const char str_monster_zombie_slam[];
 
 /**
- * "Bugbear %c screams: "FOR HRUGGEK!""
+ * "Bugbear %c screams "FOR HRUGGEK!""
  */
 extern const char str_monster_bugbear_for_hruggek[];
 
@@ -949,5 +959,30 @@ extern const char str_monster_bugbear_javelin[];
  * "Bugbear %c swings a club!"
  */
 extern const char str_monster_bugbead_club[];
+
+/**
+ * "Owlbear %c pounces!"
+ */
+extern const char str_monster_owlbear_pounce[];
+
+/**
+ * "You take %damage damage and fall prone!"
+ */
+extern const char str_monster_owlbear_pounce_topple[];
+
+/**
+ * "You barely jump out of the way!"
+ */
+extern const char str_monster_owlbear_pounce_miss[];
+
+/**
+ * "Owlbear %c tears at you with beak and claw!"
+ */
+extern const char str_monster_owlbear_multi[];
+
+/**
+ * "Owlbear %c nips at you!"
+ */
+extern const char str_monster_owlbear_beak[];
 
 #endif

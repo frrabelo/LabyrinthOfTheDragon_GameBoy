@@ -153,6 +153,39 @@ static uint8_t damage_all(
 }
 
 /**
+ * Applies damage to all active monsters in the encounter. Cannot miss, but
+ * takes immunities and resistances into account.
+ * @param base_damage Base damage for the attack.
+ * @param type Aspect type for the damage.
+ */
+static void damage_all_no_miss(uint16_t base_damage, DamageAspect type) {
+  uint8_t dam_roll = d16();
+  uint16_t damage = calc_damage(dam_roll, base_damage);
+
+  if (has_special(SPECIAL_HASTE))
+    damage += calc_damage(d16(), base_damage);
+
+  Monster *monster = encounter.monsters;
+  for (uint8_t k = 0; k < 3; k++, monster++) {
+    if (!monster->active)
+      continue;
+    if (monster->aspect_immune & type)
+      continue;
+
+    uint16_t d = damage;
+    if (monster->aspect_resist & type)
+      d = damage >> 1;
+    else if (monster->aspect_vuln & type)
+      d = damage << 1;
+
+    if (monster->target_hp < d)
+      monster->target_hp = 0;
+    else
+      monster->target_hp -= d;
+  }
+}
+
+/**
  * Heals the player without going over max HP.
  * @param hp Amount of HP to heal the player.
  */
@@ -167,7 +200,6 @@ uint8_t heal_player(uint8_t d16_roll, uint16_t base_hp) {
 
   return hp;
 }
-
 
 //------------------------------------------------------------------------------
 // Class: Druid
@@ -533,7 +565,7 @@ void monk_flurry(void) {
   sprintf(battle_pre_message, str_battle_monk_flurry_of_blows);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.atk + player.agl / 2, target->def)) {
+  if (!roll_attack(player.atk + player.agl, target->def)) {
     sprintf(battle_post_message, str_battle_player_miss);
     return;
   }
@@ -572,16 +604,24 @@ void monk_diamond_body(void) {
 void monk_quivering_palm(void) {
   sprintf(battle_pre_message, str_battle_monk_quivering_palm);
 
-  uint8_t kill_chance = 1;
-  if (player.level > 60)
-    kill_chance = 2;
-  if (player.level > 80)
-    kill_chance = 3;
-
-  if (d8() < kill_chance) {
-    sprintf(battle_post_message, str_battle_monk_quivering_kill);
-    encounter.target->target_hp = 0;
+  Monster *target = encounter.target;
+  if (!roll_attack(player.atk + player.agl, target->def)) {
+    sprintf(battle_post_message, str_battle_player_miss);
     return;
+  }
+
+  if (!(target->special_immune & SPECIAL_INSTANT_KILL)) {
+    uint8_t kill_chance = 1;
+    if (player.level > 60)
+      kill_chance = 2;
+    if (player.level > 80)
+      kill_chance = 3;
+
+    if (d8() < kill_chance) {
+      sprintf(battle_post_message, str_battle_monk_quivering_kill);
+      encounter.target->target_hp = 0;
+      return;
+    }
   }
 
   uint8_t attack_level = level_offset(player.level, player.agl);
@@ -608,31 +648,153 @@ void sorcerer_update_stats(void) {
 }
 
 void sorcerer_base_attack(void) {
-  ability_placeholder();
+  uint8_t num_missiles = 1;
+  if (player.level >= 15)
+    num_missiles = 2;
+  if (player.level >= 30)
+    num_missiles = 3;
+  if (player.level >= 45)
+    num_missiles = 4;
+
+  if (num_missiles == 1)
+    sprintf(battle_pre_message, str_battle_sorc_magic_missile_one);
+  else
+    sprintf(battle_pre_message, str_battle_sorc_magic_missile, num_missiles);
+
+  PowerTier tier = C_TIER;
+  if (player.level >= 30)
+    tier = B_TIER;
+  if (player.level >= 60)
+    tier = A_TIER;
+
+  uint8_t base_damage = num_missiles * get_player_damage(player.level, tier);
+  damage_monster(base_damage, DAMAGE_MAGICAL);
 }
 
 void sorcerer_darkness(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_sorc_darkness);
+  skip_post_message = true;
+
+  uint8_t turns = 2;
+  if (player.level >= 30)
+    turns = 3;
+  if (player.level >= 50)
+    turns = 4;
+
+  PowerTier tier = B_TIER;
+  if (player.level >= 45)
+    tier = A_TIER;
+
+  Monster *monster = encounter.monsters;
+  for (uint8_t k = 0; k < 3; k++, monster++) {
+    if (!monster->active)
+      continue;
+    apply_blind(monster->status_effects, tier, turns, monster->debuff_immune);
+  }
 }
 
 void sorcerer_fireball(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_sorc_fireball);
+  skip_post_message = true;
+
+  Monster *monster = encounter.monsters;
+  uint8_t mdef = monster->mdef;
+
+  for (uint8_t k = 0; k < 3; k++, monster++) {
+    if (!monster->active)
+      continue;
+    if (monster->mdef < mdef)
+      mdef = monster->mdef;
+  }
+
+  PowerTier tier = A_TIER;
+  if (player.level >= 50)
+    tier = S_TIER;
+
+  uint16_t damage = get_player_damage(level_offset(player.level, 5), tier);
+
+  if (!roll_attack(player.matk, mdef))
+    damage /= 2;
+
+  damage_all_no_miss(damage, DAMAGE_FIRE);
 }
 
 void sorcerer_haste(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_sorc_haste);
+  skip_post_message = true;
+  apply_haste(encounter.player_status_effects, B_TIER, 0);
 }
 
 void sorcerer_sleetstorm(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_sorc_sleetstorm);
+  skip_post_message = true;
+  player.special_flags |= SPECIAL_SLEET_STORM;
 }
 
 void sorcerer_disintegrate(void) {
-  ability_placeholder();
+  sprintf(battle_pre_message, str_battle_sorc_disintegrate);
+
+  Monster *target = encounter.target;
+  if (!roll_attack(player.matk + 10, target->mdef)) {
+    sprintf(battle_post_message, str_battle_player_miss);
+    return;
+  }
+
+  Monster *monster = encounter.target;
+  if(!(monster->special_immune & SPECIAL_INSTANT_KILL)) {
+    uint8_t kill_chance = 2;
+    if (player.level > 40)
+      kill_chance = 3;
+    if (player.level > 60)
+      kill_chance = 4;
+
+    if (d8() < kill_chance) {
+      sprintf(battle_post_message, str_battle_sorc_disintegrate_kill);
+      encounter.target->target_hp = 0;
+      return;
+    }
+  }
+
+  uint8_t attack_level = level_offset(player.level, 5);
+  uint16_t base_dmg = get_player_damage(attack_level, S_TIER);
+  base_dmg *= 2;
+  damage_monster(base_dmg, DAMAGE_MAGICAL);
 }
 
 void sorcerer_wild_magic(void) {
-  ability_placeholder();
+  Monster *monster = encounter.monsters;
+
+  for (uint8_t k = 0; k < 3; k++, monster++) {
+    if (!monster->active)
+      continue;
+
+    uint8_t roll = d8();
+
+    if (roll == 0) {
+      monster->target_hp = 1;
+    } else if (roll == 1) {
+      monster->target_hp = monster->max_hp - 1;
+    } else if (roll < 4) {
+      apply_agl_down(
+        monster->status_effects, A_TIER, 10, monster->debuff_immune);
+      apply_def_down(
+        monster->status_effects, A_TIER, 10, monster->debuff_immune);
+      apply_atk_down(
+        monster->status_effects, A_TIER, 10, monster->debuff_immune);
+    } else if (roll < 6) {
+      apply_confused(
+        monster->status_effects, A_TIER, 10, monster->debuff_immune);
+      apply_blind(
+        monster->status_effects, A_TIER, 10, monster->debuff_immune);
+    } else if (roll == 6) {
+      sorcerer_fireball();
+    } else {
+      sorcerer_sleetstorm();
+    }
+  }
+
+  sprintf(battle_pre_message, str_battle_sorc_wild_magic);
+  skip_post_message = true;
 }
 
 //------------------------------------------------------------------------------

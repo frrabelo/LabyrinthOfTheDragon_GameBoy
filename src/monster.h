@@ -178,6 +178,10 @@ typedef struct Monster {
    */
   uint8_t trip_turns;
   /**
+   * Immunities for player special abilities.
+   */
+  uint8_t special_immune;
+  /**
    * Routine to determine how the monster acts on its turn.
    */
   void (*take_turn)(struct Monster *m);

@@ -62,11 +62,11 @@ static void damage_player(uint16_t base_damage, DamageAspect type) {
 
   // Monk evasion
   if (player.special_flags & SPECIAL_EVASION) {
-    uint8_t evade_chance = MONK_EVADE_CHANCE_LOW;
+    uint8_t evade_chance = 3;
     if (player.level > 70)
-      evade_chance = MONK_EVADE_CHANCE_HIGH;
+      evade_chance = 5;
     else if (player.level > 30)
-      evade_chance = MONK_EVADE_CHANCE_MID;
+      evade_chance = 4;
     if (d8() < evade_chance) {
       sprintf(battle_post_message, str_battle_monster_miss_evaded);
       return;

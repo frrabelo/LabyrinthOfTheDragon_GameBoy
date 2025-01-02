@@ -30,128 +30,128 @@ const palette_color_t hero_colors[16] = {
 
 const Ability druid0 = {
   1, str_ability_druid_cure_wounds,
-  TARGET_SELF, DRUID_SP_CURE_WOUNDS, druid_cure_wounds,
+  TARGET_SELF, 4, druid_cure_wounds,
 };
 
 const Ability druid1 = {
   2, str_ability_druid_bark_skin,
-  TARGET_SELF, DRUID_SP_BARK_SKIN, druid_bark_skin,
+  TARGET_SELF, 8, druid_bark_skin,
 };
 
 const Ability druid2 = {
   3, str_ability_druid_ligtning,
-  TARGET_SINGLE, DRUID_SP_LIGHTNING, druid_lightning,
+  TARGET_SINGLE, 15, druid_lightning,
 };
 
 const Ability druid3 = {
    4, str_ability_druid_heal,
-   TARGET_SELF, DRUID_SP_HEAL, druid_heal,
+   TARGET_SELF, 19, druid_heal,
 };
 
 const Ability druid4 = {
    5, str_ability_druid_insect_plague,
-   TARGET_ALL, DRUID_SP_INSECT_PLAGUE, druid_insect_plague,
+   TARGET_ALL, 28, druid_insect_plague,
 };
 
 const Ability druid5 = {
    6, str_ability_druid_regen,
-   TARGET_SELF, DRUID_SP_REGEN, druid_regen
+   TARGET_SELF, 33, druid_regen
 };
 
 //------------------------------------------------------------------------------
 
 const Ability fighter0 = {
   1, str_ability_fighter_second_wind,
-  TARGET_SELF, FIGHTER_SP_SECOND_WIND, fighter_second_wind,
+  TARGET_SELF, 7, fighter_second_wind,
 };
 
 const Ability fighter1 = {
   2, str_ability_fighter_action_surge,
-  TARGET_SINGLE, FIGHTER_SP_ACTION_SURGE, fighter_action_surge,
+  TARGET_SINGLE, 12, fighter_action_surge,
 };
 
 const Ability fighter2 = {
   3, str_ability_fighter_cleave,
-  TARGET_ALL, FIGHTER_SP_CLEAVE, fighter_cleave,
+  TARGET_ALL, 17, fighter_cleave,
 };
 
 const Ability fighter3 = {
   4, str_ability_fighter_trip_attack,
-  TARGET_SINGLE, FIGHTER_SP_TRIP_ATTACK, fighter_trip_attack,
+  TARGET_SINGLE, 23, fighter_trip_attack,
 };
 
 const Ability fighter4 = {
   5, str_ability_fighter_menace,
-  TARGET_ALL, FIGHTER_SP_MENACE, fighter_menace,
+  TARGET_ALL, 28, fighter_menace,
 };
 
 const Ability fighter5 = {
   6, str_ability_fighter_indomitable,
-  TARGET_SELF, FIGHTER_SP_INDOMITABLE, fighter_indomitable
+  TARGET_SELF, 35, fighter_indomitable
 };
 
 //------------------------------------------------------------------------------
 
 const Ability monk0 = {
   1, str_ability_monk_evasion,
-  TARGET_SELF, MONK_EVASION, monk_evasion
+  TARGET_SELF, 3, monk_evasion
 };
 
 const Ability monk1 = {
   2, str_ability_monk_open_palm,
-  TARGET_SINGLE, MONK_OPEN_PALM, monk_open_palm
+  TARGET_SINGLE, 10, monk_open_palm
 };
 
 const Ability monk2 = {
   3, str_ability_monk_still_mind,
-  TARGET_SELF, MONK_STILL_MIND, monk_still_mind
+  TARGET_SELF, 13, monk_still_mind
 };
 
 const Ability monk3 = {
   4, str_ability_monk_flurry,
-  TARGET_SINGLE, MONK_FLURRY, monk_flurry
+  TARGET_SINGLE, 19, monk_flurry
 };
 
 const Ability monk4 = {
   5, str_ability_monk_diamond_body,
-  TARGET_SELF, MONK_DIAMOND_BODY, monk_diamond_body
+  TARGET_SELF, 15, monk_diamond_body
 };
 
 const Ability monk5 = {
   6, str_ability_monk_quivering_palm,
-  TARGET_SINGLE, MONK_QUIVERING_PALM, monk_quivering_palm
+  TARGET_SINGLE, 30, monk_quivering_palm
 };
 
 //------------------------------------------------------------------------------
 
 const Ability sorcerer0 = {
   1, str_ability_sorc_darkness,
-  TARGET_SINGLE, SORC_DARKNESS, sorcerer_darkness
+  TARGET_ALL, 4, sorcerer_darkness
 };
 
 const Ability sorcerer1 = {
   2, str_ability_sorc_fireball,
-  TARGET_SINGLE, SORC_FIREBALL, sorcerer_fireball
+  TARGET_ALL, 12, sorcerer_fireball
 };
 
 const Ability sorcerer2 = {
   3, str_ability_sorc_haste,
-  TARGET_SINGLE, SORC_HASTE, sorcerer_haste
+  TARGET_SELF, 15, sorcerer_haste
 };
 
 const Ability sorcerer3 = {
   4, str_ability_sorc_sleetstorm,
-  TARGET_SINGLE, SORC_SLEETSTORM, sorcerer_sleetstorm
+  TARGET_ALL, 20, sorcerer_sleetstorm
 };
 
 const Ability sorcerer4 = {
   5, str_ability_sorc_disintigrate,
-  TARGET_SINGLE, SORC_DISINTEGRATE, sorcerer_disintegrate
+  TARGET_SINGLE, 28, sorcerer_disintegrate
 };
 
 const Ability sorcerer5 = {
   6, str_ability_sorc_wild_magic,
-  TARGET_SINGLE, SORC_WILD_MAGIC, sorcerer_wild_magic
+  TARGET_ALL, 33, sorcerer_wild_magic
 };
 
 //------------------------------------------------------------------------------

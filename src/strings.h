@@ -441,6 +441,66 @@ extern const char str_battle_monk_quivering_palm[];
 extern const char str_battle_monk_quivering_kill[];
 
 /**
+ * "You fire a magic missle!"
+ */
+extern const char str_battle_sorc_magic_missile_one[];
+
+/**
+ * "You fire %1u magic missiles!"
+ */
+extern const char str_battle_sorc_magic_missile[];
+
+/**
+ * "You enshroud your enemies in darkness!"
+ */
+extern const char str_battle_sorc_darkness[];
+
+/**
+ * "EXPLOSSION!"
+ */
+extern const char str_battle_sorc_fireball[];
+
+/**
+ * "You speed up, a lot."
+ */
+extern const char str_battle_sorc_haste[];
+
+/**
+ * "Sleet rains down!"
+ */
+extern const char str_battle_sorc_sleetstorm[];
+
+/**
+ * "You send forth a ray of DEATH!"
+ */
+extern const char str_battle_sorc_disintegrate[];
+
+/**
+ * "And they are no more."
+ */
+extern const char str_battle_sorc_disintegrate_kill[];
+
+/**
+ * "You let loose a storm of magic!"
+ */
+extern const char str_battle_sorc_wild_magic[];
+
+/**
+ * "But it fizzles."
+ */
+extern const char str_battle_sorc_wild_magic_fizzle[];
+
+/**
+ * "And a fireball goes flying!"
+ */
+extern const char str_battle_sorc_wild_magic_fireball[];
+
+/**
+ * "And a sleetstorm descends!"
+ */
+extern const char str_battle_sorc_wild_magic_sleetstorm[];
+
+/**
  * "%monster %c shivers in fear..."
  */
 extern const char str_battle_monster_scared_frozen[];
@@ -484,6 +544,11 @@ extern const char str_battle_monter_gets_up[];
  * "But you evade!"
  */
 extern const char str_battle_monster_miss_evaded[];
+
+/**
+ * "%monster %c slips on the ice!"
+ */
+extern const char str_battle_monster_ice_slip[];
 
 /**
  * "But you miss!"

@@ -5,38 +5,6 @@
 
 #include "map.h"
 
-#define DRUID_SP_CURE_WOUNDS  4
-#define DRUID_SP_BARK_SKIN 10
-#define DRUID_SP_LIGHTNING 16
-#define DRUID_SP_HEAL 22
-#define DRUID_SP_INSECT_PLAGUE 34
-#define DRUID_SP_REGEN 40
-
-#define FIGHTER_SP_SECOND_WIND 7
-#define FIGHTER_SP_ACTION_SURGE 12
-#define FIGHTER_SP_CLEAVE 17
-#define FIGHTER_SP_TRIP_ATTACK 23
-#define FIGHTER_SP_MENACE 28
-#define FIGHTER_SP_INDOMITABLE 35
-
-#define MONK_EVASION 3
-#define MONK_OPEN_PALM 10
-#define MONK_STILL_MIND 8
-#define MONK_FLURRY 15
-#define MONK_DIAMOND_BODY 18
-#define MONK_QUIVERING_PALM 30
-
-#define MONK_EVADE_CHANCE_LOW 3
-#define MONK_EVADE_CHANCE_MID 4
-#define MONK_EVADE_CHANCE_HIGH 5
-
-#define SORC_DARKNESS 4
-#define SORC_FIREBALL 8
-#define SORC_HASTE 12
-#define SORC_SLEETSTORM 16
-#define SORC_DISINTEGRATE 20
-#define SORC_WILD_MAGIC 25
-
 /**
  * Maximum number of abilities a player can acquire.
  */
@@ -122,6 +90,8 @@ typedef enum SpecialFlags {
   SPECIAL_BARKSKIN = FLAG(0),
   SPECIAL_HASTE = FLAG(1),
   SPECIAL_EVASION = FLAG(2),
+  SPECIAL_SLEET_STORM = FLAG(3),
+  SPECIAL_INSTANT_KILL = FLAG(7),
 } SpecialFlags;
 
 /**

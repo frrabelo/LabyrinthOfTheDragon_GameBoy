@@ -301,6 +301,27 @@ inline void monster_turn(void) {
   if (!monster->active)
     return;
 
+  // Sleet storm
+  if (
+    (player.special_flags & SPECIAL_SLEET_STORM) &&
+    !(monster->special_immune & SPECIAL_SLEET_STORM) &&
+    monster->trip_turns == 0
+  ) {
+    uint8_t slip_chance = 3;
+    if (player.level > 60)
+      slip_chance = 5;
+    else if (player.level > 40)
+      slip_chance = 4;
+
+    if (d8() < slip_chance) {
+      monster->trip_turns = 1;
+      sprintf(battle_pre_message, str_battle_monster_ice_slip,
+        monster->name, monster->id);
+      skip_post_message = true;
+      return;
+    }
+  }
+
   // Special monster "tripped" status
   if (monster->trip_turns > 0) {
     monster->trip_turns--;

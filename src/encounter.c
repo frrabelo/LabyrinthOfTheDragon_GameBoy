@@ -157,15 +157,6 @@ static void update_player_status_effects(void) {
     case BUFF_DEF_UP:
       player.def = def_up(player.def_base, effect->tier);
       break;
-    /*
-    // TODO Handle these debuffs (as they come in game design)
-    case BUFF_HASTE: break;
-    case DEBUFF_POISONED: break;
-    case BUFF_REGEN: break;
-    case DEBUFF_SCARED: break;
-    case DEBUFF_PARALZYED: break;
-    case DEBUFF_CONFUSED: break;
-    */
     }
   }
 }
@@ -212,15 +203,6 @@ static void update_monster_status_effects(Monster *monster) {
     case BUFF_DEF_UP:
       monster->def = def_up(monster->def_base, effect->tier);
       break;
-    /*
-    // TODO Handle these debuffs (as they come in game design)
-    case BUFF_HASTE: break;
-    case DEBUFF_POISONED: break;
-    case BUFF_REGEN: break;
-    case DEBUFF_SCARED: break;
-    case DEBUFF_PARALZYED: break;
-    case DEBUFF_CONFUSED: break;
-    */
     }
   }
 }

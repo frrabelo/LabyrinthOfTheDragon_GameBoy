@@ -377,7 +377,11 @@ bool floor_test_on_special(void) {
       return true;
     }
     if (player_at(3, 4)) {
-      generate_encounter(random_encounters);
+      // generate_encounter(random_encounters);
+
+      reset_encounter(MONSTER_LAYOUT_1);
+      bugbear_generator(monster, 19, C_TIER);
+      monster->id = 'A';
       start_battle();
       return true;
     }

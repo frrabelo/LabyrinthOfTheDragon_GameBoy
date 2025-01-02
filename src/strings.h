@@ -621,6 +621,11 @@ extern const char str_battle_player_flee_success[];
 extern const char str_battle_player_flee_failure[];
 
 /**
+ * "You shiver with fear!"
+ */
+extern const char str_battle_player_scared[];
+
+/**
  * "Victory! You gain %exp XP!"
  */
 extern const char str_battle_victory[];
@@ -919,5 +924,30 @@ extern const char str_monster_zombie_bite_hit[];
  * "Zombie %c swipes at you!"
  */
 extern const char str_monster_zombie_slam[];
+
+/**
+ * "Bugbear %c screams: "FOR HRUGGEK!""
+ */
+extern const char str_monster_bugbear_for_hruggek[];
+
+/**
+ * "You shiver with fear!"
+ */
+extern const char str_monster_bugbear_for_hruggek_hit[];
+
+/**
+ * "You are unimpressed."
+ */
+extern const char str_monster_bugbear_for_hruggek_miss[];
+
+/**
+ * "Bugbear %c throws a javelin!"
+ */
+extern const char str_monster_bugbear_javelin[];
+
+/**
+ * "Bugbear %c swings a club!"
+ */
+extern const char str_monster_bugbead_club[];
 
 #endif

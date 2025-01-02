@@ -367,8 +367,8 @@ void fighter_base_attack(void) {
 }
 
 void fighter_second_wind(void) {
-  uint16_t heal_hp = 3 * player.max_hp;
-  heal_hp /= 8;
+  uint16_t heal_hp = player.max_hp;
+  heal_hp /= 4;
   if (player.hp + heal_hp > player.max_hp)
     heal_hp = player.max_hp - player.hp;
   sprintf(battle_pre_message, str_battle_second_wind, heal_hp);
@@ -478,7 +478,7 @@ void monk_base_attack(void) {
   sprintf(battle_pre_message, str_battle_monk_attack);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.atk, target->def)) {
+  if (!roll_attack(player.atk + player.agl, target->def)) {
     sprintf(battle_post_message, str_battle_player_miss);
     return;
   }
@@ -489,7 +489,7 @@ void monk_base_attack(void) {
   else if (player.level >= 30)
     damage_tier = A_TIER;
 
-  uint8_t attack_level = level_offset(player.level, (player.agl / 2) + 1);
+  uint8_t attack_level = level_offset(player.level, player.agl);
   const uint16_t base_dmg = get_player_damage(attack_level, damage_tier);
   damage_monster(base_dmg, DAMAGE_PHYSICAL);
 }

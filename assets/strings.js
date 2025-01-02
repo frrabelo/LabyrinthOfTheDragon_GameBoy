@@ -160,6 +160,7 @@ addNamespace('battle', 0, {
   'player_flee_attempt': 'You attempt to flee...',
   'player_flee_success': 'And get away!',
   'player_flee_failure': 'But are blocked!',
+  'player_scared': 'You shiver with fear!',
   'victory': 'Victory! You gain %exp XP!',
   'victory_no_xp': 'Victory! But you gain no XP...',
   'level_up': 'LEVEL UP! You reach %level!',
@@ -219,19 +220,28 @@ addNamespace('monster', 6, {
   'does_nothing': '%monster %c does nothing.',
   'dummy_pre': 'Dummy %c stands still.',
   'dummy_post_heal': '"I will never die..."',
+  // Kobold Specials
   'kobold_axe': 'Kobold %c raises a tiny axe...',
   'kobold_fire': 'Kobold %c spits a glob of fire...',
   'kobold_dazed': 'Kobold %c looks dazed...',
   'kobold_does_nothing': 'And does nothing!',
   'kobold_miss': 'But instead it falls over and hiccups!',
   'kobold_get_up': 'Kobold %c gets up.',
+  // Goblin specials
   'goblin_nose_pick': 'Goblin %c picks its nose.',
   'goblin_attack': "Goblin %c swings a shortsword!",
   'goblin_acid_arrow': "Goblin %c shoots an acid arrow!",
+  // Zombie specials
   'zombie_brains': 'Hrrnng... brains.',
   'zombie_bite_miss': "Zombie %c's bite barely misses!",
   'zombie_bite_hit': "Zombie %c bites and poisons you!",
   'zombie_slam': "Zombie %c swipes at you!",
+  // Bugbear special
+  'bugbear_for_hruggek': 'Bugbear %c screams: "FOR HRUGGEK!"',
+  'bugbear_for_hruggek_hit': 'You shiver with fear!',
+  'bugbear_for_hruggek_miss': 'You are unimpressed.',
+  'bugbear_javelin': 'Bugbear %c throws a javelin!',
+  'bugbead_club': 'Bugbear %c swings a club!',
 })
 
 // Export the namespaces

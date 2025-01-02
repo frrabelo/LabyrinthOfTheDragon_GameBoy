@@ -16,6 +16,11 @@ uint8_t joypad_down;
 uint8_t joypad_pressed;
 uint8_t joypad_released;
 
+/**
+ * Random Seed to use for the game. If set to 0 then the game will generate a
+ * seed value on the title while waiting for the player to begin the game.
+ */
+#define RANDOM_SEED 50
 
 /**
  * Initializes the normal game. Abstracted out of `initialize` to make it easy

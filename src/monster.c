@@ -393,9 +393,52 @@ void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 // -----------------------------------------------------------------------------
 
 static void bugbear_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
+  if (
+    monster->parameter > 0 &&
+    d8() < 2
+  ) {
+    sprintf(battle_pre_message, str_monster_bugbear_for_hruggek, monster->id);
+    if (roll_attack(monster->atk, player.mdef)) {
+      apply_scared(encounter.player_status_effects, C_TIER, 2, 0);
+      sprintf(battle_post_message, str_monster_bugbear_for_hruggek_hit);
+      monster->parameter--;
+    } else {
+      sprintf(battle_post_message, str_monster_bugbear_for_hruggek_miss);
+    }
+    return;
+  }
+
+  uint8_t atk;
+  uint16_t base_damage;
+  PowerTier tier;
+
+  switch (monster->exp_tier) {
+  case S_TIER:
+    tier = S_TIER;
+    break;
+  case A_TIER:
+  case B_TIER:
+    tier = B_TIER;
+    break;
+  default:
+    tier = C_TIER;
+  }
+
+  if (d8() < 3) {
+    atk = get_monster_atk(level_offset(monster->level, 4), monster->exp_tier);
+    base_damage = get_monster_dmg(level_offset(monster->level, -2), tier);
+    sprintf(battle_pre_message, str_monster_bugbear_javelin, monster->id);
+  } else {
+    atk = monster->atk;
+    base_damage = get_monster_dmg(level_offset(monster->level, 2), tier);
+    sprintf(battle_pre_message, str_monster_bugbead_club, monster->id);
+  }
+
+  if (roll_attack(atk, player.def))
+    damage_player(base_damage, DAMAGE_PHYSICAL);
+  else
+    sprintf(battle_post_message, str_monster_miss);
+
 }
 
 void bugbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
@@ -408,15 +451,27 @@ void bugbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 
   m->max_hp = get_monster_hp(level, tier);
   m->hp = m->max_hp;
-  m->atk_base = get_monster_atk(level, tier);
+  m->atk_base = get_monster_atk(level_offset(level, 1), tier);
   m->def_base = get_monster_def(level, tier);
   m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
-  m->agl_base = get_agl(level, tier);
+  m->mdef_base = get_monster_def(level_offset(level, 2), tier);
+  m->agl_base = get_agl(level_offset(level, 3), tier);
 
   m->aspect_resist = 0;
   m->aspect_vuln = 0;
-  m->debuff_immune = 0;
+  m->debuff_immune = DEBUFF_BLIND | DEBUFF_CONFUSED | DEBUFF_POISONED;
+
+  switch (tier) {
+  case C_TIER:
+    m->parameter = 1;
+    break;
+  case A_TIER:
+  case B_TIER:
+    m->parameter = 2;
+    break;
+  default:
+    m->parameter = 4;
+  }
 
   monster_reset_stats(m);
 }

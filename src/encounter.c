@@ -236,6 +236,17 @@ inline void player_turn(void) {
     if (!effect->active)
       continue;
     switch (effect->effect) {
+    case DEBUFF_SCARED:
+      const uint8_t scared_roll = d256();
+      if (fear_flee_roll(effect->tier)) {
+        player_flee();
+        return;
+      } else if (fear_shiver_roll(effect->tier)) {
+        sprintf(battle_pre_message, str_battle_player_scared);
+        skip_post_message = true;
+        return;
+      }
+      break;
     case DEBUFF_POISONED:
       const uint16_t poison = poison_hp(effect->tier, player.max_hp);
       if (player.hp <= poison) {

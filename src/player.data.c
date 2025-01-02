@@ -62,17 +62,17 @@ const Ability druid5 = {
 
 const Ability fighter0 = {
   1, str_ability_fighter_second_wind,
-  TARGET_SELF, 7, fighter_second_wind,
+  TARGET_SELF, 11, fighter_second_wind,
 };
 
 const Ability fighter1 = {
   2, str_ability_fighter_action_surge,
-  TARGET_SINGLE, 12, fighter_action_surge,
+  TARGET_SINGLE, 14, fighter_action_surge,
 };
 
 const Ability fighter2 = {
   3, str_ability_fighter_cleave,
-  TARGET_ALL, 17, fighter_cleave,
+  TARGET_ALL, 19, fighter_cleave,
 };
 
 const Ability fighter3 = {

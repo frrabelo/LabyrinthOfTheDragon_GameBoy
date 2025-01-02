@@ -139,12 +139,6 @@ typedef enum GameRomBank {
 #define VRAM_ROW_OFFSET(col) (32 - (col))
 
 /**
- * Random Seed to use for the game. If set to 0 then the game will generate a
- * seed value on the title while waiting for the player to begin the game.
- */
-#define RANDOM_SEED 102
-
-/**
  * Number of bytes per 8x8 pixel 2BBP tile.
  */
 #define BYTES_PER_TILE 16

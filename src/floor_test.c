@@ -24,48 +24,6 @@ static const Map maps[] = {
 };
 
 //------------------------------------------------------------------------------
-// Palette Colors
-//------------------------------------------------------------------------------
-
-static const uint16_t palettes[] = {
-  // Palette 1 - Core background tiles
-  RGB8(190, 200, 190),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
-  RGB8(24, 0, 0),
-  // Palette 2 - Treasure chests
-  RGB8(192, 138, 40),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
-  RGB8(24, 0, 0),
-  // Palette 3
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 4
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 5
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 6
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 7
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-};
-
-//------------------------------------------------------------------------------
 // Chests
 //------------------------------------------------------------------------------
 
@@ -157,7 +115,7 @@ static const Exit exits[] = {
   { MAP_C, 4, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
   { MAP_C, 3, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
 
-  // { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &floor_test2 },
+  { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &bank_floor_test2 },
 
   { END },
 };
@@ -324,6 +282,48 @@ static bool on_special(void) {
 static bool on_move(void) {
   return false;
 }
+
+//------------------------------------------------------------------------------
+// Palette Colors
+//------------------------------------------------------------------------------
+
+static const palette_color_t palettes[] = {
+  // Palette 1 - Core background tiles
+  RGB8(190, 200, 190),
+  RGB8(100, 100, 140),
+  RGB8(40, 60, 40),
+  RGB8(24, 0, 0),
+  // Palette 2 - Treasure chests
+  RGB8(192, 138, 40),
+  RGB8(100, 100, 140),
+  RGB8(40, 60, 40),
+  RGB8(24, 0, 0),
+  // Palette 3
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+  // Palette 4
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+  // Palette 5
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+  // Palette 6
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+  // Palette 7
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+};
 
 //------------------------------------------------------------------------------
 // Area Definition (shouldn't have to touch this)

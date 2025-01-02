@@ -6,9 +6,15 @@
 #include "map.h"
 #include "strings.h"
 
-// IMPORTANT if you add a new floor, add an extern here
+// Floor data (define these in your floor*.c files on whatever bank you want)
+
 extern const Floor floor_test;
+extern const Floor floor_test2;
+
+// Floor bank entry externs (define these in `floor.banks.c`)
+
 extern const FloorBank bank_floor_test;
+extern const FloorBank bank_floor_test2;
 
 /**
  * Set this as a custom chest handler to have the chest give the player a

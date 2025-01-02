@@ -193,6 +193,9 @@ addNamespace('floor_test', 2, {
   'creak': 'The other lever creaks.',
   'groan': 'The other lever groans.',
   'chest_click': 'The chest clicks.',
+  'no_back': "You cannot return...",
+  'door_opens': "The door opens!",
+  'growl': "GROWL!",
 })
 
 addNamespace('chest_item', 2, {

@@ -756,6 +756,21 @@ extern const char str_floor_test_groan[];
 extern const char str_floor_test_chest_click[];
 
 /**
+ * "You cannot return..."
+ */
+extern const char str_floor_test_no_back[];
+
+/**
+ * "The door opens!"
+ */
+extern const char str_floor_test_door_opens[];
+
+/**
+ * "GROWL!"
+ */
+extern const char str_floor_test_growl[];
+
+/**
  * "You get 2 potions and an ether!"
  */
 extern const char str_chest_item_2pot_1eth[];

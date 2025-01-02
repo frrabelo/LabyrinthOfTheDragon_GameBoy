@@ -431,6 +431,10 @@ typedef enum MapState {
    * The map should teleport the player to the specified location.
    */
   MAP_STATE_TELEPORT,
+  /**
+   * Used when a door's state has been updated via an external script.
+   */
+  MAP_STATE_UPDATE_DOOR,
 } MapState;
 
 /**
@@ -833,7 +837,6 @@ typedef struct Floor {
    */
   uint8_t default_y;
   /**
-   * Color palettes for the area.
    */
   palette_color_t *palettes;
   /**
@@ -1142,6 +1145,10 @@ typedef struct MapSystem {
    * Message to set when opening the map textbox.
    */
   const char *textbox_message;
+  /**
+   * Door parameter for the open and close door helpers.
+   */
+  DoorId door_param;
 } MapSystem;
 
 /**
@@ -1210,12 +1217,6 @@ inline void start_battle(void) {
  * Called when returning to the map system from the battle system.
  */
 void return_from_battle(void) NONBANKED;
-
-/**
- * Opens a door with the given id.
- * @param id Id of the door to open.
- */
-void open_door_by_id(DoorId id);
 
 /**
  * Clears all active map sprites.
@@ -1423,6 +1424,34 @@ inline void unstick_lever(LeverId id) {
  */
 inline void set_door_open(DoorId id) {
   map.flags_door_locked &= ~id;
+}
+
+/**
+ * Sets a door as closed. Has no effect on graphics.
+ * @param id Id for the door to close.
+ */
+inline void set_door_closed(DoorId id) {
+  map.flags_door_locked |= id;
+}
+
+/**
+ * Opens a door with the given id.
+ * @param id Id of the door to open.
+ */
+inline void open_door_by_id(DoorId id) {
+  set_door_open(id);
+  map.door_param = id;
+  map.state = MAP_STATE_UPDATE_DOOR;
+}
+
+/**
+ * Closes a door with the given id.
+ * @param id Id of the door to open.
+ */
+inline void close_door_by_id(DoorId id) {
+  set_door_closed(id);
+  map.door_param = id;
+  map.state = MAP_STATE_UPDATE_DOOR;
 }
 
 /**

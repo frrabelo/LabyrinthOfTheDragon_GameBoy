@@ -1768,17 +1768,16 @@ static uint8_t *get_vram_at(int8_t tx, int8_t ty) {
   return VRAM_BACKGROUND_XY(col, row);
 }
 
-void open_door_by_id(DoorId id) {
-  const Door *door;
+Door *get_door_by_id(DoorId id) {
+  Door *door;
   for (door = doors; door->id != END; door++) {
-    if (door->id == id)
-      break;
+    if (door->id == id) break;
   }
+  return door;
+}
 
-  if (door->id == END)
-    return;
-
-  set_door_open(id);
+void update_door_graphics(DoorId id) {
+  Door *door = get_door_by_id(id);
 
   if (
     map.active_map->id != door->map_id ||
@@ -1788,9 +1787,12 @@ void open_door_by_id(DoorId id) {
     door->row >= map.y + MAP_VERT_LOADS
   ) return;
 
+  MapTile tile;
+  get_map_tile(&tile, door->col, door->row);
+
   uint8_t *vram = get_vram_at(door->col, door->row);
-  uint8_t tile_base = door->type;
-  swap_tile_graphics(vram, tile_base);
+  uint8_t tile_base = is_door_open(id) ? door->type : tile.tile;
+  swap_tile_graphics(vram, door->type);
 }
 
 /**
@@ -1927,10 +1929,7 @@ static bool check_npcs(void) {
   if (!is_npc_visible(npc->id))
     return false;
 
-  if (!npc->on_action)
-    return on_npc_action(npc);
-
-  return false;
+  return on_npc_action(npc);
 }
 
 /**
@@ -2082,6 +2081,10 @@ void update_map(void) {
     map_fade_out(MAP_STATE_LOAD_EXIT);
     sfx_no_no_square();
     return;
+  case MAP_STATE_UPDATE_DOOR:
+    update_door_graphics(map.door_param);
+    map.state = MAP_STATE_WAITING;
+    break;
   }
 
   update_torch();

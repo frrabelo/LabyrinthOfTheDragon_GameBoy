@@ -30,13 +30,11 @@ void fill_inventory(uint8_t amt) {
 }
 
 void test_big_map(void) {
-  init_test_player(CLASS_SORCERER, 26);
+  init_test_player(CLASS_SORCERER, 70);
   grant_ability(ABILITY_ALL);
 
-  set_active_floor(&bank_floor_test);
-  init_world_map();
+  player.has_torch = true;
 
-  // player.has_torch = true;
-  // set_active_floor(&floor_test2);
-  // init_world_map(); game_state = GAME_STATE_WORLD_MAP;
+  set_active_floor(&bank_floor_test2);
+  init_world_map();
 }

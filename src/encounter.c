@@ -276,6 +276,17 @@ inline void player_turn(void) {
     }
   }
 
+  // If the target died prior to the player's turn, hit a different target
+  if (!encounter.target->active) {
+    Monster *alt_target = encounter.monsters;
+    for (uint8_t k = 0; k < 3; k++, alt_target++) {
+      if (alt_target->active) {
+        encounter.target = alt_target;
+        break;
+      }
+    }
+  }
+
   switch (encounter.player_action) {
   case PLAYER_ACTION_FIGHT:
     player_base_attack();

@@ -16,6 +16,7 @@ uint8_t joypad_down;
 uint8_t joypad_pressed;
 uint8_t joypad_released;
 
+
 /**
  * Initializes the normal game. Abstracted out of `initialize` to make it easy
  * to switch between tests and the actual game while handling common setup.

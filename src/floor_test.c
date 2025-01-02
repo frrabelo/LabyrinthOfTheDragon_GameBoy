@@ -366,11 +366,13 @@ bool floor_test_on_special(void) {
   switch (map.active_map->id) {
   case MAP_A:
     if (player_at(3, 8)) {
-      reset_encounter(MONSTER_LAYOUT_2);
-      beholder_generator(monster, player.level, C_TIER);
+      reset_encounter(MONSTER_LAYOUT_3S);
+      dummy_generator(monster, 10, DUMMY_COWARD);
       monster->id = 'A';
-      dragon_generator(++monster, player.level, C_TIER);
-      monster->id = 'A';
+      dummy_generator(++monster, 10, DUMMY_COWARD);
+      monster->id = 'B';
+      dummy_generator(++monster, 10, DUMMY_COWARD);
+      monster->id = 'C';
       start_battle();
       return true;
     }

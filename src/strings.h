@@ -506,7 +506,7 @@ extern const char str_battle_sorc_wild_magic_fireball[];
 extern const char str_battle_sorc_wild_magic_sleetstorm[];
 
 /**
- * "But they phase out, evading your attack!"
+ * "They phase out and evade the attack!"
  */
 extern const char str_battle_displacer_beast_phase[];
 
@@ -1089,5 +1089,40 @@ extern const char str_monster_displacer_beast_1hit[];
  * "But they miss with both tentalces!"
  */
 extern const char str_monster_displacer_beast_miss[];
+
+/**
+ * "Will-o-wisp %c sends lightning forth..."
+ */
+extern const char str_monster_will_o_wisp_lightning[];
+
+/**
+ * "Will-o-wisp %c passes through you!"
+ */
+extern const char str_monster_will_o_wisp_scare[];
+
+/**
+ * "Terror fills your soul!"
+ */
+extern const char str_monster_will_o_wisp_scare_hit[];
+
+/**
+ * "But you hold fast!"
+ */
+extern const char str_monster_will_o_wisp_scare_miss[];
+
+/**
+ * "Will-o-wisp %c siphons your soul..."
+ */
+extern const char str_monster_will_o_wisp_siphon[];
+
+/**
+ * "They steal %damage HP!"
+ */
+extern const char str_monster_will_o_wisp_siphon_hit[];
+
+/**
+ * "They shock you for %damage damage!"
+ */
+extern const char str_monster_will_o_wisp_hit[];
 
 #endif

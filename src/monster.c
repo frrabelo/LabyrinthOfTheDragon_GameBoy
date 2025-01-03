@@ -752,9 +752,47 @@ void displacer_beast_generator(
 // -----------------------------------------------------------------------------
 
 static void will_o_wisp_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
+  PowerTier tier = monster->exp_tier > B_TIER ? A_TIER : B_TIER;
+  uint16_t base_damage = get_monster_dmg(monster->level, tier);
+
+  // Life drain
+  if (d8() < 2) {
+    sprintf(battle_pre_message, str_monster_will_o_wisp_siphon, monster->id);
+    if (roll_attack(monster->matk, player.mdef)) {
+      uint16_t damage = damage_player(base_damage / 2, DAMAGE_DARK);
+      uint16_t heal = damage;
+      if (damage + monster->target_hp > monster->max_hp)
+        heal = monster->max_hp - monster->target_hp;
+      monster->target_hp += heal;
+      sprintf(battle_post_message, str_monster_will_o_wisp_siphon_hit, damage);
+    } else {
+      sprintf(battle_post_message, str_monster_miss);
+    }
+    return;
+  }
+
+  // Phase terror!
+  if (d8() < monster->parameter) {
+    sprintf(battle_pre_message, str_monster_will_o_wisp_scare, monster->id);
+    if (roll_attack(monster->matk, level_offset(player.mdef, -5))) {
+      const uint8_t scared_turns[4] = { 2, 3, 5, 7 };
+      apply_scared(encounter.player_status_effects,
+        A_TIER, scared_turns[monster->exp_tier], player.debuff_immune);
+      sprintf(battle_post_message, str_monster_will_o_wisp_scare_hit);
+    } else {
+      sprintf(battle_post_message, str_monster_will_o_wisp_scare_miss);
+    }
+    return;
+  }
+
+  // Normal attack
+  sprintf(battle_pre_message, str_monster_will_o_wisp_lightning, monster->id);
+  if (roll_attack(monster->matk, player.mdef)) {
+    damage_player(base_damage, DAMAGE_AIR);
+    // sprintf(battle_post_message, str_monster_will_o_wisp_hit, damage);
+  } else {
+    sprintf(battle_post_message, str_monster_miss);
+  }
 }
 
 void will_o_wisp_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
@@ -766,17 +804,32 @@ void will_o_wisp_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->exp_tier = tier;
   m->level = level;
 
-  m->max_hp = get_monster_hp(level, tier);
+  m->max_hp = get_monster_hp(level_offset(level, -10), tier);
   m->hp = m->max_hp;
   m->atk_base = get_monster_atk(level, tier);
-  m->def_base = get_monster_def(level, tier);
+  m->def_base = get_monster_def(level_offset(level, 5), A_TIER);
   m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
+  m->mdef_base = get_monster_def(level, A_TIER);
   m->agl_base = get_agl(level, tier);
 
-  m->aspect_resist = 0;
-  m->aspect_vuln = 0;
-  m->debuff_immune = 0;
+  m->aspect_resist = DAMAGE_PHYSICAL;
+  m->aspect_vuln = DAMAGE_LIGHT;
+  m->debuff_immune = DAMAGE_DARK;
+
+  switch (tier) {
+  case S_TIER:
+    m->parameter = 4;
+    break;
+  case A_TIER:
+    m->parameter = 3;
+    break;
+  case B_TIER:
+    m->parameter = 2;
+    break;
+  case C_TIER:
+    m->parameter = 1;
+    break;
+  }
 
   monster_reset_stats(m);
 }

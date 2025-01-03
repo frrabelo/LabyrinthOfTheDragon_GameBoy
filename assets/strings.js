@@ -136,8 +136,8 @@ addNamespace('battle', 0, {
   'sorc_wild_magic_fizzle': 'But it fizzles.',
   'sorc_wild_magic_fireball': 'And a fireball goes flying!',
   'sorc_wild_magic_sleetstorm': 'And a sleetstorm descends!',
-  // Displacer Beast Abilities
-  'displacer_beast_phase': 'But they phase out, evading your attack!',
+  // Displacer Beast & Will-o-wisp Abilities
+  'displacer_beast_phase': 'They phase out and evade the attack!',
   // Monster / Player common
   'monster_scared_frozen': '%monster %c shivers in fear...',
   'monster_paralyzed': "%monster %c can't move!",
@@ -277,6 +277,14 @@ addNamespace('monster', 6, {
   'displacer_beast_2hit': 'They hit twice for %damage damage!',
   'displacer_beast_1hit': 'They hit once for %damage damage!',
   'displacer_beast_miss': 'But they miss with both tentalces!',
+  // Will-o-wisp specials
+  'will_o_wisp_lightning': 'Will-o-wisp %c sends lightning forth...',
+  'will_o_wisp_scare': 'Will-o-wisp %c passes through you!',
+  'will_o_wisp_scare_hit': 'Terror fills your soul!',
+  'will_o_wisp_scare_miss': 'But you hold fast!',
+  'will_o_wisp_siphon': 'Will-o-wisp %c siphons your soul...',
+  'will_o_wisp_siphon_hit': 'They steal %damage HP!',
+  'will_o_wisp_hit': 'They shock you for %damage damage!',
 });
 
 // Export the namespaces

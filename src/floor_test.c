@@ -280,7 +280,7 @@ static bool on_special(void) {
   if (player_at(3, 4)) {
     reset_encounter(MONSTER_LAYOUT_1);
     Monster *monster = encounter.monsters;
-    displacer_beast_generator(monster, 47, C_TIER);
+    will_o_wisp_generator(monster, 40, C_TIER);
     monster->id = 'A';
     start_battle();
     return true;

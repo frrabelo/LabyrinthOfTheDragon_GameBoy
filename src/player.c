@@ -103,10 +103,21 @@ static void damage_monster(uint16_t base_damage, DamageAspect type) {
     sprintf(battle_post_message, str_battle_player_hit, damage);
   }
 
-  if (monster->target_hp < damage)
+  if (monster->target_hp < damage) {
     monster->target_hp = 0;
+    if (
+      monster->type == MONSTER_DEATHKNIGHT &&
+      !(monster->parameter & DEATH_KNIGHT_REVIVE_USED) &&
+      d16() < 3
+    ) {
+      monster->parameter |= DEATH_KNIGHT_REVIVE_USED;
+      monster->target_hp = monster->max_hp / 4;
+      sprintf(battle_post_message, str_battle_deathknight_revive);
+    }
+  }
   else
     monster->target_hp -= damage;
+
 }
 
 /**

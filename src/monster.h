@@ -10,6 +10,16 @@
 #include "stats.h"
 
 /**
+ * Flag used to determine if a death knight has used their hellfire orb attack.
+ */
+#define DEATH_KNIGHT_ORB_USED FLAG(0)
+
+/**
+ * Flag used to determine if the death knight has revived.
+ */
+#define DEATH_KNIGHT_REVIVE_USED FLAG(1)
+
+/**
  * Number of tiles in a full monster tileset.
  */
 #define MONSTER_TILES 7 * 7 * 2

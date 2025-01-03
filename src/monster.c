@@ -101,9 +101,12 @@ static uint16_t damage_player(uint16_t base_damage, DamageAspect type) {
     sprintf(battle_post_message, str_monster_hit_aspect, damage, aspect);
   }
 
-  if (player.hp < damage)
+  if (damage > player.hp) {
     damage = player.hp;
-  player.hp -= damage;
+    player.hp = 0;
+  } else {
+    player.hp -= damage;
+  }
 
   return damage;
 }
@@ -839,9 +842,49 @@ void will_o_wisp_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 // -----------------------------------------------------------------------------
 
 static void deathknight_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
+  const PowerTier tier = monster->exp_tier > B_TIER ? A_TIER : B_TIER;
+  const uint8_t longsword_level = level_offset(monster->level, -7);
+  const uint8_t orb_level = level_offset(monster->level, 1);
+
+  uint16_t base_damage;
+
+  if (!(monster->parameter & DEATH_KNIGHT_ORB_USED) && d8() < 1) {
+    // Hellfire orb
+    monster->parameter |= DEATH_KNIGHT_ORB_USED;
+    sprintf(battle_pre_message,
+      str_monster_deathknight_hellfire, monster->id);
+
+    base_damage = get_monster_dmg(orb_level, tier);
+    if (roll_attack(monster->matk, player.mdef)) {
+      uint16_t damage = damage_player(base_damage, DAMAGE_FIRE);
+      sprintf(battle_post_message,
+        str_monster_deathknight_hellfire_hit, damage);
+    } else {
+      uint16_t damage = damage_player(base_damage / 2, DAMAGE_FIRE);
+      sprintf(battle_post_message,
+        str_monster_deathknight_hellfire_miss, damage);
+    }
+    return;
+  }
+
+  // Longsword multi-attack
+  sprintf(battle_pre_message, str_monster_deathknight_attack, monster->id);
+
+  bool hit1 = roll_attack(monster->atk, player.def);
+  bool hit2 = roll_attack(monster->atk, player.def);
+
+  base_damage = get_monster_dmg(longsword_level, tier);
+
+  if (hit1 && hit2) {
+    base_damage *= 2;
+    uint16_t damage = damage_player(base_damage, DAMAGE_PHYSICAL);
+    sprintf(battle_post_message, str_monster_deathknight_hit2, damage);
+  } else if (hit1 || hit2) {
+    uint16_t damage = damage_player(base_damage, DAMAGE_PHYSICAL);
+    sprintf(battle_post_message, str_monster_deathknight_hit1, damage);
+  } else {
+    sprintf(battle_post_message, str_monster_miss);
+  }
 }
 
 void deathknight_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
@@ -851,19 +894,19 @@ void deathknight_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->take_turn = deathknight_take_turn;
 
   m->exp_tier = tier;
-  m->level = level;
+  m->level = level + 5;
 
-  m->max_hp = get_monster_hp(level, tier);
+  m->max_hp = get_monster_hp(level_offset(level, 5), tier);
   m->hp = m->max_hp;
-  m->atk_base = get_monster_atk(level, tier);
-  m->def_base = get_monster_def(level, tier);
-  m->matk_base = get_monster_atk(level, tier);
+  m->atk_base = get_monster_atk(level_offset(level, 2), tier);
+  m->def_base = get_monster_def(level_offset(level, 5), tier);
+  m->matk_base = get_monster_atk(level_offset(level, 2), tier);
   m->mdef_base = get_monster_def(level, tier);
   m->agl_base = get_agl(level, tier);
 
-  m->aspect_resist = 0;
-  m->aspect_vuln = 0;
-  m->debuff_immune = 0;
+  m->aspect_resist = DAMAGE_MAGICAL;
+  m->aspect_vuln = DAMAGE_LIGHT;
+  m->debuff_immune = DAMAGE_DARK;
 
   monster_reset_stats(m);
 }

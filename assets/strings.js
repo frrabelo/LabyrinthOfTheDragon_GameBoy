@@ -136,8 +136,10 @@ addNamespace('battle', 0, {
   'sorc_wild_magic_fizzle': 'But it fizzles.',
   'sorc_wild_magic_fireball': 'And a fireball goes flying!',
   'sorc_wild_magic_sleetstorm': 'And a sleetstorm descends!',
-  // Displacer Beast & Will-o-wisp Abilities
+  // Displacer Beast
   'displacer_beast_phase': 'They phase out and evade the attack!',
+  // Death Knight abilities
+  'deathknight_revive': 'The deathknight falls, but then revives!',
   // Monster / Player common
   'monster_scared_frozen': '%monster %c shivers in fear...',
   'monster_paralyzed': "%monster %c can't move!",
@@ -285,6 +287,13 @@ addNamespace('monster', 6, {
   'will_o_wisp_siphon': 'Will-o-wisp %c siphons your soul...',
   'will_o_wisp_siphon_hit': 'They steal %damage HP!',
   'will_o_wisp_hit': 'They shock you for %damage damage!',
+  // Deathknight Specials
+  'deathknight_attack': 'Death Knight %c swings their longsword...',
+  'deathknight_hit1': 'They slash you for %damage damage!',
+  'deathknight_hit2': 'They hit twice! %damage damage!',
+  'deathknight_hellfire': 'Death Knight %c sends forth a hellfire orb!',
+  'deathknight_hellfire_hit': 'Direct hit! You take %damage damage!',
+  'deathknight_hellfire_miss': 'You dodge! But still take %damage damage!',
 });
 
 // Export the namespaces

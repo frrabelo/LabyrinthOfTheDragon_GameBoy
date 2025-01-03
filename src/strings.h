@@ -511,6 +511,11 @@ extern const char str_battle_sorc_wild_magic_sleetstorm[];
 extern const char str_battle_displacer_beast_phase[];
 
 /**
+ * "The deathknight falls, but then revives!"
+ */
+extern const char str_battle_deathknight_revive[];
+
+/**
  * "%monster %c shivers in fear..."
  */
 extern const char str_battle_monster_scared_frozen[];
@@ -1124,5 +1129,35 @@ extern const char str_monster_will_o_wisp_siphon_hit[];
  * "They shock you for %damage damage!"
  */
 extern const char str_monster_will_o_wisp_hit[];
+
+/**
+ * "Death Knight %c swings their longsword..."
+ */
+extern const char str_monster_deathknight_attack[];
+
+/**
+ * "They slash you for %damage damage!"
+ */
+extern const char str_monster_deathknight_hit1[];
+
+/**
+ * "They hit twice! %damage damage!"
+ */
+extern const char str_monster_deathknight_hit2[];
+
+/**
+ * "Death Knight %c sends forth a hellfire orb!"
+ */
+extern const char str_monster_deathknight_hellfire[];
+
+/**
+ * "Direct hit! You take %damage damage!"
+ */
+extern const char str_monster_deathknight_hellfire_hit[];
+
+/**
+ * "You dodge! But still take %damage damage!"
+ */
+extern const char str_monster_deathknight_hellfire_miss[];
 
 #endif

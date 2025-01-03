@@ -44,6 +44,7 @@ const char str_battle_sorc_wild_magic_fizzle[] = "But it fizzles.";
 const char str_battle_sorc_wild_magic_fireball[] = "And a fireball \ngoes flying!";
 const char str_battle_sorc_wild_magic_sleetstorm[] = "And a sleetstorm \ndescends!";
 const char str_battle_displacer_beast_phase[] = "They phase out and\n evade the \nattack!";
+const char str_battle_deathknight_revive[] = "The deathknight \nfalls, but then \nrevives!";
 const char str_battle_monster_scared_frozen[] = "%s %c \nshivers in fear\x60";
 const char str_battle_monster_paralyzed[] = "%s %c can\'t \nmove!";
 const char str_battle_monster_poison_death[] = "%s %c \nsuccumbs to the \npoison!";

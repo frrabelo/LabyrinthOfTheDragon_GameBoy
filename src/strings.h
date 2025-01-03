@@ -506,6 +506,11 @@ extern const char str_battle_sorc_wild_magic_fireball[];
 extern const char str_battle_sorc_wild_magic_sleetstorm[];
 
 /**
+ * "But they phase out, evading your attack!"
+ */
+extern const char str_battle_displacer_beast_phase[];
+
+/**
  * "%monster %c shivers in fear..."
  */
 extern const char str_battle_monster_scared_frozen[];
@@ -1064,5 +1069,25 @@ extern const char str_monster_gcube_engulf_fail[];
  * "Gelatinous Cube %c swipes at you!"
  */
 extern const char str_monster_gcube_attack[];
+
+/**
+ * "Displacer Beast %c strikes with its tentacles!"
+ */
+extern const char str_monster_displacer_beast_tentacle[];
+
+/**
+ * "They hit twice for %damage damage!"
+ */
+extern const char str_monster_displacer_beast_2hit[];
+
+/**
+ * "They hit once for %damage damage!"
+ */
+extern const char str_monster_displacer_beast_1hit[];
+
+/**
+ * "But they miss with both tentalces!"
+ */
+extern const char str_monster_displacer_beast_miss[];
 
 #endif

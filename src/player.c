@@ -73,6 +73,16 @@ static void damage_monster(uint16_t base_damage, DamageAspect type) {
     return;
   }
 
+  switch (monster->type) {
+  case MONSTER_DISPLACER_BEAST:
+    monster->parameter--;
+    if (monster->parameter != 0)
+      break;
+    monster->parameter = monster->exp_tier > B_TIER ? 2 : 4;
+    sprintf(battle_post_message, str_battle_displacer_beast_phase);
+    return;
+  }
+
   uint8_t roll = d16();
   uint16_t damage = calc_damage(roll, base_damage);
   bool critical = is_critical(roll);
@@ -130,6 +140,21 @@ static uint8_t damage_all(
     if (monster->aspect_immune & type)
       continue;
 
+    bool evaded = false;
+
+    switch (monster->type) {
+    case MONSTER_DISPLACER_BEAST:
+      monster->parameter--;
+      if (monster->parameter != 0)
+        break;
+      monster->parameter = monster->exp_tier > B_TIER ? 2 : 4;
+      evaded = true;
+      break;
+    }
+
+    if (evaded)
+      continue;
+
     const uint8_t def = use_mdef ? monster->mdef : monster->def;
     if (!check_attack(atk_roll, atk, def))
       continue;
@@ -169,7 +194,22 @@ static void damage_all_no_miss(uint16_t base_damage, DamageAspect type) {
   for (uint8_t k = 0; k < 3; k++, monster++) {
     if (!monster->active)
       continue;
+
     if (monster->aspect_immune & type)
+      continue;
+
+    bool evaded = false;
+    switch (monster->type) {
+    case MONSTER_DISPLACER_BEAST:
+      monster->parameter--;
+      if (monster->parameter != 0)
+        break;
+      monster->parameter = monster->exp_tier > B_TIER ? 2 : 4;
+      evaded = true;
+      break;
+    }
+
+    if (evaded)
       continue;
 
     uint16_t d = damage;
@@ -226,13 +266,13 @@ void druid_base_attack(void) {
     return;
   }
 
-  PowerTier damage_tier;
-  if (player.level < 35)
-    damage_tier = B_TIER;
-  else if (player.level < 75)
-    damage_tier = A_TIER;
-  else
+  PowerTier damage_tier = C_TIER;
+  if (player.level > 75)
     damage_tier = S_TIER;
+  else if (player.level > 50)
+    damage_tier = A_TIER;
+  else if (player.level > 25)
+    damage_tier = B_TIER;
 
   const uint16_t base_dmg = get_player_damage(player.level, damage_tier);
   damage_monster(base_dmg, DAMAGE_MAGICAL);
@@ -281,7 +321,7 @@ void druid_lightning(void) {
     damage_tier = S_TIER;
 
   const uint16_t base_dmg = get_player_damage(
-    level_offset(player.level, 5), damage_tier);
+    level_offset(player.level, 10), damage_tier);
 
   damage_monster(base_dmg, DAMAGE_AIR);
 }
@@ -298,6 +338,7 @@ void druid_heal(void) {
     player.hp = player.max_hp;
     sprintf(battle_post_message, str_battle_heal_complete);
   } else {
+    player.hp += heal_hp;
     sprintf(battle_post_message, str_battle_player_heal, heal_hp);
   }
 }

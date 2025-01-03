@@ -638,7 +638,6 @@ static void gelatinous_cube_take_turn(Monster *monster) {
   }
 
   return;
-
 }
 
 void gelatinous_cube_generator(
@@ -682,9 +681,26 @@ void gelatinous_cube_generator(
 // -----------------------------------------------------------------------------
 
 static void displacer_beast_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
+  sprintf(
+    battle_pre_message, str_monster_displacer_beast_tentacle, monster->id);
+
+  bool hit1 = roll_attack(monster->atk, player.def);
+  bool hit2 = roll_attack(level_offset(monster->atk, -7), player.def);
+
+  uint8_t tier = monster->exp_tier > B_TIER ? A_TIER : C_TIER;
+
+  uint16_t base_damage = get_monster_dmg(
+    level_offset(monster->level, -10), tier);
+
+  if (hit1 && hit2) {
+    const uint16_t result = damage_player(2 * base_damage, DAMAGE_DARK);
+    sprintf(battle_post_message, str_monster_displacer_beast_2hit, result);
+  } else if (hit1 || hit2) {
+    const uint16_t result = damage_player(base_damage, DAMAGE_DARK);
+    sprintf(battle_post_message, str_monster_displacer_beast_1hit, result);
+  } else {
+    sprintf(battle_post_message, str_monster_displacer_beast_miss);
+  }
 }
 
 void displacer_beast_generator(
@@ -699,19 +715,34 @@ void displacer_beast_generator(
   m->take_turn = displacer_beast_take_turn;
 
   m->exp_tier = tier;
-  m->level = level;
+  m->level = level + 2;
 
-  m->max_hp = get_monster_hp(level, tier);
+  m->max_hp = get_monster_hp(level_offset(level, 5), tier);
   m->hp = m->max_hp;
   m->atk_base = get_monster_atk(level, tier);
-  m->def_base = get_monster_def(level, tier);
+  m->def_base = get_monster_def(level_offset(level, 5), tier);
   m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
+  m->mdef_base = get_monster_def(level_offset(level, 5), tier);
   m->agl_base = get_agl(level, tier);
 
   m->aspect_resist = 0;
-  m->aspect_vuln = 0;
+  m->aspect_vuln = DAMAGE_LIGHT;
   m->debuff_immune = 0;
+
+  switch (tier) {
+  case S_TIER:
+    m->parameter = 1;
+    break;
+  case A_TIER:
+    m->parameter = 2;
+    break;
+  case B_TIER:
+    m->parameter = 3;
+    break;
+  case C_TIER:
+    m->parameter = 4;
+    break;
+  }
 
   monster_reset_stats(m);
 }

@@ -30,9 +30,7 @@ void fill_inventory(uint8_t amt) {
 }
 
 void test_big_map(void) {
-  init_test_player(CLASS_SORCERER, 33);
-  player.ability_flags = 0;
-  grant_ability(ABILITY_0 | ABILITY_1 | ABILITY_2);
+  init_test_player(CLASS_FIGHTER, 47);
 
   player.has_torch = true;
 

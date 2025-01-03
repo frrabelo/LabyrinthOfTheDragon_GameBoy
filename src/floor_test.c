@@ -280,7 +280,7 @@ static bool on_special(void) {
   if (player_at(3, 4)) {
     reset_encounter(MONSTER_LAYOUT_1);
     Monster *monster = encounter.monsters;
-    gelatinous_cube_generator(monster, 33, C_TIER);
+    displacer_beast_generator(monster, 47, C_TIER);
     monster->id = 'A';
     start_battle();
     return true;

@@ -136,6 +136,8 @@ addNamespace('battle', 0, {
   'sorc_wild_magic_fizzle': 'But it fizzles.',
   'sorc_wild_magic_fireball': 'And a fireball goes flying!',
   'sorc_wild_magic_sleetstorm': 'And a sleetstorm descends!',
+  // Displacer Beast Abilities
+  'displacer_beast_phase': 'But they phase out, evading your attack!',
   // Monster / Player common
   'monster_scared_frozen': '%monster %c shivers in fear...',
   'monster_paralyzed': "%monster %c can't move!",
@@ -270,7 +272,12 @@ addNamespace('monster', 6, {
   'gcube_poison': 'You are engulfed and poisoned!',
   'gcube_engulf_fail': 'You dodge as Gelatinous Cube %c tries to engulf you!',
   'gcube_attack': 'Gelatinous Cube %c swipes at you!',
-})
+  // Displacer Beast specials
+  'displacer_beast_tentacle': 'Displacer Beast %c strikes with its tentacles!',
+  'displacer_beast_2hit': 'They hit twice for %damage damage!',
+  'displacer_beast_1hit': 'They hit once for %damage damage!',
+  'displacer_beast_miss': 'But they miss with both tentalces!',
+});
 
 // Export the namespaces
 module.exports = namespaces;

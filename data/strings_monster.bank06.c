@@ -49,3 +49,7 @@ const char str_monster_gcube_paralyze[] = "You are engulfed \nand paralyzed!";
 const char str_monster_gcube_poison[] = "You are engulfed \nand poisoned!";
 const char str_monster_gcube_engulf_fail[] = "You dodge as \nGelatinous Cube %c\n tries to engulf \nyou!";
 const char str_monster_gcube_attack[] = "Gelatinous Cube %c \nswipes at you!";
+const char str_monster_displacer_beast_tentacle[] = "Displacer Beast %c \nstrikes with its \ntentacles!";
+const char str_monster_displacer_beast_2hit[] = "They hit twice for\n %u damage!";
+const char str_monster_displacer_beast_1hit[] = "They hit once for \n%u damage!";
+const char str_monster_displacer_beast_miss[] = "But they miss with\n both tentalces!";

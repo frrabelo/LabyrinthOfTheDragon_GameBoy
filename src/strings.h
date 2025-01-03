@@ -416,9 +416,14 @@ extern const char str_battle_monk_open_palm[];
 extern const char str_battle_monk_open_palm_trip[];
 
 /**
- * "You become one..."
+ * "You become one with the multiverse..."
  */
 extern const char str_battle_monk_still_mind[];
+
+/**
+ * "And are healed of all ill effects!"
+ */
+extern const char str_battle_monk_still_mind_post[];
 
 /**
  * "You attack with a flurry of blows!"
@@ -634,6 +639,11 @@ extern const char str_battle_player_prone[];
  * "You get up!"
  */
 extern const char str_battle_player_get_up[];
+
+/**
+ * "You are paralyzed and cannot move!"
+ */
+extern const char str_battle_player_paralyzed[];
 
 /**
  * "Victory! You gain %exp XP!"
@@ -1029,5 +1039,30 @@ extern const char str_monster_owlbear_multi[];
  * "Owlbear %c nips at you!"
  */
 extern const char str_monster_owlbear_beak[];
+
+/**
+ * "Gelatinous Cube %c sends out feelers..."
+ */
+extern const char str_monster_gcube_search[];
+
+/**
+ * "You are engulfed and paralyzed!"
+ */
+extern const char str_monster_gcube_paralyze[];
+
+/**
+ * "You are engulfed and poisoned!"
+ */
+extern const char str_monster_gcube_poison[];
+
+/**
+ * "You dodge as Gelatinous Cube %c tries to engulf you!"
+ */
+extern const char str_monster_gcube_engulf_fail[];
+
+/**
+ * "Gelatinous Cube %c swipes at you!"
+ */
+extern const char str_monster_gcube_attack[];
 
 #endif

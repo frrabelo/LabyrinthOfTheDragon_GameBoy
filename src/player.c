@@ -520,6 +520,7 @@ void monk_open_palm(void) {
   uint8_t atk = player.atk + player.agl;
 
   if (!roll_attack(atk, target->def)) {
+    sprintf(battle_pre_message, str_battle_monk_open_palm);
     sprintf(battle_post_message, str_battle_player_miss);
     return;
   }
@@ -536,7 +537,7 @@ void monk_open_palm(void) {
   else if (player.level > 30)
     trip_chance = 3;
 
-  if (d8() < trip_chance) {
+  if (d8() < trip_chance && !(target->special_immune & SPECIAL_SLEET_STORM)) {
     encounter.target->trip_turns = player.level > 30 ? 3 : 2;
     sprintf(battle_pre_message, str_battle_monk_open_palm_trip,
       encounter.target->name, encounter.target->id);
@@ -558,7 +559,7 @@ void monk_still_mind(void) {
       effect->active = false;
   }
   sprintf(battle_pre_message, str_battle_monk_still_mind);
-  skip_post_message = true;
+  sprintf(battle_post_message, str_battle_monk_still_mind_post);
 }
 
 void monk_flurry(void) {
@@ -651,9 +652,9 @@ void sorcerer_base_attack(void) {
   uint8_t num_missiles = 1;
   if (player.level >= 15)
     num_missiles = 2;
-  if (player.level >= 30)
-    num_missiles = 3;
   if (player.level >= 45)
+    num_missiles = 3;
+  if (player.level >= 75)
     num_missiles = 4;
 
   if (num_missiles == 1)
@@ -667,7 +668,9 @@ void sorcerer_base_attack(void) {
   if (player.level >= 60)
     tier = A_TIER;
 
-  uint8_t base_damage = num_missiles * get_player_damage(player.level, tier);
+  uint16_t missle_damage = get_player_damage(
+    level_offset(player.level, -5), tier);
+  uint16_t base_damage = num_missiles * missle_damage;
   damage_monster(base_damage, DAMAGE_MAGICAL);
 }
 

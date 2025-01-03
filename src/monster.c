@@ -576,9 +576,69 @@ void owlbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 // -----------------------------------------------------------------------------
 
 static void gelatinous_cube_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
+  // Search with feelers
+  if (d16() < 1) {
+    sprintf(battle_pre_message, str_monster_gcube_search, monster->id);
+    skip_post_message = true;
+    return;
+  }
+
+  uint8_t consume_chance;
+  switch (monster->exp_tier) {
+  case S_TIER:
+    consume_chance = 5;
+    break;
+  case A_TIER:
+    consume_chance = 4;
+    break;
+  case B_TIER:
+    consume_chance = 3;
+  default:
+    consume_chance = 2;
+  }
+
+  // Consume!
+  if (d8() < consume_chance && monster->parameter > 0) {
+    monster->parameter--;
+
+    const uint8_t paralyze_chance = monster->exp_tier > B_TIER ? 5 : 3;
+    const uint8_t poison_chance = monster->exp_tier > B_TIER ? 8 : 5;
+
+    if (d16() < paralyze_chance) {
+      // Paralyze
+      apply_paralyzed(
+        encounter.player_status_effects, C_TIER, 2, player.debuff_immune);
+      sprintf(battle_pre_message, str_monster_gcube_paralyze);
+    } else if (d16() < poison_chance) {
+      // Poison
+      apply_poison(
+        encounter.player_status_effects, C_TIER, 3, player.debuff_immune);
+      sprintf(battle_pre_message, str_monster_gcube_poison);
+    } else {
+      sprintf(battle_pre_message, str_monster_gcube_engulf_fail, monster->id);
+    }
+    skip_post_message = true;
+    return;
+  }
+
+  // Normal attack
+  sprintf(battle_pre_message, str_monster_gcube_attack, monster->id);
+
+  if (roll_attack(monster->atk, player.def)) {
+    PowerTier tier = monster->exp_tier;
+    if (tier == A_TIER)
+      tier = B_TIER;
+    else if (tier == S_TIER)
+      tier = A_TIER;
+    uint16_t base_damage = get_monster_dmg(
+      level_offset(monster->level, -5), tier);
+    damage_player(base_damage, DAMAGE_PHYSICAL);
+  } else {
+    sprintf(battle_post_message, str_monster_miss);
+  }
+
+  return;
+
 }
 
 void gelatinous_cube_generator(
@@ -590,22 +650,29 @@ void gelatinous_cube_generator(
     m, MONSTER_GELATINOUS_CUBE,
     str_misc_gelatinous_cube, &gelatinous_cube_tileset);
   m->palette = gelatinous_cube_palettes;
-  m->take_turn = goblin_take_turn;
+  m->take_turn = gelatinous_cube_take_turn;
 
   m->exp_tier = tier;
-  m->level = level;
+  m->level = level + 3;
 
   m->max_hp = get_monster_hp(level, tier);
   m->hp = m->max_hp;
-  m->atk_base = get_monster_atk(level, tier);
+  m->atk_base = get_monster_atk(level_offset(level, 2), tier);
   m->def_base = get_monster_def(level, tier);
   m->matk_base = get_monster_atk(level, tier);
-  m->mdef_base = get_monster_def(level, tier);
+  m->mdef_base = get_monster_def(level_offset(level, -5), tier);
   m->agl_base = get_agl(level, tier);
 
-  m->aspect_resist = 0;
-  m->aspect_vuln = 0;
-  m->debuff_immune = 0;
+  m->aspect_resist = DAMAGE_PHYSICAL;
+  m->aspect_vuln = DAMAGE_MAGICAL;
+  m->debuff_immune = DEBUFF_POISONED | DEBUFF_BLIND | DEBUFF_SCARED;
+  m->special_immune = SPECIAL_SLEET_STORM;
+
+  // Number of times they can execute the "consume" ability
+  if (tier < A_TIER)
+    m->parameter = 1;
+  else
+    m->parameter = 2;
 
   monster_reset_stats(m);
 }

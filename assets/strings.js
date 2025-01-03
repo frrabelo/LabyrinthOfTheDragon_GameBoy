@@ -117,7 +117,8 @@ addNamespace('battle', 0, {
   'monk_evasion': 'You feel light on your feet!',
   'monk_open_palm': 'You strike with an open palm!',
   'monk_open_palm_trip': 'You trip %monster %c!',
-  'monk_still_mind': 'You become one...',
+  'monk_still_mind': 'You become one with the multiverse...',
+  'monk_still_mind_post': 'And are healed of all ill effects!',
   'monk_flurry_of_blows': 'You attack with a flurry of blows!',
   'monk_diamond_body': 'You become tough as diamond.',
   'monk_quivering_palm': 'You attack their very essence!',
@@ -163,6 +164,7 @@ addNamespace('battle', 0, {
   'player_scared': 'You shiver with fear!',
   'player_prone': 'You lie prone!',
   'player_get_up': 'You get up!',
+  'player_paralyzed': 'You are paralyzed and cannot move!',
   'victory': 'Victory! You gain %exp XP!',
   'victory_no_xp': 'Victory! But you gain no XP...',
   'level_up': 'LEVEL UP! You reach %level!',
@@ -262,6 +264,12 @@ addNamespace('monster', 6, {
   'owlbear_pounce_miss': 'You barely jump out of the way!',
   'owlbear_multi': 'Owlbear %c tears at you with beak and claw!',
   'owlbear_beak': 'Owlbear %c nips at you!',
+  // G. Cube specials
+  'gcube_search': 'Gelatinous Cube %c sends out feelers...',
+  'gcube_paralyze': 'You are engulfed and paralyzed!',
+  'gcube_poison': 'You are engulfed and poisoned!',
+  'gcube_engulf_fail': 'You dodge as Gelatinous Cube %c tries to engulf you!',
+  'gcube_attack': 'Gelatinous Cube %c swipes at you!',
 })
 
 // Export the namespaces

@@ -2004,6 +2004,10 @@ void init_world_map(void) NONBANKED {
 void return_from_battle(void) NONBANKED {
   SWITCH_ROM(MAP_SYSTEM_BANK);
   initialize_world_map();
+  if (local_tiles->bg_priority) {
+    map.move_direction = HERE;
+    set_move_vram_bg_priority(local_tiles->attr);
+  }
   map_fade_in(MAP_STATE_WAITING);
 }
 
@@ -2016,7 +2020,7 @@ void on_victory(void) NONBANKED {
   SWITCH_ROM(_prev_bank);
 }
 
-bool after_textbox(void) NONBANKED{
+bool after_textbox(void) NONBANKED {
   if (!map.after_textbox)
     return false;
   if (textbox.state != TEXT_BOX_CLOSING)

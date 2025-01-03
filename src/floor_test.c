@@ -284,10 +284,22 @@ static bool on_special(void) {
     monster->id = 'A';
     set_on_victory(on_victory_test);
     start_battle();
+    return true;
   }
 
   if (player_at(7, 8)) {
     teleport(MAP_A, 26, 21, UP);
+    return true;
+  }
+
+  if (player_at(9, 8)) {
+    reset_encounter(MONSTER_LAYOUT_1);
+    Monster *monster = encounter.monsters;
+    dummy_generator(monster, 10, DUMMY_NORMAL);
+    monster->id = 'A';
+    set_on_victory(on_victory_test);
+    start_battle();
+    return true;
   }
 
   return false;

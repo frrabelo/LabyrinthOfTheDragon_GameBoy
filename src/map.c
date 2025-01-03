@@ -26,7 +26,7 @@ static bool play_wall_hit = true;
  * Map tile data for the tile the hero currently occupies and those in every
  * cardinal direction (index this with a `Direction`).
  */
-static MapTile local_tiles[5];
+MapTile local_tiles[5];
 
 /**
  * Stores a buffer of tiles to be progressively loaded over the animation frames

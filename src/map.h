@@ -987,6 +987,12 @@ typedef struct MapMenu {
 extern MapMenu map_menu;
 
 /**
+ * Map tile data for the tile the hero currently occupies and those in every
+ * cardinal direction (index this with a `Direction`).
+ */
+extern MapTile local_tiles[5];
+
+/**
  * Map system main state. Holds all global memory values used in the system.
  */
 typedef struct MapSystem {

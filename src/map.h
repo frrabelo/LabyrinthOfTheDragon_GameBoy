@@ -687,12 +687,21 @@ typedef enum DoorId {
 /**
  * Type for the door.
  */
-typedef enum DoorType {
+typedef enum DoorOpenGraphic {
   DOOR_NORMAL = 0x4E,
   DOOR_STAIRS_UP = 0x60,
   DOOR_STAIRS_DOWN = 0x88,
   DOOR_NEXT_LEVEL = 0x82,
-} DoorType;
+} DoorOpenGraphic;
+
+/**
+ * Closed graphics for doors.
+ */
+typedef enum DoorClosedGraphic {
+  DOOR_CLOSED_NORMAL = 0x64,
+  DOOR_CLOSED_KEY = 0x62,
+  DOOR_CLOSED_NEXT_LEVEL = 0x84,
+} DoorClosedGraphic;
 
 /**
  * A door that can be opened, closed, and locked.
@@ -702,8 +711,9 @@ typedef struct Door {
   MapId map_id;
   int8_t col;
   int8_t row;
-  DoorType type;
+  DoorOpenGraphic type;
   bool magic_key_unlock;
+  bool is_open;
 } Door;
 
 /**
@@ -1146,9 +1156,10 @@ typedef struct MapSystem {
    */
   const char *textbox_message;
   /**
-   * Door parameter for the open and close door helpers.
+   * Each bit represents a "changed" flag for doors. This will be set if the
+   * state of the door is changed via scripts, etc.
    */
-  DoorId door_param;
+  uint8_t doors_updated;
 } MapSystem;
 
 /**
@@ -1419,42 +1430,6 @@ inline void unstick_lever(LeverId id) {
 }
 
 /**
- * Sets a door to open. Has no effect on graphics.
- * @param id Id for the door to open.
- */
-inline void set_door_open(DoorId id) {
-  map.flags_door_locked &= ~id;
-}
-
-/**
- * Sets a door as closed. Has no effect on graphics.
- * @param id Id for the door to close.
- */
-inline void set_door_closed(DoorId id) {
-  map.flags_door_locked |= id;
-}
-
-/**
- * Opens a door with the given id.
- * @param id Id of the door to open.
- */
-inline void open_door_by_id(DoorId id) {
-  set_door_open(id);
-  map.door_param = id;
-  map.state = MAP_STATE_UPDATE_DOOR;
-}
-
-/**
- * Closes a door with the given id.
- * @param id Id of the door to open.
- */
-inline void close_door_by_id(DoorId id) {
-  set_door_closed(id);
-  map.door_param = id;
-  map.state = MAP_STATE_UPDATE_DOOR;
-}
-
-/**
  * @return If a door is open or not.
  * @param id Id of the door to test.
  */
@@ -1463,19 +1438,36 @@ inline bool is_door_open(DoorId id) {
 }
 
 /**
- * Sets a door to be locked. Has no effect on graphics.
- * @param id Id for the door to lock.
+ * Closes a door with the given id.
+ * @param id Id of the door to close.
  */
-inline void set_door_locked(DoorId id) {
+inline void close_door(DoorId id) {
+  if (!is_door_open(id))
+    return;
   map.flags_door_locked |= id;
+  map.doors_updated |= id;
 }
 
 /**
- * @return `true` if the door with the given id is locked.
- * @param id Id of the door to test.
+ * Opens the door with the given id.
+ * @param id Id of the door to open.
  */
-inline bool is_locked_door(DoorId id) {
-  return map.flags_door_locked & id;
+inline void open_door(DoorId id) {
+  if (is_door_open(id))
+    return;
+  map.flags_door_locked &= ~id;
+  map.doors_updated |= id;
+}
+
+/**
+ * Toggles a door open and closed.
+ * @param id Id of the door to toggle.
+ */
+inline void toggle_door(DoorId id) {
+  if (is_door_open(id))
+    close_door(id);
+  else
+    open_door(id);
 }
 
 /**

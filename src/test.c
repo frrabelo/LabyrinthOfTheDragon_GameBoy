@@ -35,6 +35,7 @@ void test_big_map(void) {
 
   player.has_torch = true;
 
-  set_active_floor(&bank_floor_test2);
+  // set_active_floor(&bank_floor_test2);
+  set_active_floor(&bank_floor_test);
   init_world_map();
 }

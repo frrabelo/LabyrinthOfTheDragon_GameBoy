@@ -24,6 +24,63 @@ static const Map maps[] = {
 };
 
 //------------------------------------------------------------------------------
+// Exits
+//------------------------------------------------------------------------------
+
+static const Exit exits[] = {
+  /*
+  {
+    MAP_A,        // Map the exit is on
+    0, 0,         // Column and row on that map for the exit
+    FLOOR_TEST_ID,    // Floor to which the exit leads (last door, basically)
+    DEST_MAP      // Id of the destination map
+    0, 0,         // Column and row
+    UP,           // Way the player should be facing leaving the exit
+    EXIT_STAIRS   // Type of exit (not sure if we'll use this yet)
+  },
+  */
+
+  { MAP_A, 8, 1, MAP_B, 4, 1, DOWN, EXIT_STAIRS },
+  { MAP_B, 4, 1, MAP_A, 8, 1, DOWN, EXIT_STAIRS },
+
+  { MAP_A, 25, 27, MAP_B, 4, 5, DOWN, EXIT_STAIRS },
+  { MAP_B, 4, 5, MAP_A, 25, 27, DOWN, EXIT_STAIRS },
+
+  { MAP_A, 9, 27, MAP_C, 3, 3, DOWN, EXIT_STAIRS },
+  { MAP_C, 3, 3, MAP_A, 9, 27, DOWN, EXIT_STAIRS },
+
+  { MAP_A, 14, 1, MAP_C, 4, 7, UP, EXIT_STAIRS },
+  { MAP_C, 4, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
+  { MAP_C, 3, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
+
+  { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &bank_floor_test2 },
+
+  { END },
+};
+
+//------------------------------------------------------------------------------
+// Doors
+//------------------------------------------------------------------------------
+
+static const Door doors[] = {
+  /*
+  {
+    DOOR_1,           // Use DOOR_* constants for ids.
+    MAP_A,            // Map for the door
+    0, 0              // (x, y) tile for the door
+    DOOR_STAIRS_UP,   // Open graphic
+    true              // Magic key required to unlock
+    false,            // Does the door start opened?
+  }
+  */
+  { DOOR_1, MAP_A, 14, 1, DOOR_STAIRS_UP, true, false },
+  { DOOR_2, MAP_A, 19, 1, DOOR_NEXT_LEVEL, false, false },
+  { DOOR_3, MAP_A, 20, 1, DOOR_NORMAL, false, true},
+  { END }
+};
+
+
+//------------------------------------------------------------------------------
 // Chests
 //------------------------------------------------------------------------------
 
@@ -86,127 +143,7 @@ static const Chest chests[] = {
 };
 
 //------------------------------------------------------------------------------
-// Exits
-//------------------------------------------------------------------------------
-
-static const Exit exits[] = {
-  /*
-  {
-    MAP_A,        // Map the exit is on
-    0, 0,         // Column and row on that map for the exit
-    FLOOR_TEST_ID,    // Floor to which the exit leads (last door, basically)
-    DEST_MAP      // Id of the destination map
-    0, 0,         // Column and row
-    UP,           // Way the player should be facing leaving the exit
-    EXIT_STAIRS   // Type of exit (not sure if we'll use this yet)
-  },
-  */
-
-  { MAP_A, 8, 1, MAP_B, 4, 1, DOWN, EXIT_STAIRS },
-  { MAP_B, 4, 1, MAP_A, 8, 1, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 25, 27, MAP_B, 4, 5, DOWN, EXIT_STAIRS },
-  { MAP_B, 4, 5, MAP_A, 25, 27, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 9, 27, MAP_C, 3, 3, DOWN, EXIT_STAIRS },
-  { MAP_C, 3, 3, MAP_A, 9, 27, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 14, 1, MAP_C, 4, 7, UP, EXIT_STAIRS },
-  { MAP_C, 4, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
-  { MAP_C, 3, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
-
-  { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &bank_floor_test2 },
-
-  { END },
-};
-
-//------------------------------------------------------------------------------
-// Exits
-//------------------------------------------------------------------------------
-
-static const Sign signs[] = {
-  /*
-  {
-    MAP_A,      // Id of the map
-    0, 0,       // Position in the map for the sign
-    UP,         // Direction the player must be facing
-    "Hi there!" // The message to display
-  }
-  */
-  { MAP_A, 4, 1, UP, str_floor_test_metal_skull },
-  { MAP_A, 7, 1, UP, str_floor_test_glowing_eyes },
-
-  { END },
-};
-
-//------------------------------------------------------------------------------
-// Levers
-//------------------------------------------------------------------------------
-
-static void on_lever(const Lever *lever) {
-  if (lever->id == LEVER_1) {
-    map_textbox(str_floor_test_click);
-    set_chest_unlocked(CHEST_2);
-  }
-
-  if (lever->id == LEVER_2) {
-    if (is_lever_stuck(LEVER_3)) {
-      map_textbox(str_floor_test_creak);
-      unstick_lever(LEVER_3);
-    } else {
-      map_textbox(str_floor_test_groan);
-      stick_lever(LEVER_3);
-    }
-  }
-
-  if (lever->id == LEVER_3) {
-    map_textbox(str_floor_test_chest_click);
-    set_chest_unlocked(CHEST_6);
-  }
-
-  if (lever->id == LEVER_4) {
-    extinguish_sconce(SCONCE_1);
-  }
-}
-
-static const Lever levers[] = {
-  /*
-  {
-    LEVER_1,  // Use the LEVER_* constants for ids (again, used as flags)
-    MAP_A,    // The map where the lever be
-    0, 0,     // (x, y) tile coordinates in the map
-    false,    // Can the lever only be pulled once?
-    false,    // Does the lever start stuck? (requires scripting to change)
-    NULL,     // Scripting callback for the lever
-  }
-  */
-  { LEVER_1, MAP_A, 12, 3, true, false, on_lever },
-  { LEVER_2, MAP_A, 22, 3, false, false, on_lever },
-  { LEVER_3, MAP_A, 20, 3, true, true, on_lever },
-  { LEVER_4, MAP_A, 5, 2, false, false, on_lever },
-  { END },
-};
-
-//------------------------------------------------------------------------------
-// Doors (NOT YET IMPLEMENTED)
-//------------------------------------------------------------------------------
-
-static const Door doors[] = {
-  /*
-  {
-    DOOR_1,           // Use DOOR_* constants for ids.
-    MAP_A,            // Map for the door
-    0, 0              // (x, y) tile for the door
-    DOOR_STAIRS_UP    // Kind of door
-    true              // Magic key required to unlock
-  }
-  */
-  { DOOR_1, MAP_A, 14, 1, DOOR_STAIRS_UP, true },
-  { END }
-};
-
-//------------------------------------------------------------------------------
-// Sconces (NOT YET IMPLEMENTED)
+// Sconces
 //------------------------------------------------------------------------------
 
 static const Sconce sconces[] = {
@@ -225,6 +162,78 @@ static const Sconce sconces[] = {
   { SCONCE_STATIC, MAP_A, 23, 1, true, FLAME_RED },
   { SCONCE_1, MAP_A, 6, 1, false, FLAME_NONE },
   { END }
+};
+
+
+//------------------------------------------------------------------------------
+// Levers
+//------------------------------------------------------------------------------
+
+static void on_lever(const Lever *lever) {
+  switch (lever->id) {
+  case LEVER_1:
+    map_textbox(str_floor_test_click);
+    set_chest_unlocked(CHEST_2);
+    break;
+  case LEVER_2:
+    if (is_lever_stuck(LEVER_3)) {
+      map_textbox(str_floor_test_creak);
+      unstick_lever(LEVER_3);
+    } else {
+      map_textbox(str_floor_test_groan);
+      stick_lever(LEVER_3);
+    }
+    break;
+  case LEVER_3:
+    map_textbox(str_floor_test_chest_click);
+    set_chest_unlocked(CHEST_6);
+    break;
+  case LEVER_4:
+    extinguish_sconce(SCONCE_1);
+    break;
+  case LEVER_5:
+    toggle_door(DOOR_2);
+    toggle_door(DOOR_3);
+    break;
+  }
+}
+
+static const Lever levers[] = {
+  /*
+  {
+    LEVER_1,  // Use the LEVER_* constants for ids (again, used as flags)
+    MAP_A,    // The map where the lever be
+    0, 0,     // (x, y) tile coordinates in the map
+    false,    // Can the lever only be pulled once?
+    false,    // Does the lever start stuck? (requires scripting to change)
+    NULL,     // Scripting callback for the lever
+  }
+  */
+  { LEVER_1, MAP_A, 12, 3, true, false, on_lever },
+  { LEVER_2, MAP_A, 22, 3, false, false, on_lever },
+  { LEVER_3, MAP_A, 20, 3, true, true, on_lever },
+  { LEVER_4, MAP_A, 5, 2, false, false, on_lever },
+  { LEVER_5, MAP_A, 17, 2, false, false, on_lever },
+  { END },
+};
+
+//------------------------------------------------------------------------------
+// Signs
+//------------------------------------------------------------------------------
+
+static const Sign signs[] = {
+  /*
+  {
+    MAP_A,      // Id of the map
+    0, 0,       // Position in the map for the sign
+    UP,         // Direction the player must be facing
+    "Hi there!" // The message to display
+  }
+  */
+  { MAP_A, 4, 1, UP, str_floor_test_metal_skull },
+  { MAP_A, 7, 1, UP, str_floor_test_glowing_eyes },
+
+  { END },
 };
 
 //------------------------------------------------------------------------------

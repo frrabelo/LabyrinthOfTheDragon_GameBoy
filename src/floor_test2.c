@@ -114,7 +114,7 @@ void on_lit(const Sconce *sconce) {
       is_sconce_lit(SCONCE_3) &&
       !is_door_open(DOOR_1)
     ) {
-      open_door_by_id(DOOR_1);
+      open_door(DOOR_1);
     }
   }
 }
@@ -133,7 +133,7 @@ static const Sconce sconces[] = {
 //------------------------------------------------------------------------------
 
 void boss_victory(void) NONBANKED {
-  set_door_open(DOOR_2);
+  open_door(DOOR_2);
   set_npc_invisible(NPC_1);
 }
 

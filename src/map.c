@@ -1041,7 +1041,7 @@ static void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
     case HASH_TYPE_DOOR:
       Door *door = (Door *)entry->data;
       tile->door = door;
-      if (is_locked_door(door->id))
+      if (!is_door_open(door->id))
         map_attr = MAP_WALL;
       else {
         map_tile = door->type;
@@ -1340,12 +1340,13 @@ static void reset_map_objects(void) {
 
   // Doors
   map.flags_door_locked = 0;
-
   const Door *door;
   for (door = doors; door->id != END; door++) {
-    set_door_locked(door->id);
+    if (!door->is_open)
+      close_door(door->id);
     hash_object(HASH_TYPE_DOOR, door, door->map_id, door->col, door->row);
   }
+  map.doors_updated = 0;
 
   // Signs
   const Sign *sign;
@@ -1725,23 +1726,6 @@ static void toggle_lever(const MapTile *tile) {
 }
 
 /**
- * Opens the door at the given map tile.
- * @param tile Map tile containing the door.
- */
-static void open_door(const MapTile *tile) {
-  const Door *door = tile->door;
-  if (!door)
-    return;
-  set_door_open(door->id);
-
-  uint8_t *vram = get_local_vram(map.hero_direction);
-  uint8_t tile_base = door->type;
-  swap_tile_graphics(vram, tile_base);
-
-  update_local_tiles();
-}
-
-/**
  * @return Vram at the given tile.
  * @param tx Tile x coordinate.
  * @param ty Tile y coordinate.
@@ -1776,23 +1760,46 @@ Door *get_door_by_id(DoorId id) {
   return door;
 }
 
-void update_door_graphics(DoorId id) {
-  Door *door = get_door_by_id(id);
+void update_door_graphics(void) {
+  if (!map.doors_updated)
+    return;
 
-  if (
-    map.active_map->id != door->map_id ||
-    door->col < map.x - 1 ||
-    door->col >= map.x + MAP_HORIZ_LOADS ||
-    door->row < map.y - 1 ||
-    door->row >= map.y + MAP_VERT_LOADS
-  ) return;
+  Door *door = doors;
+  bool door_updated = false;
 
-  MapTile tile;
-  get_map_tile(&tile, door->col, door->row);
+  for (
+    uint8_t k = 0;
+    k < 8 && door->id != END;
+    k++, door++, map.doors_updated >>= 1
+  ) {
+    if (
+      !(map.doors_updated & 1) ||
+      map.active_map->id != door->map_id ||
+      door->col < map.x - 1 ||
+      door->col >= map.x + MAP_HORIZ_LOADS ||
+      door->row < map.y - 1 ||
+      door->row >= map.y + MAP_VERT_LOADS
+    ) continue;
 
-  uint8_t *vram = get_vram_at(door->col, door->row);
-  uint8_t tile_base = is_door_open(id) ? door->type : tile.tile;
-  swap_tile_graphics(vram, door->type);
+    door_updated = true;
+
+    uint8_t *vram = get_vram_at(door->col, door->row);
+    uint8_t tile_base;
+    if (is_door_open(door->id))  {
+      tile_base = door->type;
+    } else {
+      if (door->type == DOOR_NEXT_LEVEL)
+        tile_base = DOOR_CLOSED_NEXT_LEVEL;
+      else if (door->magic_key_unlock)
+        tile_base = DOOR_CLOSED_KEY;
+      else
+        tile_base = DOOR_CLOSED_NORMAL;
+    }
+    swap_tile_graphics(vram, tile_base);
+  }
+
+  if (door_updated)
+    update_local_tiles();
 }
 
 /**
@@ -1833,15 +1840,14 @@ static bool check_doors(void) {
   if (!door)
     return false;
 
-  if (!is_locked_door(door->id))
+  if (is_door_open(door->id))
     return false;
 
   if (door->magic_key_unlock) {
     if (player.magic_keys > 0) {
       player.magic_keys--;
       map_textbox(str_maps_door_unlock_key);
-      set_door_open(door->id);
-      open_door(tile);
+      open_door(door->id);
     } else {
       map_textbox(str_maps_door_locked_key);
     }
@@ -2019,9 +2025,12 @@ bool after_textbox(void) NONBANKED{
 }
 
 void update_map(void) {
-  switch (map.state) {
-  case MAP_STATE_INACTIVE:
+  if (map.state == MAP_STATE_INACTIVE)
     return;
+
+  update_door_graphics();
+
+  switch (map.state) {
   case MAP_STATE_WAITING:
     if (on_init())
       break;
@@ -2081,10 +2090,6 @@ void update_map(void) {
     map_fade_out(MAP_STATE_LOAD_EXIT);
     sfx_no_no_square();
     return;
-  case MAP_STATE_UPDATE_DOOR:
-    update_door_graphics(map.door_param);
-    map.state = MAP_STATE_WAITING;
-    break;
   }
 
   update_torch();

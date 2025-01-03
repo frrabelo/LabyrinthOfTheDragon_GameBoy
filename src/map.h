@@ -431,10 +431,6 @@ typedef enum MapState {
    * The map should teleport the player to the specified location.
    */
   MAP_STATE_TELEPORT,
-  /**
-   * Used when a door's state has been updated via an external script.
-   */
-  MAP_STATE_UPDATE_DOOR,
 } MapState;
 
 /**

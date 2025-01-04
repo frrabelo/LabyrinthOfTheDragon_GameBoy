@@ -898,11 +898,7 @@ void dummy_generator(Monster *m, uint8_t level, TestDummyType type) BANKED {
     tier
   );
 
-
   m->palette = dummy_palette;
-  m->exp_tier = tier;
-  m->level = level;
-
   m->parameter = type;
   m->take_turn = dummy_take_turn;
 

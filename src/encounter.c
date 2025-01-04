@@ -497,7 +497,7 @@ void after_action(void) {
       monster->active = false;
     } else if (monster->hp == 0) {
       encounter.xp_reward += calc_monster_exp(
-        monster->level,
+        monster->exp_level,
         monster->exp_tier
       );
       monster->active = false;

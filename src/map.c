@@ -141,8 +141,6 @@ static void list_copy(
 static void load_floor(FloorBank *f) NONBANKED {
   floor_bank = f;
 
-  *debug = f->bank;
-
   const uint8_t _prev_bank = CURRENT_BANK;
   SWITCH_ROM(f->bank);
 
@@ -684,12 +682,6 @@ static void init_flames(void) {
 
   const Sconce *sconce = sconces;
   for (uint8_t k = 0; k < MAX_SCONCES && sconce->id != END; k++, sconce++) {
-    // if (sconce->is_lit || sconce->id == SCONCE_STATIC)
-    //   sconce_colors[get_sconce_index(sconce->id)] = sconce->color;
-
-    *debug++ = sconce->id;
-    // *debug++ = get_sconce_index(sconce->id);
-
     const uint8_t sprite_id = get_sconce_flame_sprite(sconce->id);
     switch (sconce->color) {
     case FLAME_RED_PROP:
@@ -705,11 +697,6 @@ static void init_flames(void) {
       set_sprite_prop(sprite_id, FLAME_RED_PROP);
     }
   }
-
-  // const Sconce *sconce = sconces;
-  // for (uint8_t k = 0; k < MAX_SCONCES && sconce->id != END; k++, sconce++) {
-
-  // }
 }
 
 /**

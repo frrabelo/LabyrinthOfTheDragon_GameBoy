@@ -78,6 +78,10 @@ typedef struct Monster {
    */
   uint8_t level;
   /**
+   * Level used when calculating monster experience.
+   */
+  uint8_t exp_level;
+  /**
    * The power tier to use when awarding experience for the monster.
    */
   PowerTier exp_tier;

@@ -285,7 +285,7 @@ static bool on_special(void) {
   if (player_at(3, 4)) {
     reset_encounter(MONSTER_LAYOUT_1);
     Monster *monster = encounter.monsters;
-    mindflayer_generator(monster, 40, B_TIER);
+    deathknight_generator(monster, 40, B_TIER);
     monster->id = 'A';
     start_battle();
     return true;

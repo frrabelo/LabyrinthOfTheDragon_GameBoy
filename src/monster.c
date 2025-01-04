@@ -12,7 +12,7 @@
  * @return The string name for the given aspect type.
  * @param type Aspect type to convert.
  */
-const char *damage_aspect_name(DamageAspect type) {
+const char *damage_aspect_name(DamageAspect type) BANKED {
   switch (type) {
   case DAMAGE_PHYSICAL:
     return str_misc_physical;
@@ -33,19 +33,14 @@ const char *damage_aspect_name(DamageAspect type) {
   }
 }
 
-/**
- * Initializes a monster instance for a monster generator.
- * @param i Monster instance to reset.
- * @param m Base monster for the instance.
- */
-static void monster_init_instance(
+void monster_init_instance(
   Monster *monster,
   MonsterType type,
   const char *name,
   const Tileset *ts,
   uint8_t level,
   PowerTier tier
-) {
+) BANKED {
   monster->type = type;
   monster->tileset = ts;
   monster->active = true;
@@ -72,12 +67,7 @@ static void monster_init_instance(
   monster->trip_turns = 0;
 }
 
-/**
- * Applies damage to the player.
- * @param base_damage Base damage for the attck.
- * @param type Type of damage dealt.
- */
-static uint16_t damage_player(uint16_t base_damage, DamageAspect type) {
+uint16_t damage_player(uint16_t base_damage, DamageAspect type) BANKED {
   if (player.aspect_immune & type) {
     sprintf(battle_post_message, str_monster_hit_immune);
     return 0;
@@ -150,12 +140,11 @@ void monster_flee(Monster *monster) BANKED {
   }
 }
 
-void monster_take_turn(Monster *monster) BANKED {
-  if (!monster->take_turn) {
-    sprintf(battle_pre_message, "ERROR:\nNO take_turn()");
-    skip_post_message = true;
-  }
+void monster_take_turn(Monster *monster) NONBANKED {
+  uint8_t _prev_bank = CURRENT_BANK;
+  SWITCH_ROM(monster->bank);
   monster->take_turn(monster);
+  SWITCH_ROM(_prev_bank);
 }
 
 // -----------------------------------------------------------------------------
@@ -221,6 +210,8 @@ void kobold_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 
   m->aspect_resist = DAMAGE_EARTH;
   m->aspect_vuln = DAMAGE_FIRE;
+
+  m->bank = BANK_6;
   m->take_turn = kobold_take_turn;
 
   monster_reset_stats(m);
@@ -289,12 +280,14 @@ void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_GOBLIN, str_misc_goblin, &goblin_tileset, level, tier);
   m->palette = goblin_palettes;
-  m->take_turn = goblin_take_turn;
 
   m->exp_level = level + 1;
   m->def_base = get_monster_def(level_offset(level, -2), tier);
   m->matk_base = get_monster_atk(level_offset(level, -1), tier);
   m->mdef_base = get_monster_def(level_offset(level, -3), tier);
+
+  m->bank = BANK_6;
+  m->take_turn = goblin_take_turn;
 
   monster_reset_stats(m);
 }
@@ -353,9 +346,8 @@ static void zombie_take_turn(Monster *monster) {
 void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_ZOMBIE, str_misc_zombie, &zombie_tileset, level, tier);
-  m->palette = zombie_palettes;
-  m->take_turn = zombie_take_turn;
 
+  m->palette = zombie_palettes;
   m->exp_level = level + 2;
 
   m->max_hp = get_monster_hp(level_offset(level, 2), tier);
@@ -367,6 +359,9 @@ void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->agl_base = get_agl(level_offset(level, -5), tier);
 
   m->aspect_vuln = DAMAGE_FIRE | DAMAGE_MAGICAL;
+
+  m->bank = BANK_6;
+  m->take_turn = zombie_take_turn;
 
   monster_reset_stats(m);
 }
@@ -427,15 +422,17 @@ static void bugbear_take_turn(Monster *monster) {
 void bugbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_BUGBEAR, str_misc_bugbear, &bugbear_tileset, level, tier);
-  m->palette = bugbear_palettes;
-  m->take_turn = bugbear_take_turn;
 
+  m->palette = bugbear_palettes;
   m->atk_base = get_monster_atk(level_offset(level, 1), tier);
   m->mdef_base = get_monster_def(level_offset(level, 2), tier);
   m->agl_base = get_agl(level_offset(level, 3), tier);
 
   m->debuff_immune = DEBUFF_BLIND | DEBUFF_CONFUSED | DEBUFF_POISONED;
   m->parameter = 1;
+
+  m->bank = BANK_6;
+  m->take_turn = bugbear_take_turn;
 
   monster_reset_stats(m);
 }
@@ -501,8 +498,6 @@ void owlbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_OWLBEAR, str_misc_owlbear, &owlbear_tileset, level, tier);
   m->palette = owlbear_palettes;
-  m->take_turn = owlbear_take_turn;
-
   m->exp_tier = tier;
   m->level = level + 2;
 
@@ -513,6 +508,9 @@ void owlbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 
   const uint8_t pounces[4] = { 1, 2, 3, 5 };
   m->parameter = pounces[tier];
+
+  m->bank = BANK_6;
+  m->take_turn = owlbear_take_turn;
 
   monster_reset_stats(m);
 }
@@ -583,8 +581,6 @@ void gelatinous_cube_generator(
     m, MONSTER_GELATINOUS_CUBE,
     str_misc_gelatinous_cube, &gelatinous_cube_tileset, level, tier);
   m->palette = gelatinous_cube_palettes;
-  m->take_turn = gelatinous_cube_take_turn;
-
   m->exp_level = level + 3;
 
   m->atk_base = get_monster_atk(level_offset(level, 2), tier);
@@ -597,6 +593,9 @@ void gelatinous_cube_generator(
 
   // Number of times they can execute the "consume" ability
   m->parameter = tier < A_TIER ? 1 : 2;
+
+  m->bank = BANK_6;
+  m->take_turn = gelatinous_cube_take_turn;
 
   monster_reset_stats(m);
 }
@@ -637,7 +636,6 @@ void displacer_beast_generator(
     m, MONSTER_DISPLACER_BEAST,
     str_misc_displacer_beast, &displacer_beast_tileset, level, tier);
   m->palette = displacer_beast_palettes;
-  m->take_turn = displacer_beast_take_turn;
 
   m->exp_tier = tier;
   m->level = level + 2;
@@ -649,6 +647,9 @@ void displacer_beast_generator(
 
   m->aspect_vuln = DAMAGE_LIGHT;
   m->parameter = 2;
+
+  m->bank = BANK_6;
+  m->take_turn = displacer_beast_take_turn;
 
   monster_reset_stats(m);
 }
@@ -706,7 +707,6 @@ void will_o_wisp_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
     m, MONSTER_WILL_O_WISP, str_misc_will_o_wisp, &will_o_wisp_tileset,
     level, tier);
   m->palette = will_o_wisp_palettes;
-  m->take_turn = will_o_wisp_take_turn;
 
   m->exp_tier = tier;
   m->level = level;
@@ -721,6 +721,9 @@ void will_o_wisp_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
 
   const uint8_t phase_terror_chance[4] = { 1, 2, 3, 4 };
   m->parameter = phase_terror_chance[tier];
+
+  m->bank = BANK_6;
+  m->take_turn = will_o_wisp_take_turn;
 
   monster_reset_stats(m);
 }
@@ -780,8 +783,6 @@ void deathknight_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
     m, MONSTER_DEATHKNIGHT, str_misc_death_knight, &deathknight_tileset,
     level, tier);
   m->palette = deathknight_palettes;
-  m->take_turn = deathknight_take_turn;
-
   m->exp_level = level + 5;
 
   m->max_hp = get_monster_hp(level_offset(level, 5), tier);
@@ -794,121 +795,8 @@ void deathknight_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->aspect_vuln = DAMAGE_LIGHT;
   m->debuff_immune = DAMAGE_DARK;
 
-  monster_reset_stats(m);
-}
-
-// -----------------------------------------------------------------------------
-// Monster 10 - Mind Flayer
-// -----------------------------------------------------------------------------
-
-#define MIND_FLAYER_EXTRACT_BRAIN FLAG(6)
-#define MIND_FLAYER_MIND_BLAST FLAG(7)
-
-static void mindflayer_take_turn(Monster *monster) {
-  const uint8_t tier = monster->exp_tier;
-  const uint16_t base_damage = get_monster_dmg(monster->level, tier);
-
-  if (
-    d8() < 3 &&
-    !(monster->parameter & MIND_FLAYER_MIND_BLAST)
-  ) {
-    // Mind blast
-    sprintf(battle_pre_message, str_monster_mindflayer_mind_blast, monster->id);
-    if (player.debuff_immune & DEBUFF_CONFUSED) {
-      monster->parameter |= MIND_FLAYER_MIND_BLAST;
-      sprintf(battle_post_message, str_monster_mindflayer_mind_blast_miss);
-    }
-
-    if (roll_attack(monster->matk, player.mdef)) {
-      monster->parameter |= MIND_FLAYER_MIND_BLAST;
-      uint16_t damage = damage_player(base_damage / 2, DAMAGE_MAGICAL);
-      sprintf(
-        battle_post_message, str_monster_mindflayer_mind_blast_hit, damage);
-      apply_confused(
-        encounter.player_status_effects, tier, 3, player.debuff_immune);
-    } else {
-      sprintf(battle_post_message, str_monster_mindflayer_mind_blast_miss);
-    }
-
-    return;
-  }
-
-  if (
-    !(monster->parameter & MIND_FLAYER_EXTRACT_BRAIN) &&
-    (player.debuffs & FLAG_DEBUFF_CONFUSED)
-  ) {
-    // Extract brain
-    monster->parameter |= MIND_FLAYER_EXTRACT_BRAIN;
-    sprintf(
-      battle_pre_message, str_monster_mindflayer_extract_brain, monster->id);
-
-    if (roll_attack(level_offset(monster->level, -15), player.def)) {
-      sprintf(battle_post_message,  str_monster_mindflayer_extract_brain_hit);
-      player.hp = 0;
-    } else {
-      sprintf(battle_post_message, str_monster_miss);
-    }
-
-    return;
-  }
-
-  // Tentacle attack
-  sprintf(battle_pre_message, str_monster_mindflayer_tentacle, monster->id);
-  if (roll_attack(monster->atk, player.def))
-    damage_player(base_damage, DAMAGE_PHYSICAL);
-  else
-    sprintf(battle_post_message, str_monster_miss);
-}
-
-void mindflayer_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
-  monster_init_instance(
-    m, MONSTER_MINDFLAYER, str_misc_mind_flayer, &mindflayer_tileset,
-    level, tier);
-  m->palette = mindflayer_palettes;
-  m->take_turn = mindflayer_take_turn;
-
-  m->max_hp = get_monster_hp(level_offset(level, 10), S_TIER);
-  m->atk = get_monster_atk(level_offset(level, 5), tier);
-  m->mdef = get_monster_def(level_offset(level, 5), tier);
-  m->aspect_resist |= DAMAGE_MAGICAL;
-
-  monster_reset_stats(m);
-}
-
-// -----------------------------------------------------------------------------
-// Monster 11 - Beholder
-// -----------------------------------------------------------------------------
-
-static void beholder_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
-}
-
-void beholder_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
-  monster_init_instance(
-    m, MONSTER_BEHOLDER, str_misc_beholder, &beholder_tileset, level, tier);
-  m->palette = beholder_palettes;
-  m->take_turn = beholder_take_turn;
-
-  monster_reset_stats(m);
-}
-
-// -----------------------------------------------------------------------------
-// Monster 12 - Dragon
-// -----------------------------------------------------------------------------
-
-static void dragon_take_turn(Monster *monster) {
-  sprintf(battle_pre_message, str_monster_does_nothing,
-    monster->name, monster->id);
-  skip_post_message = true;
-}
-
-void dragon_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
-  monster_init_instance(
-    m, MONSTER_DRAGON, str_misc_dragon, &dragon_tileset, level, tier);
-  m->palette = dragon_palettes;
-  m->take_turn = dragon_take_turn;
+  m->bank = BANK_6;
+  m->take_turn = deathknight_take_turn;
 
   monster_reset_stats(m);
 }

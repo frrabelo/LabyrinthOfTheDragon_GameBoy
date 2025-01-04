@@ -1161,33 +1161,38 @@ extern const char str_monster_deathknight_hellfire_hit[];
 extern const char str_monster_deathknight_hellfire_miss[];
 
 /**
+ * "%monster %c does nothing."
+ */
+extern const char str_monster2_does_nothing[];
+
+/**
  * "Mind Flayer %c emits a wave of psychic energy!"
  */
-extern const char str_monster_mindflayer_mind_blast[];
+extern const char str_monster2_mindflayer_mind_blast[];
 
 /**
  * "But you resist!"
  */
-extern const char str_monster_mindflayer_mind_blast_miss[];
+extern const char str_monster2_mindflayer_mind_blast_miss[];
 
 /**
  * "You take %damage damage, and are confused!"
  */
-extern const char str_monster_mindflayer_mind_blast_hit[];
+extern const char str_monster2_mindflayer_mind_blast_hit[];
 
 /**
  * "Mind Flayer %c lashes out with its tentacles!"
  */
-extern const char str_monster_mindflayer_tentacle[];
+extern const char str_monster2_mindflayer_tentacle[];
 
 /**
  * "Mind Flayer %c attempts to eat your brain!"
  */
-extern const char str_monster_mindflayer_extract_brain[];
+extern const char str_monster2_mindflayer_extract_brain[];
 
 /**
  * "Your brain is gobbled up!"
  */
-extern const char str_monster_mindflayer_extract_brain_hit[];
+extern const char str_monster2_mindflayer_extract_brain_hit[];
 
 #endif

@@ -196,6 +196,10 @@ typedef struct Monster {
    */
   uint8_t special_immune;
   /**
+   * Bank to use when calling the monster's `take_turn` method.
+   */
+  GameRomBank bank;
+  /**
    * Routine to determine how the monster acts on its turn.
    */
   void (*take_turn)(struct Monster *m);
@@ -345,7 +349,28 @@ void monster_flee(Monster *monster) BANKED;
 /**
  * Performs a battle turn for the given monster.
  */
-void monster_take_turn(Monster *monster) BANKED;
+void monster_take_turn(Monster *monster) NONBANKED;
+
+/**
+ * Applies damage to the player.
+ * @param base_damage Base damage for the attck.
+ * @param type Type of damage dealt.
+ */
+uint16_t damage_player(uint16_t base_damage, DamageAspect type) BANKED;
+
+/**
+ * Initializes a monster instance for a monster generator.
+ * @param i Monster instance to reset.
+ * @param m Base monster for the instance.
+ */
+void monster_init_instance(
+  Monster *monster,
+  MonsterType type,
+  const char *name,
+  const Tileset *ts,
+  uint8_t level,
+  PowerTier tier
+) BANKED;
 
 // Data externs (see: monster.data.c, stored on bank 0)
 

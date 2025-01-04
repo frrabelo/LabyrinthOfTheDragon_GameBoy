@@ -297,6 +297,10 @@ addNamespace('monster', 6, {
   'deathknight_hellfire': 'Death Knight %c sends forth a hellfire orb!',
   'deathknight_hellfire_hit': 'Direct hit! You take %damage damage!',
   'deathknight_hellfire_miss': 'You dodge! But still take %damage damage!',
+});
+
+addNamespace('monster2', 7, {
+  'does_nothing': '%monster %c does nothing.',
   // Mindflayer special
   'mindflayer_mind_blast': 'Mind Flayer %c emits a wave of psychic energy!',
   'mindflayer_mind_blast_miss': 'But you resist!',
@@ -304,7 +308,7 @@ addNamespace('monster', 6, {
   'mindflayer_tentacle': 'Mind Flayer %c lashes out with its tentacles!',
   'mindflayer_extract_brain': 'Mind Flayer %c attempts to eat your brain!',
   'mindflayer_extract_brain_hit': 'Your brain is gobbled up!',
-});
+})
 
 // Export the namespaces
 module.exports = namespaces;

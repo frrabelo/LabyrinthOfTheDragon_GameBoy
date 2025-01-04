@@ -93,7 +93,41 @@ addNamespace('ability', 0, {
   'sorc_wild_magic':      'Wild Magic   ',
 });
 
-addNamespace('battle', 0, {
+addNamespace('battle', 3, {
+  'monster_scared_frozen': '%monster %c shivers in fear...',
+  'monster_paralyzed': "%monster %c can't move!",
+  'monster_poison_death': '%monster %c succumbs to the poison!',
+  'monster_confuse_attack_self': 'Confused, %monster %c attacks itself!',
+  'monster_confuse_attack_other': 'Confused, %monster %c attacks any ally!',
+  'monster_confuse_stupor': '%monster %c stares aimlessly.',
+  'monster_lies_prone': '%monster %c lies prone!',
+  'monter_gets_up': '%monster %c gets up.',
+  'monster_miss_evaded': 'But you evade!',
+  'monster_ice_slip': '%monster %c slips on the ice!',
+  'player_flee_attempt': 'You attempt to flee...',
+  'player_flee_success': 'And get away!',
+  'player_flee_failure': 'But are blocked!',
+  'player_scared': 'You shiver with fear!',
+  'player_prone': 'You lie prone!',
+  'player_get_up': 'You get up!',
+  'player_paralyzed': 'You are paralyzed and cannot move!',
+  'victory': 'Victory! You gain %exp XP!',
+  'victory_no_xp': 'Victory! But you gain no XP...',
+  'level_up': 'LEVEL UP! You reach %level!',
+})
+
+addNamespace('player', 4, {
+  // Common
+  'miss': 'But you miss!',
+  'hit': 'You deal %damage damage!',
+  'hit_immune': "They're completely immune!",
+  'hit_resist': "They resist your attack, only %damage damage...",
+  'hit_vuln': "SUPER EFFECTIVE %damage damage!",
+  'hit_crit': 'CRITICAL HIT! You deal %damage damage!',
+  'heal': 'You heal %damage HP.',
+  'heal_crit': 'CRITICAL! You heal a whopping %damage HP!',
+  'heal_fumble': 'You only heal a measly %damage HP.',
+  'miss_all': 'A COMPLETE WHIFF.',
   // Druid abilities
   'poison_spray': 'Poison gas erupts from your palm!',
   'cure_wounds': "You're enveloped in blue light...",
@@ -136,43 +170,10 @@ addNamespace('battle', 0, {
   'sorc_wild_magic_fizzle': 'But it fizzles.',
   'sorc_wild_magic_fireball': 'And a fireball goes flying!',
   'sorc_wild_magic_sleetstorm': 'And a sleetstorm descends!',
-  // Displacer Beast
+  // `damage_monster` strings (in player.c)
   'displacer_beast_phase': 'They phase out and evade the attack!',
-  // Death Knight abilities
   'deathknight_revive': 'The deathknight falls, but then revives!',
-  // Monster / Player common
-  'monster_scared_frozen': '%monster %c shivers in fear...',
-  'monster_paralyzed': "%monster %c can't move!",
-  'monster_poison_death': '%monster %c succumbs to the poison!',
-  'monster_confuse_attack_self': 'Confused, %monster %c attacks itself!',
-  'monster_confuse_attack_other': 'Confused, %monster %c attacks any ally!',
-  'monster_confuse_stupor': '%monster %c stares aimlessly.',
-  'monster_lies_prone': '%monster %c lies prone!',
-  'monter_gets_up': '%monster %c gets up.',
-  'monster_miss_evaded': 'But you evade!',
-  'monster_ice_slip': '%monster %c slips on the ice!',
-  'player_miss': 'But you miss!',
-  'player_magic_miss': 'But it has no effect!',
-  'player_hit': 'You deal %damage damage!',
-  'player_hit_immune': "They're completely immune!",
-  'player_hit_resist': "They resist your attack, only %damage damage...",
-  'player_hit_vuln': "SUPER EFFECTIVE %damage damage!",
-  'player_hit_crit': 'CRITICAL HIT! You deal %damage damage!',
-  'player_heal': 'You heal %damage HP.',
-  'player_heal_crit': 'CRITICAL! You heal a whopping %damage HP!',
-  'player_heal_fumble': 'You only heal a measly %damage HP.',
-  'player_miss_all': 'A COMPLETE WHIFF.',
-  'player_flee_attempt': 'You attempt to flee...',
-  'player_flee_success': 'And get away!',
-  'player_flee_failure': 'But are blocked!',
-  'player_scared': 'You shiver with fear!',
-  'player_prone': 'You lie prone!',
-  'player_get_up': 'You get up!',
-  'player_paralyzed': 'You are paralyzed and cannot move!',
-  'victory': 'Victory! You gain %exp XP!',
-  'victory_no_xp': 'Victory! But you gain no XP...',
-  'level_up': 'LEVEL UP! You reach %level!',
-})
+});
 
 addNamespace('maps', 2, {
   'chest_locked': "The chest is locked.",

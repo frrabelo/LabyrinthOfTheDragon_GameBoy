@@ -111,6 +111,8 @@ addNamespace('battle', 3, {
   'player_prone': 'You lie prone!',
   'player_get_up': 'You get up!',
   'player_paralyzed': 'You are paralyzed and cannot move!',
+  'player_confused_attack': 'You deal %damage damage to yourself!',
+  'player_confused_mumble': 'You mumble some gibberish and giggle a little.',
   'victory': 'Victory! You gain %exp XP!',
   'victory_no_xp': 'Victory! But you gain no XP...',
   'level_up': 'LEVEL UP! You reach %level!',
@@ -295,6 +297,13 @@ addNamespace('monster', 6, {
   'deathknight_hellfire': 'Death Knight %c sends forth a hellfire orb!',
   'deathknight_hellfire_hit': 'Direct hit! You take %damage damage!',
   'deathknight_hellfire_miss': 'You dodge! But still take %damage damage!',
+  // Mindflayer special
+  'mindflayer_mind_blast': 'Mind Flayer %c emits a wave of psychic energy!',
+  'mindflayer_mind_blast_miss': 'But you resist!',
+  'mindflayer_mind_blast_hit': 'You take %damage damage, and are confused!',
+  'mindflayer_tentacle': 'Mind Flayer %c lashes out with its tentacles!',
+  'mindflayer_extract_brain': 'Mind Flayer %c attempts to eat your brain!',
+  'mindflayer_extract_brain_hit': 'Your brain is gobbled up!',
 });
 
 // Export the namespaces

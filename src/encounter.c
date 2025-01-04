@@ -234,6 +234,8 @@ inline void player_turn(void) {
   bool paralyzed = false;
   bool afraid = false;
   bool fleeing = false;
+  bool confused = false;
+  PowerTier confused_tier = C_TIER;
 
   StatusEffectInstance *effect = encounter.player_status_effects;
 
@@ -266,6 +268,17 @@ inline void player_turn(void) {
       ) {
         paralyzed = true;
       }
+      break;
+    case DEBUFF_CONFUSED:
+      if (
+        player.player_class != CLASS_MONK ||
+        encounter.player_action != PLAYER_ACTION_ABILITY ||
+        encounter.player_ability != &monk2
+      ) {
+        confused = true;
+        confused_tier = effect->tier;
+      }
+      break;
     case BUFF_REGEN:
       uint16_t regen = regen_hp(effect->tier, player.max_hp);
       if (regen + player.hp > player.max_hp)
@@ -283,6 +296,26 @@ inline void player_turn(void) {
     sprintf(battle_pre_message, str_battle_player_paralyzed);
     skip_post_message = true;
     return;
+  }
+
+  if (confused) {
+    if (confused_attack(confused_tier)) {
+      uint16_t base_damage = get_player_damage(player.level, C_TIER) / 2;
+      uint16_t damage = calc_damage(d8(), base_damage);
+      if (player.hp < damage)
+        player.hp = 0;
+      else
+        player.hp -= damage;
+      sprintf(battle_pre_message, str_battle_player_confused_attack, damage);
+      skip_post_message = true;
+      return;
+    }
+
+    if (d16() < 3) {
+      sprintf(battle_pre_message, str_battle_player_confused_mumble);
+      skip_post_message = true;
+      return;
+    }
   }
 
   if (afraid) {

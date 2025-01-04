@@ -108,7 +108,6 @@ static uint8_t default_x;
  */
 static uint8_t default_y;
 
-
 /**
  * Copies data from a source list to a destination list in memory.
  * @param src Source data.
@@ -235,6 +234,26 @@ static bool on_npc_action(NPC *npc) NONBANKED {
   value = npc->on_action(npc);
   SWITCH_ROM(_prev_bank);
   return value;
+}
+
+uint8_t get_sconce_flame_sprite(SconceId sconce_id) NONBANKED {
+  if (sconce_id == SCONCE_1) return FLAME_1;
+  if (sconce_id == SCONCE_2) return FLAME_2;
+  if (sconce_id == SCONCE_3) return FLAME_3;
+  if (sconce_id == SCONCE_4) return FLAME_4;
+  if (sconce_id == SCONCE_5) return FLAME_5;
+  if (sconce_id == SCONCE_6) return FLAME_6;
+  return FLAME_7;
+}
+
+uint8_t get_sconce_index(SconceId sconce_id) NONBANKED {
+  if (sconce_id == SCONCE_1) return 0;
+  if (sconce_id == SCONCE_2) return 1;
+  if (sconce_id == SCONCE_3) return 2;
+  if (sconce_id == SCONCE_4) return 3;
+  if (sconce_id == SCONCE_5) return 4;
+  if (sconce_id == SCONCE_6) return 5;
+  return 6;
 }
 
 /**
@@ -631,40 +650,6 @@ const palette_color_t magic_keys_palette[] = {
   RGB8(200, 89, 213),
   RGB8(240, 240, 240),
 };
-
-/**
- * @return The flame sprite id for the given sconce.
- * @param s The id of the sconce.
- */
-static uint8_t get_sconce_flame_sprite(SconceId s) {
-  switch (s) {
-  case SCONCE_1: return FLAME_1;
-  case SCONCE_2: return FLAME_2;
-  case SCONCE_3: return FLAME_3;
-  case SCONCE_4: return FLAME_4;
-  case SCONCE_5: return FLAME_5;
-  case SCONCE_6: return FLAME_6;
-  case SCONCE_7: return FLAME_7;
-  default: return FLAME_8;
-  }
-}
-
-/**
- * @return Index for the sconce with the given id.
- * @param id Id of the sconce.
- */
-static uint8_t get_sconce_index(SconceId s) {
-  switch (s) {
-  case SCONCE_1: return 0;
-  case SCONCE_2: return 1;
-  case SCONCE_3: return 2;
-  case SCONCE_4: return 3;
-  case SCONCE_5: return 4;
-  case SCONCE_6: return 5;
-  case SCONCE_7: return 6;
-  default: return 7;
-  }
-}
 
 /**
  * Initializes sconce flame sprites.
@@ -1346,9 +1331,8 @@ static void reset_map_objects(void) {
   for (sconce = sconces; sconce->id != END; sconce++) {
     hash_object(HASH_TYPE_SCONCE, sconce,
       sconce->map_id, sconce->col, sconce->row);
-    if (sconce->is_lit) {
+    if (sconce->is_lit)
       light_sconce(sconce->id, sconce->color);
-    }
   }
 
   // NPCs
@@ -1857,20 +1841,23 @@ static void light_torch(FlameColor color) {
   core.load_sprite_palette(palette, TORCH_GAUGE_PALETTE, 1);
 }
 
-void light_sconce(SconceId id, FlameColor color) {
-  map.flags_sconce_lit |= id;
-  sconce_colors[get_sconce_index(id)] = color;
-  set_sprite_prop(get_sconce_flame_sprite(id), FLAME_SPRITE_PROP | color);
+/**
+ * Checks to see for sconce changes and calls the on_lit handler for each one
+ * that changed.
+ */
+void check_sconce_changed(void) {
+  if (!map.sconces_updated)
+    return;
 
-  // Call the "on_lit" handler
   const Sconce *sconce;
   for (sconce = sconces; sconce->id != END; sconce++) {
-    if (sconce->id != id)
+    if (sconce->id == SCONCE_STATIC || !is_sconce_lit(sconce->id))
       continue;
-    if (sconce->on_lit)
+    if (map.sconces_updated & sconce->id && sconce->on_lit)
       on_lit(sconce);
     break;
   }
+  map.sconces_updated = 0;
 }
 
 /**
@@ -2029,6 +2016,7 @@ void update_map(void) {
     return;
 
   update_door_graphics();
+  check_sconce_changed();
 
   switch (map.state) {
   case MAP_STATE_WAITING:

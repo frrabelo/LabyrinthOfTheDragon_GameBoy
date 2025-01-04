@@ -1162,6 +1162,11 @@ typedef struct MapSystem {
    * state of the door is changed via scripts, etc.
    */
   uint8_t doors_updated;
+  /**
+   * Each bit represents a "changed" flag for sconces. This will be set if the
+   * stat of a sconce changes (if it was lit, etc.).
+   */
+  uint8_t sconces_updated;
 } MapSystem;
 
 /**
@@ -1173,6 +1178,11 @@ extern MapSystem map;
  * Exit used for the `teleport` function.
  */
 extern Exit teleport_exit;
+
+/**
+ * Flame colors for sconces that can be lit by the player.
+ */
+extern FlameColor sconce_colors[8];
 
 /**
  * Sets the position of the active map. Note this method will not re-render the
@@ -1481,11 +1491,31 @@ inline bool is_sconce_lit(SconceId id) {
 }
 
 /**
+ * @return The flame sprite id for the given sconce.
+ * @param s The id of the sconce.
+ */
+uint8_t get_sconce_flame_sprite(SconceId sconce_id) NONBANKED;
+
+/**
+ * @return Index for the sconce with the given id.
+ * @param id Id of the sconce.
+ */
+uint8_t get_sconce_index(SconceId sconce_id) NONBANKED;
+
+/**
  * Lights a sconce.
  * @param id Id of the sconce to light.
  * @param color Color of the flame.
  */
-void light_sconce(SconceId id, FlameColor color);
+inline void light_sconce(SconceId id, FlameColor color) {
+  if (id == SCONCE_STATIC)
+    return;
+  map.flags_sconce_lit |= id;
+  map.sconces_updated |= id;
+  sconce_colors[get_sconce_index(id)] = color;
+  const uint8_t sprite = get_sconce_flame_sprite(id);
+  set_sprite_prop(sprite, FLAME_SPRITE_PROP | color);
+}
 
 /**
  * Extinguishes a sconce.

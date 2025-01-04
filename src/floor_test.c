@@ -195,6 +195,9 @@ static void on_lever(const Lever *lever) {
     toggle_door(DOOR_2);
     toggle_door(DOOR_3);
     break;
+  case LEVER_6:
+    light_sconce(SCONCE_1, FLAME_RED);
+    break;
   }
 }
 
@@ -214,6 +217,7 @@ static const Lever levers[] = {
   { LEVER_3, MAP_A, 20, 3, true, true, on_lever },
   { LEVER_4, MAP_A, 5, 2, false, false, on_lever },
   { LEVER_5, MAP_A, 17, 2, false, false, on_lever },
+  { LEVER_6, MAP_A, 7, 2, false, false, on_lever },
   { END },
 };
 

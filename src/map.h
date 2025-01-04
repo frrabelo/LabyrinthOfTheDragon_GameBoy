@@ -1087,10 +1087,6 @@ typedef struct MapSystem {
    */
   MapState fade_to_state;
   /**
-   * Reference to the exit prior to loading the destination for an exit.
-   */
-  const Exit *active_exit;
-  /**
    * Chest "opened" flags for the current floor.
    */
   uint8_t flags_chest_open;
@@ -1175,9 +1171,9 @@ typedef struct MapSystem {
 extern MapSystem map;
 
 /**
- * Exit used for the `teleport` function.
+ * Exit used for exit movement and teleporting.
  */
-extern Exit teleport_exit;
+extern Exit active_exit;
 
 /**
  * Flame colors for sconces that can be lit by the player.
@@ -1286,10 +1282,11 @@ inline void teleport(
   uint8_t row,
   Direction heading
 ) {
-  teleport_exit.to_map = to_map;
-  teleport_exit.to_col = col;
-  teleport_exit.to_row = row;
-  teleport_exit.heading = heading;
+  active_exit.to_map = to_map;
+  active_exit.to_col = col;
+  active_exit.to_row = row;
+  active_exit.to_floor = NULL;
+  active_exit.heading = heading;
   map.state = MAP_STATE_TELEPORT;
 }
 

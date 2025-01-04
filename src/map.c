@@ -15,7 +15,7 @@
 #include "sound.h"
 
 MapSystem map = { MAP_STATE_WAITING };
-Exit teleport_exit;
+Exit active_exit;
 
 /**
  * Whether or not to initiate the wall hit sound effect.
@@ -1351,17 +1351,15 @@ static void reset_map_objects(void) {
  */
 static void load_exit(void) {
   DISPLAY_OFF;
-  const Exit *exit = map.active_exit;
-
-  if (exit->to_floor) {
+  if (active_exit.to_floor) {
     map.execute_on_init = true;
-    set_active_floor(exit->to_floor);
+    set_active_floor(active_exit.to_floor);
   }
 
-  map.active_map = maps + exit->to_map;
-  map.hero_direction = exit->heading;
+  map.active_map = maps + active_exit.to_map;
+  map.hero_direction = active_exit.heading;
 
-  set_hero_position(exit->to_col, exit->to_row);
+  set_hero_position(active_exit.to_col, active_exit.to_row);
   update_local_tiles();
   refresh_map_screen();
   clear_flames();
@@ -1388,7 +1386,11 @@ static bool handle_exit(void) {
       continue;
 
     sfx_stairs();
-    map.active_exit = exit;
+    active_exit.to_map = exit->to_map;
+    active_exit.to_col = exit->to_col;
+    active_exit.to_row = exit->to_row;
+    active_exit.to_floor = exit->to_floor;
+    active_exit.heading = exit->heading;
     map_fade_out(MAP_STATE_LOAD_EXIT);
     return true;
   }
@@ -2061,7 +2063,7 @@ void update_map(void) {
     load_exit();
     break;
   case MAP_STATE_EXIT_LOADED:
-    start_move(map.active_exit->heading);
+    start_move(active_exit.heading);
     break;
   case MAP_STATE_MENU:
     update_map_menu();
@@ -2078,7 +2080,6 @@ void update_map(void) {
     map_fade_out(MAP_STATE_START_BATTLE);
     return;
   case MAP_STATE_TELEPORT:
-    map.active_exit = &teleport_exit;
     map_fade_out(MAP_STATE_LOAD_EXIT);
     sfx_no_no_square();
     return;

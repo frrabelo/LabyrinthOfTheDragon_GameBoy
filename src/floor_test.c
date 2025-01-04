@@ -43,6 +43,8 @@ static const Exit exits[] = {
   { MAP_A, 8, 1, MAP_B, 4, 1, DOWN, EXIT_STAIRS },
   { MAP_B, 4, 1, MAP_A, 8, 1, DOWN, EXIT_STAIRS },
 
+  { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &bank_floor_test2 },
+
   { MAP_A, 25, 27, MAP_B, 4, 5, DOWN, EXIT_STAIRS },
   { MAP_B, 4, 5, MAP_A, 25, 27, DOWN, EXIT_STAIRS },
 
@@ -53,7 +55,6 @@ static const Exit exits[] = {
   { MAP_C, 4, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
   { MAP_C, 3, 7, MAP_A, 14, 1, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 19, 1, MAP_A, 2, 15, UP, EXIT_STAIRS, &bank_floor_test2 },
 
   { END },
 };

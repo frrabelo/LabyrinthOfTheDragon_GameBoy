@@ -180,7 +180,7 @@ addNamespace('player', 4, {
 addNamespace('maps', 2, {
   'chest_locked': "The chest is locked.",
   'chest_open': "You opened the chest!",
-  "chest_empty": "The chest was empty.",
+  'chest_empty': "The chest was empty.",
   'chest_key_locked': "You need a magic key to unlock this chest...",
   'chest_unlock_key': "You unlock the chest with a magic key!",
   'get_magic_key': "You get a magic key!",
@@ -193,6 +193,7 @@ addNamespace('maps', 2, {
   'sconce_lit_no_torch': 'The sconce burns brightly.',
   'sconce_no_torch': 'Hmm... how do you light this?',
   'sconce_torch_not_lit': 'Your torch lacks a flame.',
+  'sign_monster_no_fire': 'Monsters fear fire!',
 });
 
 addNamespace('floor_test', 2, {
@@ -208,8 +209,29 @@ addNamespace('floor_test', 2, {
   'healed': 'You are fully restored!',
 })
 
+addNamespace('floor_common', 2, {
+  'growl': "GROWL!",
+  'light_fires': "Light these fires to open this door!",
+  'missing': "Something used to have been here...",
+  'no_return': "There is no going back!",
+  'steve_jobs': "It's so sad that Steve Jobs Died of Ligma...",
+  'tbd': "Placeholders are a big no-no in game development!",
+  'new_ability': "You get an ability!",
+  'fight_me': "Fight Me!",
+  'love': "I LOVE YOU!",
+  'strange_wind': "You feel a strong breeze from the north.",
+})
+
+addNamespace('floor_three', 2, {
+  'lever_puzzle': "Levers below open these doors.",
+  'lever_one': "Nine to the boss, Five to a good fight",
+  'lever_two': "Try them all if you have a key",
+})
+
 addNamespace('chest_item', 2, {
   '2pot_1eth': 'You get 2 potions and an ether!',
+  '1pot': 'You get a potion!',
+  '1pots': 'You get a potions!',
   'haste_pot': 'You get a haste potion!',
   'regen_pot': 'You get a regen potion!',
 });

@@ -746,6 +746,11 @@ extern const char str_maps_sconce_no_torch[];
 extern const char str_maps_sconce_torch_not_lit[];
 
 /**
+ * "Monsters fear fire!"
+ */
+extern const char str_maps_sign_monster_no_fire[];
+
+/**
  * "This skull is so metal!"
  */
 extern const char str_floor_test_metal_skull[];
@@ -791,6 +796,71 @@ extern const char str_floor_test_door_opens[];
 extern const char str_floor_test_growl[];
 
 /**
+ * "GROWL!"
+ */
+extern const char str_floor_common_growl[];
+
+/**
+ * "Light these fires to open this door!"
+ */
+extern const char str_floor_common_light_fires[];
+
+/**
+ * "Something used to have been here..."
+ */
+extern const char str_floor_common_missing[];
+
+/**
+ * "There is no going back!"
+ */
+extern const char str_floor_common_no_return[];
+
+/**
+ * "It's so sad that Steve Jobs Died of Ligma..."
+ */
+extern const char str_floor_common_steve_jobs[];
+
+/**
+ * "Placeholders are a big no-no in game development!"
+ */
+extern const char str_floor_common_tbd[];
+
+/**
+ * "You get an ability!"
+ */
+extern const char str_floor_common_new_ability[];
+
+/**
+ * "Fight Me!"
+ */
+extern const char str_floor_common_fight_me[];
+
+/**
+ * "I LOVE YOU!"
+ */
+extern const char str_floor_common_love[];
+
+/**
+ * "You feel a strong breeze from the north."
+ */
+extern const char str_floor_common_strange_wind[];
+
+/**
+ * "Levers below open these doors."
+ */
+extern const char str_floor_three_lever_puzzle[];
+
+/**
+ * "Nine to the boss, Five to a good fight"
+ */
+extern const char str_floor_three_lever_one[];
+
+/**
+ * "Try them all if you have a key"
+ */
+extern const char str_floor_three_lever_two[];
+
+/**
  * "You are fully restored!"
  */
 extern const char str_floor_test_healed[];
@@ -799,6 +869,16 @@ extern const char str_floor_test_healed[];
  * "You get 2 potions and an ether!"
  */
 extern const char str_chest_item_2pot_1eth[];
+
+/**
+ * "You get a potion!"
+ */
+extern const char str_chest_item_1pot[];
+
+/**
+ * "You get a potions!"
+ */
+extern const char str_chest_item_1pots[];
 
 /**
  * "You get a haste potion!"

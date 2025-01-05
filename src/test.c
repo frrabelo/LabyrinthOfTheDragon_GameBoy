@@ -33,8 +33,18 @@ void test_big_map(void) {
   init_test_player(CLASS_FIGHTER, 45);
 
   player.has_torch = true;
+  grant_ability(ABILITY_ALL);
+  set_active_floor(&bank_floor1);
+  init_world_map();
+  game_state = GAME_STATE_WORLD_MAP;
+}
 
-  // set_active_floor(&bank_floor_test2);
-  set_active_floor(&bank_floor_test);
+void test_level(void) {
+  init_test_player(CLASS_TEST, 70);
+
+  player.has_torch = true;
+  grant_ability(ABILITY_ALL);
+
+  set_active_floor(&bank_floor4);
   init_world_map();
 }

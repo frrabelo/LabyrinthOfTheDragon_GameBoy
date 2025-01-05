@@ -201,8 +201,6 @@ static bool on_special(void) NONBANKED {
  * Switches to the floor's bank and calls the `on_action` function.
  */
 static bool on_action(void) NONBANKED {
-  if (!floor_bank->floor->on_action)
-    return false;
   const uint8_t _prev_bank = CURRENT_BANK;
   bool value;
   SWITCH_ROM(floor_bank->bank);
@@ -911,7 +909,7 @@ static void clear_hud(void) {
   move_sprite(TORCH_GAUGE_BODY_3, 0, 0);
   move_sprite(TORCH_GAUGE_BODY_4, 0, 0);
   move_sprite(MAGIC_KEY_SPRITE_1, 0, 0);
-  move_sprite(MAGIC_KEY_SPRITE_1, 0, 0);
+  move_sprite(MAGIC_KEY_SPRITE_2, 0, 0);
   move_sprite(MAGIC_KEY_QTY, 0, 0);
 }
 

@@ -238,7 +238,7 @@
 /**
  * Max sconces per floor.
  */
-#define MAX_SCONCES 16 + 1
+#define MAX_SCONCES 32 + 1
 
 /**
  * Max NPCs per floor.

@@ -1,6 +1,10 @@
 # Emulator sram SAV files
 *.sav
 *.gb
+data/strings_*.c
+src/strings.h
+res/tiles/*
+src/tables.c
 
 # Ignore all build files
 obj/

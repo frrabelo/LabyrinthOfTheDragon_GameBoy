@@ -74,3 +74,5 @@ clean:
 	rm -f res/color_tables/*.bin res/color_tables/manifest.json
 	rm -f data/strings_*bank*.c
 	rm -f obj/*
+	rm -f src/strings.h
+	rm -f src/tables.c

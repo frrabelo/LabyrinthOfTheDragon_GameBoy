@@ -257,12 +257,12 @@ static bool on_special(void) {
 }
 
 static bool on_move(void) {
-  if (check_random_encounter()) {
-    generate_encounter(random_encounters);
-    start_battle();
-    return true;
-  }
-  return false;
+  if (!check_random_encounter())
+    return false;
+
+  generate_encounter(random_encounters);
+  start_battle();
+  return true;
 }
 
 //------------------------------------------------------------------------------

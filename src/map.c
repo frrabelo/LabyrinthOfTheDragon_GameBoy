@@ -1961,6 +1961,22 @@ void set_active_floor(FloorBank *f) BANKED {
   reset_map_objects();
 }
 
+void remap_exit(
+  uint8_t index,
+  MapId to_map,
+  uint8_t col,
+  uint8_t row,
+  Direction heading
+) {
+  if (index >= MAX_EXITS)
+    return;
+  Exit *exit = exits + index;
+  exit->to_map = to_map;
+  exit->to_col = col;
+  exit->to_row = row;
+  exit->heading = heading;
+}
+
 /**
  * Initializes the world map system.
  */

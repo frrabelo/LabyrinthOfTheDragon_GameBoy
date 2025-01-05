@@ -1560,4 +1560,15 @@ inline void set_npc_invisible(NpcId id) {
   map.npc_visible &= ~id;
 }
 
+/**
+ * Remaps an exit's destination.
+ */
+void remap_exit(
+  uint8_t index,
+  MapId to_map,
+  uint8_t col,
+  uint8_t row,
+  Direction heading
+);
+
 #endif

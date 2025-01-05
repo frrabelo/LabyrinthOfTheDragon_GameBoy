@@ -186,6 +186,10 @@ static bool on_move(void) {
   return false;
 }
 
+static bool on_action(void) {
+  return false;
+}
+
 //------------------------------------------------------------------------------
 // Palette Colors
 //------------------------------------------------------------------------------
@@ -202,10 +206,10 @@ static const palette_color_t palettes[] = {
   RGB8(40, 60, 40),
   RGB8(24, 0, 0),
   // Palette 3
-  RGB_WHITE,
+  RGB8(120, 120, 120),
   RGB8(120, 120, 120),
   RGB8(60, 60, 60),
-  RGB_BLACK,
+  RGB8(36, 0, 0),
   // Palette 4
   RGB_WHITE,
   RGB8(120, 120, 120),
@@ -244,4 +248,5 @@ const Floor floor4 = {
   on_init,
   on_special,
   on_move,
+  on_action,
 };

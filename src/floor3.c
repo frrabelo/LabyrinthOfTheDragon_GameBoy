@@ -371,6 +371,10 @@ static bool on_move(void) {
   return false;
 }
 
+static bool on_action(void) {
+  return false;
+}
+
 //------------------------------------------------------------------------------
 // Palette Colors
 //------------------------------------------------------------------------------
@@ -429,4 +433,5 @@ const Floor floor3 = {
   on_init,
   on_special,
   on_move,
+  on_action,
 };

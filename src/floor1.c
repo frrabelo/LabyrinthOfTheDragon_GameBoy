@@ -86,7 +86,7 @@ static const Exit exits[] = {
     {MAP_A, 6, 18, MAP_A, 6, 13, UP, EXIT_STAIRS},
     {MAP_A, 6, 13, MAP_A, 6, 18, DOWN, EXIT_STAIRS},
 
-    {MAP_A, 6, 3, MAP_A, 4, 19, UP, EXIT_STAIRS, &bank_floor2},
+    {MAP_A, 6, 3, MAP_A, 6, 11, UP, EXIT_STAIRS, &bank_floor2},
 
     {END},
 };
@@ -226,7 +226,20 @@ static const NPC npcs[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
-static const EncounterTable random_encounters[] = {
+static const EncounterTable encounter_lv5[] = {
+  {
+    ODDS_25P, MONSTER_LAYOUT_1,
+    MONSTER_GOBLIN, 5, C_TIER,
+  },
+  {
+    ODDS_75P, MONSTER_LAYOUT_1,
+    MONSTER_KOBOLD, 5, C_TIER,
+  },
+
+  { END }
+};
+
+static const EncounterTable encounter_lv7[] = {
   {
     ODDS_25P, MONSTER_LAYOUT_2,
     MONSTER_ZOMBIE, 6, C_TIER,
@@ -244,11 +257,13 @@ static const EncounterTable random_encounters[] = {
     ODDS_25P, MONSTER_LAYOUT_1,
     MONSTER_KOBOLD, 5, C_TIER,
   },
+
   { END }
 };
 
+
 static bool on_init(void) {
-  config_random_encounter(6, 1, 1, true);
+  config_random_encounter(4, 1, 1, true);
   return false;
 }
 
@@ -260,9 +275,17 @@ static bool on_move(void) {
   if (!check_random_encounter())
     return false;
 
-  generate_encounter(random_encounters);
+  if (player.level < 7)
+    generate_encounter(encounter_lv5);
+  else
+    generate_encounter(encounter_lv7);
+
   start_battle();
   return true;
+}
+
+static bool on_action(void) {
+  return false;
 }
 
 //------------------------------------------------------------------------------
@@ -323,5 +346,6 @@ const Floor floor1 = {
   on_init,
   on_special,
   on_move,
+  on_action,
 };
 

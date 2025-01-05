@@ -40,11 +40,8 @@ void test_big_map(void) {
 }
 
 void test_level(void) {
-  init_test_player(CLASS_TEST, 70);
+  init_test_player(CLASS_DRUID, 5);
 
-  player.has_torch = true;
-  grant_ability(ABILITY_ALL);
-
-  set_active_floor(&bank_floor4);
+  set_active_floor(&bank_floor1);
   init_world_map();
 }

@@ -157,7 +157,7 @@ static const Sconce sconces[] = {
     FLAME_BLUE  // Flame color for the sconce if it starts lit.
   }
   */
-  { SCONCE_STATIC, MAP_A, 7, 5, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 8, 5, true, FLAME_RED },
   { SCONCE_STATIC, MAP_A, 11, 1, true, FLAME_GREEN },
   { SCONCE_STATIC, MAP_A, 16, 1, true, FLAME_BLUE },
   { SCONCE_STATIC, MAP_A, 23, 1, true, FLAME_RED },
@@ -285,7 +285,7 @@ static bool on_special(void) {
   if (player_at(3, 4)) {
     reset_encounter(MONSTER_LAYOUT_1);
     Monster *monster = encounter.monsters;
-    beholder_generator(monster, 40, B_TIER);
+    dragon_generator(monster, 40, B_TIER);
     monster->id = 'A';
     set_on_victory(on_victory_test);
     start_battle();

@@ -319,6 +319,22 @@ addNamespace('monster2', 7, {
   'beholder_ray_death': 'Your soul escapes your body...',
   'beholder_ray_miss': 'But you dodge the ray!',
   'beholder_bit_miss': 'But their bite misses!',
+  // Dragon Specials
+  'dragon_attack': 'Dragon %c swoops down and attacks!',
+  'dragon_miss': 'But their attacks miss!',
+  'dragon_hit_triple': 'They hit THREE TIMES for %damage damage!',
+  'dragon_hit_double': 'They hit TWICE for %damage damage!',
+  'dragon_hit_single': 'They hit for %damage damage!',
+  'dragon_legendary_tail': 'Dragon %c sweeps its tail!',
+  'dragon_legendary_tail_miss': 'But you dodge out of the way!',
+  'dragon_legendary_wing': 'Dragon %c beats its wings!',
+  'dragon_legendary_wing_miss': 'But you take cover!',
+  'dragon_legendary_wing_hit': 'You are toppled and take %damage damage!',
+  'dragon_fright': 'Dragon %c towers above you!',
+  'dragon_fright_miss': 'But your resolve does not waiver!',
+  'dragon_fright_hit': 'And you fear for your life!',
+  'dragon_fire_breath': 'Dragon %c exhales a wave of fire!',
+  'dragon_fire_breath_miss': 'You dodge, but still take %damage damage!',
 })
 
 // Export the namespaces

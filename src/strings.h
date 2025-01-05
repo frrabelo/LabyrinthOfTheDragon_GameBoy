@@ -1245,4 +1245,79 @@ extern const char str_monster2_beholder_ray_miss[];
  */
 extern const char str_monster2_beholder_bit_miss[];
 
+/**
+ * "Dragon %c swoops down and attacks!"
+ */
+extern const char str_monster2_dragon_attack[];
+
+/**
+ * "But their attacks miss!"
+ */
+extern const char str_monster2_dragon_miss[];
+
+/**
+ * "They hit THREE TIMES for %damage damage!"
+ */
+extern const char str_monster2_dragon_hit_triple[];
+
+/**
+ * "They hit TWICE for %damage damage!"
+ */
+extern const char str_monster2_dragon_hit_double[];
+
+/**
+ * "They hit for %damage damage!"
+ */
+extern const char str_monster2_dragon_hit_single[];
+
+/**
+ * "Dragon %c sweeps its tail!"
+ */
+extern const char str_monster2_dragon_legendary_tail[];
+
+/**
+ * "But you dodge out of the way!"
+ */
+extern const char str_monster2_dragon_legendary_tail_miss[];
+
+/**
+ * "Dragon %c beats its wings!"
+ */
+extern const char str_monster2_dragon_legendary_wing[];
+
+/**
+ * "But you take cover!"
+ */
+extern const char str_monster2_dragon_legendary_wing_miss[];
+
+/**
+ * "You are toppled and take %damage damage!"
+ */
+extern const char str_monster2_dragon_legendary_wing_hit[];
+
+/**
+ * "Dragon %c towers above you!"
+ */
+extern const char str_monster2_dragon_fright[];
+
+/**
+ * "But your resolve does not waiver!"
+ */
+extern const char str_monster2_dragon_fright_miss[];
+
+/**
+ * "And you fear for your life!"
+ */
+extern const char str_monster2_dragon_fright_hit[];
+
+/**
+ * "Dragon %c exhales a wave of fire!"
+ */
+extern const char str_monster2_dragon_fire_breath[];
+
+/**
+ * "You dodge, but still take %damage damage!"
+ */
+extern const char str_monster2_dragon_fire_breath_miss[];
+
 #endif

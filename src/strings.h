@@ -1195,4 +1195,54 @@ extern const char str_monster2_mindflayer_extract_brain[];
  */
 extern const char str_monster2_mindflayer_extract_brain_hit[];
 
+/**
+ * "Beholder %c chomps at you..."
+ */
+extern const char str_monster2_beholder_bite[];
+
+/**
+ * "Beholder %c shoots a ray from an eyestalk..."
+ */
+extern const char str_monster2_beholder_shoot_ray[];
+
+/**
+ * "You take %damage damage and are paralyzed!"
+ */
+extern const char str_monster2_beholder_ray_paralyze[];
+
+/**
+ * "You take %damage damage and you feel dread!"
+ */
+extern const char str_monster2_beholder_ray_fear[];
+
+/**
+ * "You take %damage damage and you slow down!"
+ */
+extern const char str_monster2_beholder_ray_slow[];
+
+/**
+ * "You take %damage damage and are poisoned!"
+ */
+extern const char str_monster2_beholder_ray_necro[];
+
+/**
+ * "You take %damage damage and fall prone!"
+ */
+extern const char str_monster2_beholder_ray_trip[];
+
+/**
+ * "Your soul escapes your body..."
+ */
+extern const char str_monster2_beholder_ray_death[];
+
+/**
+ * "But you dodge the ray!"
+ */
+extern const char str_monster2_beholder_ray_miss[];
+
+/**
+ * "But their bite misses!"
+ */
+extern const char str_monster2_beholder_bit_miss[];
+
 #endif

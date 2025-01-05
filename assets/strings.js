@@ -308,6 +308,17 @@ addNamespace('monster2', 7, {
   'mindflayer_tentacle': 'Mind Flayer %c lashes out with its tentacles!',
   'mindflayer_extract_brain': 'Mind Flayer %c attempts to eat your brain!',
   'mindflayer_extract_brain_hit': 'Your brain is gobbled up!',
+  // Beholder special
+  'beholder_bite': 'Beholder %c chomps at you...',
+  'beholder_shoot_ray': 'Beholder %c shoots a ray from an eyestalk...',
+  'beholder_ray_paralyze': 'You take %damage damage and are paralyzed!',
+  'beholder_ray_fear': 'You take %damage damage and you feel dread!',
+  'beholder_ray_slow': 'You take %damage damage and you slow down!',
+  'beholder_ray_necro': 'You take %damage damage and are poisoned!',
+  'beholder_ray_trip': 'You take %damage damage and fall prone!',
+  'beholder_ray_death': 'Your soul escapes your body...',
+  'beholder_ray_miss': 'But you dodge the ray!',
+  'beholder_bit_miss': 'But their bite misses!',
 })
 
 // Export the namespaces

@@ -126,7 +126,7 @@ addNamespace('player', 4, {
   'hit_resist': "They resist your attack, only %damage damage...",
   'hit_vuln': "SUPER EFFECTIVE %damage damage!",
   'hit_crit': 'CRITICAL HIT! You deal %damage damage!',
-  'heal': 'You heal %damage HP.',
+  'heal_hp': 'You heal %damage HP.',
   'heal_crit': 'CRITICAL! You heal a whopping %damage HP!',
   'heal_fumble': 'You only heal a measly %damage HP.',
   'miss_all': 'A COMPLETE WHIFF.',

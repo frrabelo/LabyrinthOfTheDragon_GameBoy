@@ -307,7 +307,7 @@ void druid_cure_wounds(void) {
   else if (is_fumble(roll) && !has_special(SPECIAL_HASTE))
     sprintf(battle_post_message, str_player_heal_fumble, hp);
   else
-    sprintf(battle_post_message, str_player_heal, hp);
+    sprintf(battle_post_message, str_player_heal_hp, hp);
 }
 
 void druid_bark_skin(void) {

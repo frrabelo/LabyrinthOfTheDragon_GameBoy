@@ -456,9 +456,9 @@ extern const char str_player_hit_vuln[];
 extern const char str_player_hit_crit[];
 
 /**
- * "Radiant green light descends..."
+ * "You heal %damage HP."
  */
-extern const char str_player_heal[];
+extern const char str_player_heal_hp[];
 
 /**
  * "CRITICAL! You heal a whopping %damage HP!"
@@ -494,6 +494,11 @@ extern const char str_player_bark_skin[];
  * "Bolts of lighting fall!"
  */
 extern const char str_player_lightning[];
+
+/**
+ * "Radiant green light descends..."
+ */
+extern const char str_player_heal[];
 
 /**
  * "You're fully healed!"

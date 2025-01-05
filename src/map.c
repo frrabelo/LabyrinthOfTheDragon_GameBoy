@@ -198,6 +198,20 @@ static bool on_special(void) NONBANKED {
 }
 
 /**
+ * Switches to the floor's bank and calls the `on_action` function.
+ */
+static bool on_action(void) NONBANKED {
+  if (!floor_bank->floor->on_action)
+    return false;
+  const uint8_t _prev_bank = CURRENT_BANK;
+  bool value;
+  SWITCH_ROM(floor_bank->bank);
+  value = floor_bank->floor->on_action();
+  SWITCH_ROM(_prev_bank);
+  return value;
+}
+
+/**
  * Calls the `on_open` callback for a chest.
  */
 static bool on_open(Chest *chest) NONBANKED {
@@ -1931,7 +1945,9 @@ static bool check_action(void) {
       return true;
     if (check_npcs())
       return true;
-    return check_levers();
+    if (check_levers())
+      return true;
+    return on_action();
   }
   return false;
 }
@@ -2020,6 +2036,11 @@ void update_map(void) {
 
   update_door_graphics();
   check_sconce_changed();
+
+  if (map.player_hp_and_sp_updated) {
+    map.player_hp_and_sp_updated = false;
+    update_map_menu_hp_sp();
+  }
 
   switch (map.state) {
   case MAP_STATE_WAITING:

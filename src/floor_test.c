@@ -314,6 +314,15 @@ static bool on_move(void) {
   return false;
 }
 
+static bool on_action(void) {
+  if (player_facing(7, 4)) {
+    full_heal_player();
+    map_textbox(str_floor_test_healed);
+    return true;
+  }
+  return false;
+}
+
 //------------------------------------------------------------------------------
 // Palette Colors
 //------------------------------------------------------------------------------
@@ -373,5 +382,6 @@ const Floor floor_test = {
   on_init,
   on_special,
   on_move,
+  on_action,
 };
 

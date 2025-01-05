@@ -791,6 +791,11 @@ extern const char str_floor_test_door_opens[];
 extern const char str_floor_test_growl[];
 
 /**
+ * "You are fully restored!"
+ */
+extern const char str_floor_test_healed[];
+
+/**
  * "You get 2 potions and an ether!"
  */
 extern const char str_chest_item_2pot_1eth[];

@@ -879,6 +879,7 @@ typedef struct Floor {
   const NPC *npcs;
   /**
    * Called when the map is initialized by the game engine.
+   * @return `true` if the map should prevent default behavior.
    */
   const bool (*on_init)(void);
   /**
@@ -888,11 +889,15 @@ typedef struct Floor {
   const bool (*on_special)(void);
   /**
    * Called when the map is active and the player moves into a floor tile.
-   * @param col The column for the tile.
-   * @param row The row for the tile.
    * @return `true` if the map should prevent default behavior.
    */
   const bool (*on_move)(void);
+  /**
+   * Called when the player presses the 'A' button on the map. Allows for custom
+   * action scripting.
+   * @return `true` if the map should prevent default behavior.
+   */
+  const bool (*on_action)(void);
 } Floor;
 
 /**
@@ -1163,6 +1168,10 @@ typedef struct MapSystem {
    * stat of a sconce changes (if it was lit, etc.).
    */
   uint8_t sconces_updated;
+  /**
+   * Set if the player's HP and SP were updated as a result of a floor script.
+   */
+  bool player_hp_and_sp_updated;
 } MapSystem;
 
 /**
@@ -1251,6 +1260,11 @@ void init_map_menu(void);
  * Performs game loop updates for the map menu.
  */
 void update_map_menu(void);
+
+/**
+ * Updates HP/SP for the map menu.
+ */
+void update_map_menu_hp_sp(void);
 
 /**
  * Opens the map menu.

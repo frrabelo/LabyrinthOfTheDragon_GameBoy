@@ -205,6 +205,7 @@ addNamespace('floor_test', 2, {
   'no_back': "You cannot return...",
   'door_opens': "The door opens!",
   'growl': "GROWL!",
+  'healed': 'You are fully restored!',
 })
 
 addNamespace('chest_item', 2, {

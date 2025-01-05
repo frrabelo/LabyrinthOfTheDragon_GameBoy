@@ -1,5 +1,6 @@
 # Emulator sram SAV files
 *.sav
+*.gb
 
 # Ignore all build files
 obj/

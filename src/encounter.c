@@ -539,7 +539,9 @@ void after_action(void) {
     }
   }
 
-  encounter.victory = !encounter.player_died && !monster_active;
+  encounter.victory = !encounter.player_died &&
+    !encounter.player_fled &&
+    !monster_active;
 }
 
 void set_player_fight(Monster *target) {

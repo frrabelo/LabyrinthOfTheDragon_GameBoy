@@ -1991,7 +1991,8 @@ void on_victory(void) NONBANKED {
   const uint8_t _prev_bank = CURRENT_BANK;
   SWITCH_ROM(floor_bank->bank);
   void (*callback)(void) = encounter.on_victory;
-  callback();
+  if (encounter.victory)
+    callback();
   encounter.on_victory = NULL;
   SWITCH_ROM(_prev_bank);
 }

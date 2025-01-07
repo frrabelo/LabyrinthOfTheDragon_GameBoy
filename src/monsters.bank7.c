@@ -357,7 +357,7 @@ static void dragon_take_turn(Monster *monster) {
     sprintf(battle_pre_message, str_monster2_dragon_fire_breath, monster->id);
     bool hit = roll_attack_monster(monster->matk, player.mdef);
 
-    uint16_t base_damage = 4 * get_monster_dmg(
+    uint16_t base_damage = 3 * get_monster_dmg(
       level_offset(monster->level, 5),
       monster->exp_tier
     );

@@ -195,7 +195,7 @@ static void boss_victory(void) NONBANKED {
 static bool boss_encounter(void) {
   Monster *monster = encounter.monsters;
   reset_encounter(MONSTER_LAYOUT_1);
-  kobold_generator(monster, player.level, A_TIER);
+  goblin_generator(monster, 10, S_TIER);
   monster->id = 'A';
   set_on_victory(boss_victory);
   start_battle();
@@ -228,36 +228,48 @@ static const NPC npcs[] = {
 
 static const EncounterTable encounter_lv5[] = {
   {
-    ODDS_25P, MONSTER_LAYOUT_1,
+    ODDS_10P, MONSTER_LAYOUT_1,
+    MONSTER_KOBOLD, 7, B_TIER,
+  },
+  {
+    ODDS_20P, MONSTER_LAYOUT_1,
     MONSTER_GOBLIN, 5, C_TIER,
   },
   {
-    ODDS_75P, MONSTER_LAYOUT_1,
+    ODDS_35P, MONSTER_LAYOUT_2,
+    MONSTER_KOBOLD, 5, C_TIER,
+    MONSTER_KOBOLD, 6, C_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_2,
+    MONSTER_GOBLIN, 5, C_TIER,
     MONSTER_KOBOLD, 5, C_TIER,
   },
-
   { END }
 };
 
-static const EncounterTable encounter_lv7[] = {
+static const EncounterTable encounter_lv8[] = {
   {
-    ODDS_25P, MONSTER_LAYOUT_2,
-    MONSTER_ZOMBIE, 6, C_TIER,
+    ODDS_10P, MONSTER_LAYOUT_1,
+    MONSTER_GOBLIN, 10, B_TIER,
+  },
+  {
+    ODDS_25P, MONSTER_LAYOUT_3S,
+    MONSTER_KOBOLD, 8, C_TIER,
+    MONSTER_KOBOLD, 7, B_TIER,
+    MONSTER_KOBOLD, 8, C_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 9, C_TIER,
     MONSTER_KOBOLD, 5, C_TIER,
   },
   {
-    ODDS_25P, MONSTER_LAYOUT_1,
-    MONSTER_GOBLIN, 7, C_TIER,
-  },
-  {
-    ODDS_25P, MONSTER_LAYOUT_1,
+    ODDS_30P, MONSTER_LAYOUT_3S,
+    MONSTER_GOBLIN, 9, C_TIER,
+    MONSTER_KOBOLD, 7, C_TIER,
     MONSTER_KOBOLD, 7, C_TIER,
   },
-  {
-    ODDS_25P, MONSTER_LAYOUT_1,
-    MONSTER_KOBOLD, 5, C_TIER,
-  },
-
   { END }
 };
 
@@ -275,10 +287,10 @@ static bool on_move(void) {
   if (!check_random_encounter())
     return false;
 
-  if (player.level < 7)
+  if (player.level < 8)
     generate_encounter(encounter_lv5);
   else
-    generate_encounter(encounter_lv7);
+    generate_encounter(encounter_lv8);
 
   start_battle();
   return true;

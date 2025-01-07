@@ -284,24 +284,9 @@ void druid_base_attack(void) {
 
 void druid_cure_wounds(void) {
   sprintf(battle_pre_message, str_player_cure_wounds);
-
   uint8_t heal_tier = B_TIER;
-
-  if (player.level > 80)
-    heal_tier = S_TIER;
-  else if (player.level > 50)
-    heal_tier = A_TIER;
-
-  const uint16_t base_hp = get_player_heal(player.level, heal_tier);
-  const uint8_t roll = d16();
-  const uint8_t hp = heal_player(roll, base_hp);
-
-  if (is_critical(roll))
-    sprintf(battle_post_message, str_player_heal_crit, hp);
-  else if (is_fumble(roll) && !has_special(SPECIAL_HASTE))
-    sprintf(battle_post_message, str_player_heal_fumble, hp);
-  else
-    sprintf(battle_post_message, str_player_heal_hp, hp);
+  const uint8_t hp = player.max_hp / 4;
+  sprintf(battle_post_message, str_player_heal_hp, hp);
 }
 
 void druid_bark_skin(void) {
@@ -396,17 +381,7 @@ void fighter_base_attack(void) {
     return;
   }
 
-  PowerTier damage_tier;
-  if (player.level < 25)
-    damage_tier = B_TIER;
-  else if (player.level < 50)
-    damage_tier = A_TIER;
-  else
-    damage_tier = S_TIER;
-
-  const uint8_t attack_level = level_offset(player.level, 3);
-  const uint16_t base_dmg = get_player_damage(attack_level, damage_tier);
-  damage_monster(base_dmg, DAMAGE_PHYSICAL);
+  damage_monster(get_player_damage(player.level, C_TIER), DAMAGE_PHYSICAL);
 }
 
 void fighter_second_wind(void) {
@@ -526,14 +501,7 @@ void monk_base_attack(void) {
     return;
   }
 
-  PowerTier damage_tier = B_TIER;
-  if (player.level >= 65)
-    damage_tier = S_TIER;
-  else if (player.level >= 30)
-    damage_tier = A_TIER;
-
-  uint8_t attack_level = level_offset(player.level, player.agl);
-  const uint16_t base_dmg = get_player_damage(attack_level, damage_tier);
+  const uint16_t base_dmg = get_player_damage(player.level, B_TIER);
   damage_monster(base_dmg, DAMAGE_PHYSICAL);
 }
 
@@ -693,26 +661,20 @@ void sorcerer_update_stats(void) {
 
 void sorcerer_base_attack(void) {
   uint8_t num_missiles = 1;
-  if (player.level >= 15)
-    num_missiles = 2;
-  if (player.level >= 45)
-    num_missiles = 3;
-  if (player.level >= 75)
-    num_missiles = 4;
+  // if (player.level >= 15)
+  //   num_missiles = 2;
+  // if (player.level >= 45)
+  //   num_missiles = 3;
+  // if (player.level >= 75)
+  //   num_missiles = 4;
 
   if (num_missiles == 1)
     sprintf(battle_pre_message, str_player_sorc_magic_missile_one);
   else
     sprintf(battle_pre_message, str_player_sorc_magic_missile, num_missiles);
 
-  PowerTier tier = C_TIER;
-  if (player.level >= 30)
-    tier = B_TIER;
-  if (player.level >= 60)
-    tier = A_TIER;
-
-  uint16_t missle_damage = get_player_damage(
-    level_offset(player.level, -5), tier);
+  PowerTier tier = B_TIER;
+  uint16_t missle_damage = get_player_damage(player.level, tier);
   uint16_t base_damage = num_missiles * missle_damage;
   damage_monster(base_damage, DAMAGE_MAGICAL);
 }

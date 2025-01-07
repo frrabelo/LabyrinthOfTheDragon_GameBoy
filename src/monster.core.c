@@ -80,7 +80,7 @@ uint16_t damage_player(uint16_t base_damage, DamageAspect type) BANKED {
     else if (player.level > 30)
       evade_chance = 5;
     if (d8() < evade_chance) {
-      sprintf(battle_post_message, str_battle_monster_miss_evaded);
+      sprintf(battle_post_message, str_misc_monster_miss_evaded);
       return 0;
     }
   }

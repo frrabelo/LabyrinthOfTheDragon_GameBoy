@@ -12,17 +12,6 @@
 #include "player.h"
 
 /**
- * Result of the damage in terms of aspect immunities, resistances, and
- * vulnerabilities.
- */
-typedef enum DamageResult {
-  DAMAGE_RESULT_NORMAL,
-  DAMAGE_RESULT_IMMUNE,
-  DAMAGE_RESULT_RESIST,
-  DAMAGE_RESULT_VULN,
-} DamageResult;
-
-/**
  * Enumerates the four possible monster layouts for a battle.
  */
 typedef enum MonsterLayout {

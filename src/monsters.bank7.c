@@ -30,7 +30,7 @@ static void mindflayer_take_turn(Monster *monster) {
       sprintf(battle_post_message, str_monster2_mindflayer_mind_blast_miss);
     }
 
-    if (roll_attack(monster->matk, player.mdef)) {
+    if (roll_attack_monster(monster->matk, player.mdef)) {
       monster->parameter |= MIND_FLAYER_MIND_BLAST;
       uint16_t damage = damage_player(base_damage / 2, DAMAGE_MAGICAL);
       sprintf(
@@ -53,7 +53,7 @@ static void mindflayer_take_turn(Monster *monster) {
     sprintf(
       battle_pre_message, str_monster2_mindflayer_extract_brain, monster->id);
 
-    if (roll_attack(level_offset(monster->level, -15), player.def)) {
+    if (roll_attack_monster(level_offset(monster->level, -15), player.def)) {
       sprintf(battle_post_message,  str_monster2_mindflayer_extract_brain_hit);
       player.hp = 0;
     } else {
@@ -65,7 +65,7 @@ static void mindflayer_take_turn(Monster *monster) {
 
   // Tentacle attack
   sprintf(battle_pre_message, str_monster2_mindflayer_tentacle, monster->id);
-  if (roll_attack(monster->atk, player.def))
+  if (roll_attack_monster(monster->atk, player.def))
     damage_player(base_damage, DAMAGE_PHYSICAL);
   else
     sprintf(battle_post_message, str_monster_miss);
@@ -109,7 +109,7 @@ static void beholder_take_turn(Monster *monster) {
 
   if (d16() < ray_chance[monster->exp_tier] && monster->parameter > 0) {
     // Random Eyestalk Ray
-    const bool hit = roll_attack(monster->matk, player.mdef);
+    const bool hit = roll_attack_monster(monster->matk, player.mdef);
     const uint8_t turns = debuff_turns[exp_tier];
     const PowerTier debuff_tier = debuff_tiers[exp_tier];
 
@@ -196,7 +196,7 @@ static void beholder_take_turn(Monster *monster) {
 
   // Bite
   sprintf(battle_pre_message, str_monster2_beholder_bite, monster->id);
-  if (roll_attack(monster->atk, player.def)) {
+  if (roll_attack_monster(monster->atk, player.def)) {
     damage_player(get_monster_dmg(monster->level, exp_tier), DAMAGE_PHYSICAL);
   } else {
     sprintf(battle_post_message, str_monster2_beholder_bit_miss);
@@ -285,7 +285,7 @@ static void dragon_take_turn(Monster *monster) {
   if (dragon_legendary(monster) && move_roll < 2) {
     // Use legendary action
     dragon_use_legendary(monster);
-    const bool hit = roll_attack(monster->atk + 5, player.def);
+    const bool hit = roll_attack_monster(monster->atk + 5, player.def);
     const uint8_t legendary_move = d2();
 
     switch (legendary_move) {
@@ -332,7 +332,7 @@ static void dragon_take_turn(Monster *monster) {
     sprintf(battle_pre_message, str_monster2_dragon_fright, monster->id);
     bool scared = false;
 
-    if (roll_attack(monster->matk + 5, player.mdef)) {
+    if (roll_attack_monster(monster->matk + 5, player.mdef)) {
       StatusEffectResult result = apply_scared(
         encounter.player_status_effects,
         A_TIER,
@@ -355,7 +355,7 @@ static void dragon_take_turn(Monster *monster) {
     // Fire breath
     dragon_use_firebreath(monster);
     sprintf(battle_pre_message, str_monster2_dragon_fire_breath, monster->id);
-    bool hit = roll_attack(monster->matk, player.mdef);
+    bool hit = roll_attack_monster(monster->matk, player.mdef);
 
     uint16_t base_damage = 4 * get_monster_dmg(
       level_offset(monster->level, 5),
@@ -380,7 +380,7 @@ static void dragon_take_turn(Monster *monster) {
   uint16_t base_damage = get_monster_dmg(monster->level, monster->exp_tier);
   uint8_t hits = 0;
   for (uint8_t k = 0; k < 3; k++) {
-    if (roll_attack(monster->atk + 2, player.def))
+    if (roll_attack_monster(monster->atk + 2, player.def))
       hits++;
   }
 

@@ -44,7 +44,7 @@ static void kobold_take_turn(Monster *m) {
     sprintf(battle_pre_message, str_monster_kobold_axe, m->id);
   }
 
-  if (roll_attack(atk, def)) {
+  if (roll_attack_monster(atk, def)) {
     uint16_t base_damage = get_monster_dmg(m->level, m->exp_tier);
     clear_debug();
     damage_player(base_damage, type);
@@ -131,7 +131,7 @@ static void goblin_take_turn(Monster *monster) {
     damage_tier = monster->exp_tier;
   }
 
-  if (roll_attack(atk, def))
+  if (roll_attack_monster(atk, def))
     damage_player(get_monster_dmg(monster->level - 1, damage_tier), type);
   else
     sprintf(battle_post_message, str_monster_miss);
@@ -174,7 +174,7 @@ static void zombie_take_turn(Monster *monster) {
     d16() >= bite_chance
   ) {
     sprintf(battle_pre_message, str_monster_zombie_brains);
-    if (roll_attack(monster->atk, player.def)) {
+    if (roll_attack_monster(monster->atk, player.def)) {
       monster->parameter |= ZOMBIE_BITE_HIT_FLAG;
       uint8_t duration = 2;
       PowerTier poison_tier = C_TIER;
@@ -196,7 +196,7 @@ static void zombie_take_turn(Monster *monster) {
 
   sprintf(battle_pre_message, str_monster_zombie_slam, monster->id);
 
-  if (roll_attack(monster->atk, player.def)) {
+  if (roll_attack_monster(monster->atk, player.def)) {
     damage_player(
       get_monster_dmg(monster->level, monster->exp_tier), DAMAGE_PHYSICAL);
   }
@@ -237,7 +237,7 @@ static void bugbear_take_turn(Monster *monster) {
     d8() < 2
   ) {
     sprintf(battle_pre_message, str_monster_bugbear_for_hruggek, monster->id);
-    if (roll_attack(monster->atk, player.mdef)) {
+    if (roll_attack_monster(monster->atk, player.mdef)) {
       apply_scared(encounter.player_status_effects, C_TIER, 2, 0);
       sprintf(battle_post_message, str_monster_bugbear_for_hruggek_hit);
       monster->parameter--;
@@ -273,7 +273,7 @@ static void bugbear_take_turn(Monster *monster) {
     sprintf(battle_pre_message, str_monster_bugbead_club, monster->id);
   }
 
-  if (roll_attack(atk, player.def))
+  if (roll_attack_monster(atk, player.def))
     damage_player(base_damage, DAMAGE_PHYSICAL);
   else
     sprintf(battle_post_message, str_monster_miss);
@@ -312,7 +312,7 @@ static void owlbear_take_turn(Monster *monster) {
   if (monster->parameter > 0 && d8() < 4) {
     // Pounce
     sprintf(battle_pre_message, str_monster_owlbear_pounce, monster->id);
-    if (roll_attack(monster->atk, player.def)) {
+    if (roll_attack_monster(monster->atk, player.def)) {
       uint16_t base_damage = get_monster_dmg(monster->level, tier);
       if (d8() < 2) {
         // Toppled
@@ -333,9 +333,9 @@ static void owlbear_take_turn(Monster *monster) {
     sprintf(battle_pre_message, str_monster_owlbear_multi, monster->id);
 
     uint16_t damage = 0;
-    if (roll_attack(monster->atk, player.def))
+    if (roll_attack_monster(monster->atk, player.def))
       damage += get_monster_dmg(level_offset(monster->level, -2), tier);
-    if (roll_attack(monster->atk, player.def))
+    if (roll_attack_monster(monster->atk, player.def))
       damage += get_monster_dmg(monster->level, tier);
 
     if (damage > 0)
@@ -345,7 +345,7 @@ static void owlbear_take_turn(Monster *monster) {
   } else {
     // Beak only
     sprintf(battle_pre_message, str_monster_owlbear_beak, monster->id);
-    if (roll_attack(monster->atk, player.def)) {
+    if (roll_attack_monster(monster->atk, player.def)) {
       damage_player(get_monster_dmg(
         level_offset(monster->level, -2), tier),
         DAMAGE_PHYSICAL);
@@ -417,7 +417,7 @@ static void gelatinous_cube_take_turn(Monster *monster) {
   // Normal attack
   sprintf(battle_pre_message, str_monster_gcube_attack, monster->id);
 
-  if (roll_attack(monster->atk, player.def)) {
+  if (roll_attack_monster(monster->atk, player.def)) {
     PowerTier tier = monster->exp_tier;
     if (tier == A_TIER)
       tier = B_TIER;
@@ -469,8 +469,8 @@ static void displacer_beast_take_turn(Monster *monster) {
   sprintf(
     battle_pre_message, str_monster_displacer_beast_tentacle, monster->id);
 
-  bool hit1 = roll_attack(monster->atk, player.def);
-  bool hit2 = roll_attack(level_offset(monster->atk, -7), player.def);
+  bool hit1 = roll_attack_monster(monster->atk, player.def);
+  bool hit2 = roll_attack_monster(level_offset(monster->atk, -7), player.def);
 
   uint8_t tier = monster->exp_tier > B_TIER ? A_TIER : C_TIER;
 
@@ -526,7 +526,7 @@ static void will_o_wisp_take_turn(Monster *monster) {
   // Life drain
   if (d8() < 2) {
     sprintf(battle_pre_message, str_monster_will_o_wisp_siphon, monster->id);
-    if (roll_attack(monster->matk, player.mdef)) {
+    if (roll_attack_monster(monster->matk, player.mdef)) {
       uint16_t damage = damage_player(base_damage / 2, DAMAGE_DARK);
       uint16_t heal = damage;
       if (damage + monster->target_hp > monster->max_hp)
@@ -542,7 +542,7 @@ static void will_o_wisp_take_turn(Monster *monster) {
   // Phase terror!
   if (d8() < monster->parameter) {
     sprintf(battle_pre_message, str_monster_will_o_wisp_scare, monster->id);
-    if (roll_attack(monster->matk, level_offset(player.mdef, -5))) {
+    if (roll_attack_monster(monster->matk, level_offset(player.mdef, -5))) {
       const uint8_t scared_turns[4] = { 2, 3, 5, 7 };
       apply_scared(encounter.player_status_effects,
         A_TIER, scared_turns[monster->exp_tier], player.debuff_immune);
@@ -555,7 +555,7 @@ static void will_o_wisp_take_turn(Monster *monster) {
 
   // Normal attack
   sprintf(battle_pre_message, str_monster_will_o_wisp_lightning, monster->id);
-  if (roll_attack(monster->matk, player.mdef)) {
+  if (roll_attack_monster(monster->matk, player.mdef)) {
     damage_player(base_damage, DAMAGE_AIR);
     // sprintf(battle_post_message, str_monster_will_o_wisp_hit, damage);
   } else {
@@ -607,7 +607,7 @@ static void deathknight_take_turn(Monster *monster) {
       str_monster_deathknight_hellfire, monster->id);
 
     base_damage = get_monster_dmg(orb_level, tier);
-    if (roll_attack(monster->matk, player.mdef)) {
+    if (roll_attack_monster(monster->matk, player.mdef)) {
       uint16_t damage = damage_player(base_damage, DAMAGE_FIRE);
       sprintf(battle_post_message,
         str_monster_deathknight_hellfire_hit, damage);
@@ -622,8 +622,8 @@ static void deathknight_take_turn(Monster *monster) {
   // Longsword multi-attack
   sprintf(battle_pre_message, str_monster_deathknight_attack, monster->id);
 
-  bool hit1 = roll_attack(monster->atk, player.def);
-  bool hit2 = roll_attack(monster->atk, player.def);
+  bool hit1 = roll_attack_monster(monster->atk, player.def);
+  bool hit2 = roll_attack_monster(monster->atk, player.def);
 
   base_damage = get_monster_dmg(longsword_level, tier);
 
@@ -680,7 +680,7 @@ static void dummy_take_turn(Monster *dummy) {
   case DUMMY_AGGRESSIVE:
     sprintf(battle_pre_message, str_monster_attack,
       dummy->name, dummy->id);
-    if (roll_attack(dummy->atk, player.def)) {
+    if (roll_attack_monster(dummy->atk, player.def)) {
       const uint16_t base = get_monster_dmg(dummy->level, dummy->exp_tier);
       damage_player(base, DAMAGE_PHYSICAL);
     } else {

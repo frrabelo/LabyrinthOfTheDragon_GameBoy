@@ -55,17 +55,26 @@ uint16_t get_player_heal(uint8_t level, PowerTier tier) BANKED {
   return player_heal[tier][level - 1];
 }
 
-bool check_attack(uint8_t d256_roll, uint8_t atk, uint8_t def) BANKED {
+bool check_attack(
+  uint8_t d256_roll,
+  uint8_t *table,
+  uint8_t atk,
+  uint8_t def
+ ) BANKED {
   int8_t delta = atk - def;
   if (delta <= -32)
-    return d256_roll < attack_roll_target[0];
+    return d256_roll < table[0];
   if (delta >= 32)
-    return d256_roll < attack_roll_target[64];
-  return d256_roll < attack_roll_target[(uint8_t)(delta + 32)];
+    return d256_roll < table[64];
+  return d256_roll < table[(uint8_t)(delta + 32)];
 }
 
-bool roll_attack(uint8_t atk, uint8_t def) BANKED {
-  return check_attack(d256(), atk, def);
+bool roll_attack_monster(uint8_t atk, uint8_t def) BANKED {
+  return check_attack(d256(), attack_roll_monster, atk, def);
+}
+
+bool roll_attack_player(uint8_t atk, uint8_t def) BANKED {
+  return check_attack(d256(), attack_roll_player, atk, def);
 }
 
 uint16_t calc_damage(uint8_t d16_roll, uint16_t base_dmg) BANKED {

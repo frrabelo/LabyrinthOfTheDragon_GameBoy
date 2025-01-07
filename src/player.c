@@ -166,7 +166,7 @@ static uint8_t damage_all(
       continue;
 
     const uint8_t def = use_mdef ? monster->mdef : monster->def;
-    if (!check_attack(atk_roll, atk, def))
+    if (!check_attack(atk_roll, attack_roll_player, atk, def))
       continue;
 
     hits++;
@@ -271,18 +271,12 @@ void druid_base_attack(void) {
   sprintf(battle_pre_message, str_player_poison_spray);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.matk, target->mdef)) {
+  if (!roll_attack_player(player.matk, target->mdef)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
 
   PowerTier damage_tier = C_TIER;
-  if (player.level > 75)
-    damage_tier = S_TIER;
-  else if (player.level > 50)
-    damage_tier = A_TIER;
-  else if (player.level > 25)
-    damage_tier = B_TIER;
 
   const uint16_t base_dmg = get_player_damage(player.level, damage_tier);
   damage_monster(base_dmg, DAMAGE_MAGICAL);
@@ -321,14 +315,12 @@ void druid_lightning(void) {
   sprintf(battle_pre_message, str_player_lightning);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.matk, target->mdef)) {
+  if (!roll_attack_player(player.matk, target->mdef)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
 
   PowerTier damage_tier = A_TIER;
-  if (player.level > 55)
-    damage_tier = S_TIER;
 
   const uint16_t base_dmg = get_player_damage(
     level_offset(player.level, 10), damage_tier);
@@ -399,7 +391,7 @@ void fighter_base_attack(void) {
   sprintf(battle_pre_message, str_player_fighter_attack);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.atk, target->def)) {
+  if (!roll_attack_player(player.atk, target->def)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
@@ -467,7 +459,7 @@ void fighter_trip_attack(void) {
 
   Monster *target = encounter.target;
   uint8_t def = get_monster_def(level_offset(target->level, -5), C_TIER);
-  if (!roll_attack(player.atk, def)) {
+  if (!roll_attack_player(player.atk, def)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
@@ -529,7 +521,7 @@ void monk_base_attack(void) {
   sprintf(battle_pre_message, str_player_monk_attack);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.atk + player.agl, target->def)) {
+  if (!roll_attack_player(player.atk + player.agl, target->def)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
@@ -570,7 +562,7 @@ void monk_open_palm(void) {
   Monster *target = encounter.target;
   uint8_t atk = player.atk + player.agl;
 
-  if (!roll_attack(atk, target->def)) {
+  if (!roll_attack_player(atk, target->def)) {
     sprintf(battle_pre_message, str_player_monk_open_palm);
     sprintf(battle_post_message, str_player_miss);
     return;
@@ -617,7 +609,7 @@ void monk_flurry(void) {
   sprintf(battle_pre_message, str_player_monk_flurry_of_blows);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.atk + player.agl, target->def)) {
+  if (!roll_attack_player(player.atk + player.agl, target->def)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
@@ -657,7 +649,7 @@ void monk_quivering_palm(void) {
   sprintf(battle_pre_message, str_player_monk_quivering_palm);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.atk + player.agl, target->def)) {
+  if (!roll_attack_player(player.atk + player.agl, target->def)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
@@ -767,7 +759,7 @@ void sorcerer_fireball(void) {
 
   uint16_t damage = get_player_damage(level_offset(player.level, 5), tier);
 
-  if (!roll_attack(player.matk, mdef))
+  if (!roll_attack_player(player.matk, mdef))
     damage /= 2;
 
   damage_all_no_miss(damage, DAMAGE_FIRE);
@@ -789,7 +781,7 @@ void sorcerer_disintegrate(void) {
   sprintf(battle_pre_message, str_player_sorc_disintegrate);
 
   Monster *target = encounter.target;
-  if (!roll_attack(player.matk + 10, target->mdef)) {
+  if (!roll_attack_player(player.matk + 10, target->mdef)) {
     sprintf(battle_post_message, str_player_miss);
     return;
   }
@@ -1055,7 +1047,7 @@ bool level_up(uint16_t xp) BANKED {
   bool level_up = false;
   player.exp += xp;
 
-  while (player.exp > player.next_level_exp) {
+  while (player.exp >= player.next_level_exp) {
     level_up = true;
     player.level++;
     player.next_level_exp = get_exp(player.level + 1);

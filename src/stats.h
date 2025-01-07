@@ -100,6 +100,54 @@ typedef enum DebuffFlag {
 #define EFFECT_DURATION_PERPETUAL 0xFF
 
 /**
+ * Flags that denote various properties of a damage roll.
+ */
+typedef enum DamageFlags {
+  /**
+   * Set if the damage roll was critical.
+   */
+  DAMAGE_FLAG_CRITICAL = FLAG(0),
+  /**
+   * Set if the damage roll was a fumble.
+   */
+  DAMAGE_FLAG_FUMBLE = FLAG(1),
+  /**
+   * Set if the target was immune to the damage.
+   */
+  DAMAGE_FLAG_IMMUNE = FLAG(2),
+  /**
+   * Set if the target resisted the damage.
+   */
+  DAMAGE_FLAG_RESIST = FLAG(3),
+  /**
+   * Set if the target was vulnerable to the damage.
+   */
+  DAMAGE_FLAG_VULN = FLAG(4),
+  /**
+   * If took the target to 0 HP.
+   */
+  DAMAGE_FLAG_LETHAL = FLAG(5),
+} DamageFlags;
+
+/**
+ * Contains information about damage that was just dealt.
+ */
+typedef struct DamageResult {
+  /**
+   * Amount of damage dealt.
+   */
+  uint16_t damage;
+  /**
+   * Number of hits dealt.
+   */
+  uint8_t hits;
+  /**
+   * Damage flags for the result.
+   */
+  DamageFlags damage_flags;
+} DamageResult;
+
+/**
  * @return `true` if the given status effect is a debuff.
  */
 inline bool is_debuff(StatusEffect effect) {
@@ -173,8 +221,8 @@ typedef enum Odds {
 } Odds;
 
 /**
- * Used to determine hit chance based on the difference between the attacker's
- * ATK and the defender's DEF. Yields a maximum chance to hit of 95% and a
+ * Used to determine hit chance based on the difference between monster's
+ * ATK and the player's DEF. Yields a maximum chance to hit of 95% and a
  * minimum of 20%.
  *
  * If (ATK - DEF) < 0 then element [0] is always used, if (ATK - DEF) > 32 then
@@ -182,7 +230,12 @@ typedef enum Odds {
  * the "target" number a `rand()` result must fall below for a successful
  * attack.
  */
-extern uint8_t attack_roll_target[65];
+extern uint8_t attack_roll_monster[65];
+
+/**
+ * Similar to `attack_roll_monster` but for player attacks.
+ */
+extern uint8_t attack_roll_player[65];
 
 /**
  * Used to add variance to damage rolls. The entries in this array are numerator
@@ -298,22 +351,36 @@ uint16_t get_monster_dmg(uint8_t level, PowerTier tier) BANKED;
 uint16_t get_player_heal(uint8_t level, PowerTier tier) BANKED;
 
 /**
- * Performs an attack roll.
+ * Performs an attack roll for a monster.
  * @param atk Attacker's ATK score.
  * @param def Defender's DEF score.
  * @return `true` if the attack succeeds.
  */
-bool roll_attack(uint8_t atk, uint8_t def) BANKED;
+bool roll_attack_monster(uint8_t atk, uint8_t def) BANKED;
+
+/**
+ * Performs an attack roll for a player.
+ * @param atk Attacker's ATK score.
+ * @param def Defender's DEF score.
+ * @return `true` if the attack succeeds.
+ */
+bool roll_attack_player(uint8_t atk, uint8_t def) BANKED;
 
 /**
  * Checks the given attack for a given roll. Allows for the use of one random
  * roll to be used to check multiple defenders.
  * @param d256_roll The attack roll.
+ * @param table Attack roll table to use for the check.
  * @param atk Atacker's ATK.
  * @param def Defender's DEF.
  * @return `true` if the attack succeeds.
  */
-bool check_attack(uint8_t d256_roll, uint8_t atk, uint8_t def) BANKED;
+bool check_attack(
+  uint8_t d256_roll,
+  uint8_t *table,
+  uint8_t atk,
+  uint8_t def
+) BANKED;
 
 /**
  * @return An attack's resulting damage given a roll.

@@ -56,6 +56,7 @@ addNamespace('misc', 0, {
   'fighter_short':  'FTR',
   'monk_short':     'MNK',
   'sorcerer_short': 'SORC',
+  'monster_miss_evaded': 'But you evade!',
 })
 
 addNamespace('ability', 0, {
@@ -102,7 +103,6 @@ addNamespace('battle', 3, {
   'monster_confuse_stupor': '%monster %c stares aimlessly.',
   'monster_lies_prone': '%monster %c lies prone!',
   'monter_gets_up': '%monster %c gets up.',
-  'monster_miss_evaded': 'But you evade!',
   'monster_ice_slip': '%monster %c slips on the ice!',
   'player_flee_attempt': 'You attempt to flee...',
   'player_flee_success': 'And get away!',

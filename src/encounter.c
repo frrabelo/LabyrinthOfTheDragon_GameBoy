@@ -90,8 +90,8 @@ static inline void update_effect_duration(StatusEffectInstance *effect) {
 
   if (effect->duration == 0)
     effect->active = false;
-
-  effect->duration--;
+  else
+    effect->duration--;
 }
 
 void reset_player_stats(void) NONBANKED {

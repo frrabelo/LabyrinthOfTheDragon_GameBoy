@@ -290,10 +290,16 @@ void sfx_melee_attack(void) {
   register_init(&nr14, sfx_melee_attack_nr14);
 }
 
+void sfx_monster_death(void) {
+  NR41_REG = 0;
+  NR42_REG = envelope(12, 0, 7);
+  NR43_REG = noise_freq(8, 0, 1);
+  NR44_REG = 0x80;
+}
+
 
 void sfx_test(void) {
-
-  sfx_melee_attack();
+  sfx_monster_death();
 
   // "Hard Fall"
   // NR10_REG = sweep(7, 1, 7);

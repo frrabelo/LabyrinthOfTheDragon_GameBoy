@@ -1086,6 +1086,7 @@ static inline bool animate_monster_death(void) {
 
       if (monster->hp == 0) {
         monster_death_state = MONSTER_DEATH_ANIMATE;
+        sfx_monster_death();
         return true;
       }
     }

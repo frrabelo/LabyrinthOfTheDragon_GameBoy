@@ -17,5 +17,6 @@ void sfx_menu_move(void);
 void sfx_next_round(void);
 void sfx_no_no_square(void);
 void sfx_melee_attack(void);
+void sfx_monster_death(void);
 
 #endif

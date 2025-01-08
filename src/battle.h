@@ -389,6 +389,11 @@ extern char battle_post_message[128];
 extern bool skip_post_message;
 
 /**
+ * Sound effect to play for the attack.
+ */
+extern void (*battle_sfx)(void);
+
+/**
  * Battle rewards message.
  */
 extern char rewards_buf[128];

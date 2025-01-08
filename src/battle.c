@@ -23,8 +23,10 @@ uint8_t status_effect_x[3] = { 7, 7, 7 };
 
 char battle_pre_message[128];
 char battle_post_message[128];
-char rewards_buf[128];
 bool skip_post_message = false;
+void (*battle_sfx)(void);
+
+char rewards_buf[128];
 
 bool flee_sound_played = false;
 
@@ -1126,6 +1128,10 @@ static void animate_action_result(void) {
     if (text_writer_done()) {
       init_timer(effect_delay_timer, 30);
       animation_state = ANIMATION_EFFECT;
+      if (battle_sfx) {
+        battle_sfx();
+        battle_sfx = NULL;
+      }
     }
     break;
   case ANIMATION_EFFECT:

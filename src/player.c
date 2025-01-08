@@ -11,6 +11,7 @@
 #include "player.h"
 #include "monster.h"
 #include "tables.h"
+#include "sound.h"
 #include "strings.h"
 
 Player player = { "", CLASS_DRUID };
@@ -382,6 +383,7 @@ void fighter_base_attack(void) {
   }
 
   damage_monster(get_player_damage(player.level, C_TIER), DAMAGE_PHYSICAL);
+  battle_sfx = sfx_melee_attack;
 }
 
 void fighter_second_wind(void) {
@@ -660,23 +662,9 @@ void sorcerer_update_stats(void) {
 }
 
 void sorcerer_base_attack(void) {
-  uint8_t num_missiles = 1;
-  // if (player.level >= 15)
-  //   num_missiles = 2;
-  // if (player.level >= 45)
-  //   num_missiles = 3;
-  // if (player.level >= 75)
-  //   num_missiles = 4;
-
-  if (num_missiles == 1)
-    sprintf(battle_pre_message, str_player_sorc_magic_missile_one);
-  else
-    sprintf(battle_pre_message, str_player_sorc_magic_missile, num_missiles);
-
+  sprintf(battle_pre_message, str_player_sorc_magic_missile_one);
   PowerTier tier = B_TIER;
-  uint16_t missle_damage = get_player_damage(player.level, tier);
-  uint16_t base_damage = num_missiles * missle_damage;
-  damage_monster(base_damage, DAMAGE_MAGICAL);
+  damage_monster(get_player_damage(player.level, tier), DAMAGE_MAGICAL);
 }
 
 void sorcerer_darkness(void) {

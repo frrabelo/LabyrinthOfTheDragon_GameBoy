@@ -9,6 +9,15 @@
 #define envelope(i, d, p) \
   ((((i) & 0xF) << 4) | (((d) & 1) << 3) | ((p) & 0x03))
 
+/**
+ * Noise frequency.
+ * @param shift Shift clock frequency.
+ * @param steps Polynomial counter steps (0: 15, 1: 7).
+ * @param ratio Dividing ratio frequency.
+ */
+#define noise_freq(shift, steps, ratio) \
+  ((((shift) & 0xF) << 4) | ((steps & 0x1) << 3) | (ratio & 0x3))
+
 typedef struct SoundRegister {
   uint8_t *address;
   uint8_t *data;
@@ -45,10 +54,15 @@ inline void register_update(SoundRegister *r) {
   register_next(r);
 }
 
+volatile SoundRegister nr10 = { (void *)0xFF10 };
+volatile SoundRegister nr11 = { (void *)0xFF11 };
+volatile SoundRegister nr12 = { (void *)0xFF12 };
 volatile SoundRegister nr13 = { (void *)0xFF13 };
 volatile SoundRegister nr14 = { (void *)0xFF14 };
 
+volatile SoundRegister nr41 = { (void *)0xFF20 };
 volatile SoundRegister nr42 = { (void *)0xFF21 };
+volatile SoundRegister nr43 = { (void *)0xFF22 };
 volatile SoundRegister nr44 = { (void *)0xFF23 };
 
 
@@ -64,9 +78,16 @@ void update_sound_isr(void) {
   if (!update_timer(sound_update_timer))
     return;
   reset_timer(sound_update_timer);
+
+  register_update(&nr10);
+  register_update(&nr11);
+  register_update(&nr12);
   register_update(&nr13);
   register_update(&nr14);
+
+  register_update(&nr41);
   register_update(&nr42);
+  register_update(&nr43);
   register_update(&nr44);
 }
 
@@ -208,7 +229,71 @@ void sfx_no_no_square(void) {
   register_init(&nr14, sfx_transporter_nr14);
 }
 
+uint8_t sfx_melee_attack_nr42[] = {
+  20, envelope(1, 1, 2),
+  10, envelope(10, 0, 1),
+  SOUND_END
+};
+
+uint8_t sfx_melee_attack_nr43[] = {
+  20, noise_freq(3, 0, 1),
+  10, noise_freq(5, 0, 1),
+  SOUND_END
+};
+
+uint8_t sfx_melee_attack_nr44[] = {
+  20, 0x80,
+  10, 0x80,
+  SOUND_END
+};
+
+uint8_t sfx_melee_attack_nr10[] = {
+  40, 0,
+  30, sweep(1, 0, 7),
+  SOUND_END
+};
+
+uint8_t sfx_melee_attack_nr11[] = {
+  40, 0,
+  30, 0,
+  SOUND_END
+};
+
+uint8_t sfx_melee_attack_nr12[] = {
+  40, 0,
+  30, envelope(15, 0, 7),
+  SOUND_END
+};
+
+uint8_t sfx_melee_attack_nr13[] = {
+  40, 0,
+  30, 0xFF,
+  SOUND_END
+};
+
+uint8_t sfx_melee_attack_nr14[] = {
+  40, 0x02,
+  30, 0x82,
+  SOUND_END
+};
+
+void sfx_melee_attack(void) {
+  NR41_REG = 63;
+  register_init(&nr42, sfx_melee_attack_nr42);
+  register_init(&nr43, sfx_melee_attack_nr43);
+  register_init(&nr44, sfx_melee_attack_nr44);
+
+  register_init(&nr10, sfx_melee_attack_nr10);
+  register_init(&nr11, sfx_melee_attack_nr11);
+  register_init(&nr12, sfx_melee_attack_nr12);
+  register_init(&nr13, sfx_melee_attack_nr13);
+  register_init(&nr14, sfx_melee_attack_nr14);
+}
+
+
 void sfx_test(void) {
+
+  sfx_melee_attack();
 
   // "Hard Fall"
   // NR10_REG = sweep(7, 1, 7);
@@ -231,10 +316,13 @@ void sfx_test(void) {
   // NR13_REG = 0xFF;
   // NR14_REG = 0x80;
 
+
+
   // "Rip" Sound
   // NR10_REG = sweep(1, 0, 7);
   // NR11_REG = 0;
   // NR12_REG = envelope(15, 0, 7);
   // NR13_REG = 0xFF;
   // NR14_REG = 0x82;
+
 }

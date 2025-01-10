@@ -5,8 +5,20 @@
 #include <gb/cgb.h>
 #include <stdint.h>
 
+/**
+ * Initializes the sound system.
+ */
 void sound_init(void) NONBANKED;
+
+/**
+ * Timer ISR that handles sound updates.
+ */
 void update_sound(void) NONBANKED;
+
+/**
+ * Plays the given sound.
+ * @param sound Sound function to execute.
+ */
 void play_sound(void (*sound)(void)) NONBANKED;
 
 void sfx_test(void);

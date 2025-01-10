@@ -3,13 +3,28 @@
 #include "core.h"
 #include "sound.h"
 
+/**
+ * Denotes the end of a sound register array.
+ */
 #define SOUND_END 0
 
-#define sweep(p, d, s) \
-  ((((p) & 0x3) << 4) | (((d) & 1) << 3) | ((s) & 0x3))
+/**
+ * Sweep definition helper.
+ * @param t Sweep time.
+ * @param d Sweep direction.
+ * @param s Sweep shift.
+ */
+#define sweep(t, d, s) \
+  (uint8_t)((((t) & 0x3) << 4) | (((d) & 1) << 3) | ((s) & 0x3))
 
-#define envelope(i, d, p) \
-  ((((i) & 0xF) << 4) | (((d) & 1) << 3) | ((p) & 0x03))
+/**
+ * Envelope helper.
+ * @param i Initial volume for the envelope.
+ * @param d Direction, `1` grow louder, `2` grow quieter.
+ * @param l Length of each step. Smaller values go faster.
+ */
+#define envelope(i, d, l) \
+  (uint8_t)((((i) & 0xF) << 4) | (((d) & 1) << 3) | ((l) & 0x03))
 
 /**
  * Noise frequency.
@@ -20,17 +35,40 @@
 #define noise_freq(shift, steps, ratio) \
   ((((shift) & 0xF) << 4) | ((steps & 0x1) << 3) | (ratio & 0x3))
 
+/**
+ * Sound register data structure.
+ */
 typedef struct SoundRegister {
+  /**
+   * Memory mapped I/O address for the sound register.
+   */
   uint8_t *address;
+  /**
+   * Pointer to the data array for the register.
+   */
   uint8_t *data;
+  /**
+   * Whether or not the register is currently enabled.
+   */
   bool enabled;
+  /**
+   * Delay timer for the register.
+   */
   Timer timer;
 } SoundRegister;
 
+/**
+ * Disabled the given register.
+ * @param r The register to disable.
+ */
 inline void register_disable(SoundRegister *r) {
   r->enabled = false;
 }
 
+/**
+ * Reads the next data entry for the register.
+ * @param r Register to read.
+ */
 inline void register_next(SoundRegister *r) {
   if (!r->enabled)
     return;
@@ -46,6 +84,10 @@ inline void register_next(SoundRegister *r) {
   *r->address = value;
 }
 
+/**
+ * Updates the register.
+ * @param r Register to update.
+ */
 inline void register_update(SoundRegister *r) {
   if (!r->enabled)
     return;
@@ -73,16 +115,21 @@ volatile SoundRegister nr43 = { (void *)0xFF22 };
 volatile SoundRegister nr44 = { (void *)0xFF23 };
 
 
+/**
+ * Initializes a sound register to begin playing the given data.
+ * @param r Register to initialize.
+ * @param data Time & value data for the register.
+ */
 void register_init(SoundRegister *r, uint8_t *data) {
   r->data = data;
   r->enabled = true;
   register_next(r);
 }
 
+/**
+ * Global sound update timer.
+ */
 Timer sound_update_timer;
-
-void update_sound_registers(void) {
-}
 
 void update_sound_isr(void) NONBANKED {
   if (!update_timer(sound_update_timer))

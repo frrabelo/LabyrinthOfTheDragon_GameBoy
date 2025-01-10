@@ -405,13 +405,10 @@ void sfx_test(void) {
   // NR13_REG = 0xFF;
   // NR14_REG = 0x80;
 
-
-
   // "Rip" Sound
   // NR10_REG = sweep(1, 0, 7);
   // NR11_REG = 0;
   // NR12_REG = envelope(15, 0, 7);
   // NR13_REG = 0xFF;
   // NR14_REG = 0x82;
-
 }

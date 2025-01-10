@@ -1401,7 +1401,7 @@ static bool handle_exit(void) {
     if (exit->col != x || exit->row != y)
       continue;
 
-    sfx_stairs();
+    play_sound(sfx_stairs);
     active_exit.to_map = exit->to_map;
     active_exit.to_col = exit->to_col;
     active_exit.to_row = exit->to_row;
@@ -1428,7 +1428,7 @@ static void start_move(Direction d) {
 
   if (destination->map_attr == MAP_WALL) {
     if (play_wall_hit) {
-      sfx_wall_hit();
+      play_sound(sfx_wall_hit);
       play_wall_hit = false;
     }
     return;
@@ -2121,7 +2121,7 @@ void update_map(void) {
     return;
   case MAP_STATE_TELEPORT:
     map_fade_out(MAP_STATE_LOAD_EXIT);
-    sfx_no_no_square();
+    play_sound(sfx_no_no_square);
     return;
   }
 

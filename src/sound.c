@@ -1,3 +1,5 @@
+#pragma bank 30
+
 #include "core.h"
 #include "sound.h"
 
@@ -79,10 +81,17 @@ void register_init(SoundRegister *r, uint8_t *data) {
 
 Timer sound_update_timer;
 
-void update_sound_isr(void) {
+void update_sound_registers(void) {
+}
+
+void update_sound_isr(void) NONBANKED {
   if (!update_timer(sound_update_timer))
     return;
   reset_timer(sound_update_timer);
+
+  uint8_t _prev_bank = CURRENT_BANK;
+
+  SWITCH_ROM(BANK_30);
 
   register_update(&nr10);
   register_update(&nr11);
@@ -99,9 +108,11 @@ void update_sound_isr(void) {
   register_update(&nr42);
   register_update(&nr43);
   register_update(&nr44);
+
+  SWITCH_ROM(_prev_bank);
 }
 
-void sound_init(void) {
+void sound_init(void) NONBANKED {
   // Note: SO1 (left) and SO2 (right)
   // Enable sound
   NR52_REG = 0b10000000;
@@ -116,6 +127,12 @@ void sound_init(void) {
   set_interrupts(TIM_IFLAG | VBL_IFLAG);
 }
 
+void play_sound(void (*sound)(void)) NONBANKED {
+  uint8_t _prev_bank = CURRENT_BANK;
+  SWITCH_ROM(BANK_30);
+  sound();
+  SWITCH_ROM(_prev_bank);
+}
 
 #define SFX_STAIRS_DURATION 28
 
@@ -307,7 +324,6 @@ void sfx_monster_death(void) {
   NR44_REG = 0x80;
 }
 
-
 const uint8_t nr13_level_up[] = {
   14, 0x15,
   14, 0xE4,
@@ -366,7 +382,7 @@ void sfx_level_up(void) {
 }
 
 void sfx_test(void) {
-  sfx_level_up();
+  play_sound(sfx_level_up);
 
   // "Hard Fall"
   // NR10_REG = sweep(7, 1, 7);

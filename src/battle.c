@@ -62,7 +62,7 @@ static Monster *get_monster_at_cursor(void) {
  * next round of combat.
  */
 static void confirm_fight(void) {
-  sfx_menu_move();
+  play_sound(sfx_menu_move);
   set_player_fight(get_monster_at_cursor());
   battle_state = BATTLE_ROLL_INITIATIVE;
 }
@@ -72,7 +72,7 @@ static void confirm_fight(void) {
  * round of combat.
  */
 static void confirm_ability(const Ability *ability) {
-  sfx_menu_move();
+  play_sound(sfx_menu_move);
   if (ability->target_type == TARGET_SINGLE)
     set_player_ability(ability, get_monster_at_cursor());
   else
@@ -85,7 +85,7 @@ static void confirm_ability(const Ability *ability) {
  * of combat.
  */
 static void confirm_item(ItemId item_id) {
-  sfx_menu_move();
+  play_sound(sfx_menu_move);
   set_player_item(item_id);
   battle_state = BATTLE_ROLL_INITIATIVE;
 }
@@ -95,7 +95,7 @@ static void confirm_item(ItemId item_id) {
  * and begins the next round of combat.
  */
 static void confirm_flee(void) {
-  sfx_menu_move();
+  play_sound(sfx_menu_move);
   set_player_flee();
   battle_state = BATTLE_ROLL_INITIATIVE;
 }
@@ -360,7 +360,7 @@ static void move_cursor_sprites(uint8_t col, uint8_t row) {
  */
 static void move_screen_cursor(BattleScreenCursor c) {
   if (c != battle_menu.screen_cursor)
-    sfx_menu_move();
+    play_sound(sfx_menu_move);
 
   battle_menu.screen_cursor = c;
 
@@ -825,7 +825,7 @@ static void submenu_cursor_up(void) {
       battle_menu.scroll--;
       redraw_submenu_text();
       draw_submenu_scroll_arrows();
-      sfx_menu_move();
+      play_sound(sfx_menu_move);
     }
   }
 }
@@ -851,7 +851,7 @@ static void submenu_cursor_down(void) {
       battle_menu.scroll++;
       redraw_submenu_text();
       draw_submenu_scroll_arrows();
-      sfx_menu_move();
+      play_sound(sfx_menu_move);
     }
   }
 }
@@ -980,7 +980,7 @@ static inline void update_battle_menu(void) {
       const Ability *ability = player_abilities[battle_menu.cursor];
 
       if (player.sp < ability->sp_cost) {
-        sfx_error();
+        play_sound(sfx_error);
         break;
       }
 
@@ -1005,7 +1005,7 @@ static inline void update_battle_menu(void) {
       ItemId item_id = battle_menu.item_at[battle_menu.cursor];
 
       if (!can_use_item(item_id)) {
-        sfx_error();
+        play_sound(sfx_error);
         break;
       }
 
@@ -1086,7 +1086,7 @@ static inline bool animate_monster_death(void) {
 
       if (monster->hp == 0) {
         monster_death_state = MONSTER_DEATH_ANIMATE;
-        sfx_monster_death();
+        play_sound(sfx_monster_death);
         return true;
       }
     }
@@ -1130,7 +1130,7 @@ static void animate_action_result(void) {
       init_timer(effect_delay_timer, 30);
       animation_state = ANIMATION_EFFECT;
       if (battle_sfx) {
-        battle_sfx();
+        play_sound(battle_sfx);
         battle_sfx = NULL;
       }
     }
@@ -1151,7 +1151,7 @@ static void animate_action_result(void) {
     // If the player fled, play the "footsteps" sound
     if (encounter.player_fled && !flee_sound_played) {
       flee_sound_played = true;
-      sfx_stairs();
+      play_sound(sfx_stairs);
     }
 
     // Sequence action result animations
@@ -1376,7 +1376,7 @@ void update_battle(void) NONBANKED {
     battle_menu.active_menu = BATTLE_MENU_MAIN;
     update_player_mp();
     hide_battle_text();
-    sfx_next_round();
+    play_sound(sfx_next_round);
     move_screen_cursor_no_sound(BATTLE_CURSOR_MAIN_FIGHT);
     break;
   case BATTLE_REWARDS:

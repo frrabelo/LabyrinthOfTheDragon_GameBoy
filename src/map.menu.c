@@ -142,7 +142,7 @@ void show_map_menu(void) {
   clear_map_sprites();
   update_cursor();
 
-  sfx_next_round();
+  play_sound(sfx_next_round);
 }
 
 void hide_map_menu(void) {
@@ -151,7 +151,7 @@ void hide_map_menu(void) {
   LCDC_REG &= 0b11110111;
   move_bkg(map.scroll_x, map.scroll_y);
   hide_cursor();
-  sfx_next_round();
+  play_sound(sfx_next_round);
 }
 
 void update_map_menu(void) {
@@ -168,7 +168,7 @@ void update_map_menu(void) {
       map_menu.cursor = MAP_MENU_CURSOR_QUIT;
     else
       map_menu.cursor = MAP_MENU_CURSOR_SAVE;
-    sfx_menu_move();
+    play_sound(sfx_menu_move);
     update_cursor();
   }
 }

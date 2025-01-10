@@ -5,11 +5,11 @@
 #include <gb/cgb.h>
 #include <stdint.h>
 
+void sound_init(void) NONBANKED;
+void update_sound(void) NONBANKED;
+void play_sound(void (*sound)(void)) NONBANKED;
+
 void sfx_test(void);
-
-void sound_init(void);
-void update_sound(void);
-
 void sfx_stairs(void);
 void sfx_error(void);
 void sfx_wall_hit(void);

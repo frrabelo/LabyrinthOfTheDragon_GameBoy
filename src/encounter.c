@@ -573,7 +573,7 @@ void apply_rewards(void) {
 
   if (level_up(encounter.xp_reward)) {
     const char *format = "LEVEL UP! Welcome\nto level %u!";
-    sfx_level_up();
+    play_sound(sfx_level_up);
     sprintf(rewards_buf, format, player.level);
     return;
   }

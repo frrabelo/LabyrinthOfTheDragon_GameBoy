@@ -127,7 +127,7 @@ void main(void) {
     update_joypad();
 
     if (was_pressed(J_B))
-      sfx_test();
+      play_sound(sfx_test);
 
     game_loop();
     vsync();

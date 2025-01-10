@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "encounter.h"
 #include "monster.h"
+#include "sound.h"
 
 void before_round(void) {
   encounter.round_complete = false;
@@ -572,6 +573,7 @@ void apply_rewards(void) {
 
   if (level_up(encounter.xp_reward)) {
     const char *format = "LEVEL UP! Welcome\nto level %u!";
+    sfx_level_up();
     sprintf(rewards_buf, format, player.level);
     return;
   }

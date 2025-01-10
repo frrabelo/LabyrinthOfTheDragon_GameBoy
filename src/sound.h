@@ -18,5 +18,6 @@ void sfx_next_round(void);
 void sfx_no_no_square(void);
 void sfx_melee_attack(void);
 void sfx_monster_death(void);
+void sfx_level_up(void);
 
 #endif

@@ -60,6 +60,11 @@ volatile SoundRegister nr12 = { (void *)0xFF12 };
 volatile SoundRegister nr13 = { (void *)0xFF13 };
 volatile SoundRegister nr14 = { (void *)0xFF14 };
 
+volatile SoundRegister nr21 = { (void *)0xFF16 };
+volatile SoundRegister nr22 = { (void *)0xFF17 };
+volatile SoundRegister nr23 = { (void *)0xFF18 };
+volatile SoundRegister nr24 = { (void *)0xFF19 };
+
 volatile SoundRegister nr41 = { (void *)0xFF20 };
 volatile SoundRegister nr42 = { (void *)0xFF21 };
 volatile SoundRegister nr43 = { (void *)0xFF22 };
@@ -84,6 +89,11 @@ void update_sound_isr(void) {
   register_update(&nr12);
   register_update(&nr13);
   register_update(&nr14);
+
+  register_update(&nr21);
+  register_update(&nr22);
+  register_update(&nr23);
+  register_update(&nr24);
 
   register_update(&nr41);
   register_update(&nr42);
@@ -229,55 +239,55 @@ void sfx_no_no_square(void) {
   register_init(&nr14, sfx_transporter_nr14);
 }
 
-uint8_t sfx_melee_attack_nr42[] = {
+const uint8_t sfx_melee_attack_nr42[] = {
   20, envelope(1, 1, 2),
   10, envelope(10, 0, 1),
   SOUND_END
 };
 
-uint8_t sfx_melee_attack_nr43[] = {
+const uint8_t sfx_melee_attack_nr43[] = {
   20, noise_freq(3, 0, 1),
   10, noise_freq(5, 0, 1),
   SOUND_END
 };
 
-uint8_t sfx_melee_attack_nr44[] = {
+const uint8_t sfx_melee_attack_nr44[] = {
   20, 0x80,
   10, 0x80,
   SOUND_END
 };
 
-uint8_t sfx_melee_attack_nr10[] = {
+const uint8_t sfx_melee_attack_nr10[] = {
   40, 0,
   30, sweep(1, 0, 7),
   SOUND_END
 };
 
-uint8_t sfx_melee_attack_nr11[] = {
+const uint8_t sfx_melee_attack_nr11[] = {
   40, 0,
   30, 0,
   SOUND_END
 };
 
-uint8_t sfx_melee_attack_nr12[] = {
+const uint8_t sfx_melee_attack_nr12[] = {
   40, 0,
   30, envelope(15, 0, 7),
   SOUND_END
 };
 
-uint8_t sfx_melee_attack_nr13[] = {
+const uint8_t sfx_melee_attack_nr13[] = {
   40, 0,
   30, 0xFF,
   SOUND_END
 };
 
-uint8_t sfx_melee_attack_nr14[] = {
+const uint8_t sfx_melee_attack_nr14[] = {
   40, 0x02,
   30, 0x82,
   SOUND_END
 };
 
-void sfx_melee_attack(void) {
+const void sfx_melee_attack(void) {
   NR41_REG = 63;
   register_init(&nr42, sfx_melee_attack_nr42);
   register_init(&nr43, sfx_melee_attack_nr43);
@@ -298,8 +308,65 @@ void sfx_monster_death(void) {
 }
 
 
+const uint8_t nr13_level_up[] = {
+  14, 0x15,
+  14, 0xE4,
+  14, 0x63,
+  14, 0x0B,
+  14, 0x72,
+  14, 0xB1,
+  14, 0x05,
+  SOUND_END
+};
+
+const uint8_t nr14_level_up[] = {
+  14, 0x84,
+  14, 0x84,
+  14, 0x85,
+  14, 0x86,
+  14, 0x86,
+  14, 0x86,
+  14, 0x87,
+  SOUND_END
+};
+
+const uint8_t nr23_level_up[] = {
+  14, 0xE4,
+  14, 0x63,
+  14, 0x0B,
+  14, 0x72,
+  14, 0xB1,
+  14, 0x05,
+  14, 0x39,
+  SOUND_END
+};
+
+const uint8_t nr24_level_up[] = {
+  14, 0x84,
+  14, 0x85,
+  14, 0x86,
+  14, 0x86,
+  14, 0x86,
+  14, 0x87,
+  14, 0x87,
+  SOUND_END
+};
+
+void sfx_level_up(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR12_REG = envelope(14, 0, 5);
+  register_init(&nr13, nr13_level_up);
+  register_init(&nr14, nr14_level_up);
+
+  NR21_REG = 0;
+  NR22_REG = envelope(8, 0, 7);
+  register_init(&nr23, nr23_level_up);
+  register_init(&nr24, nr24_level_up);
+}
+
 void sfx_test(void) {
-  sfx_monster_death();
+  sfx_level_up();
 
   // "Hard Fall"
   // NR10_REG = sweep(7, 1, 7);

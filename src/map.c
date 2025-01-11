@@ -1861,7 +1861,6 @@ static bool check_doors(void) {
   }
 
   return true;
-
 }
 
 /**

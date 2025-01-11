@@ -1,5 +1,5 @@
 /**
- * [Data] Bank 16 - Monster Tilsets 2
+ * [Data] Bank 16 - Floor Tilemaps (V1)
  */
 #pragma bank 16
 

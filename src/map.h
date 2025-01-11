@@ -878,7 +878,7 @@ typedef struct Floor {
    */
   const NPC *npcs;
   /**
-   * Called when the map is initialized by the game engine.
+   * Called when the map is initialized (happens on load, after battles, etc.).
    * @return `true` if the map should prevent default behavior.
    */
   const bool (*on_init)(void);
@@ -898,6 +898,10 @@ typedef struct Floor {
    * @return `true` if the map should prevent default behavior.
    */
   const bool (*on_action)(void);
+  /**
+   * Called when the floor is loaded.
+   */
+  const void (*on_load)(void);
 } Floor;
 
 /**
@@ -1498,7 +1502,7 @@ inline void toggle_door(DoorId id) {
  * @param id Id of the sconce to test.
  */
 inline bool is_sconce_lit(SconceId id) {
-  return id == SCONCE_STATIC || map.flags_sconce_lit & id;
+  return id == SCONCE_STATIC || (map.flags_sconce_lit & id);
 }
 
 /**

@@ -169,6 +169,7 @@ static void load_floor(FloorBank *f) NONBANKED {
  * Switches to the floors bank and calls its `on_init` function.
  */
 static bool on_init(void) NONBANKED {
+  map.execute_on_init = false;
   const uint8_t _prev_bank = CURRENT_BANK;
   bool value;
   SWITCH_ROM(floor_bank->bank);
@@ -211,6 +212,19 @@ static bool on_action(void) NONBANKED {
   value = floor_bank->floor->on_action();
   SWITCH_ROM(_prev_bank);
   return value;
+}
+
+/**
+ * Switches to the floor's bank and calls the `on_action` function.
+ */
+static void on_load(void) NONBANKED {
+  if (!floor_bank->floor->on_load)
+    return;
+  const uint8_t _prev_bank = CURRENT_BANK;
+  bool value;
+  SWITCH_ROM(floor_bank->bank);
+  floor_bank->floor->on_load();
+  SWITCH_ROM(_prev_bank);
 }
 
 /**
@@ -1370,6 +1384,7 @@ static void load_exit(void) {
   if (active_exit.to_floor) {
     map.execute_on_init = true;
     set_active_floor(active_exit.to_floor);
+    on_load();
   }
 
   map.active_map = maps + active_exit.to_map;
@@ -1835,7 +1850,7 @@ static bool check_doors(void) {
   if (door->magic_key_unlock) {
     if (player.magic_keys > 0) {
       player.magic_keys--;
-      map_textbox(str_maps_door_unlock_key);
+      // map_textbox(str_maps_door_unlock_key);
       open_door(door->id);
     } else {
       map_textbox(str_maps_door_locked_key);
@@ -1869,11 +1884,14 @@ void check_sconce_changed(void) {
 
   const Sconce *sconce;
   for (sconce = sconces; sconce->id != END; sconce++) {
-    if (sconce->id == SCONCE_STATIC || !is_sconce_lit(sconce->id))
+    if (sconce->id == SCONCE_STATIC)
       continue;
-    if (map.sconces_updated & sconce->id && sconce->on_lit)
+    if (!is_sconce_lit(sconce->id))
+      continue;
+    if ((map.sconces_updated & sconce->id) && sconce->on_lit) {
       on_lit(sconce);
-    break;
+      break;
+    }
   }
   map.sconces_updated = 0;
 }
@@ -1888,28 +1906,28 @@ static bool check_sconces(void) {
   if (!sconce)
     return false;
 
-  if (is_sconce_lit(sconce->id)) {
-    if (player.has_torch) {
-      if (sconce->id == SCONCE_STATIC) {
-        light_torch(sconce->color);
-      } else {
-        const uint8_t sconce_idx = get_sconce_index(sconce->id);
-        light_torch(sconce_colors[sconce_idx]);
-      }
-    } else {
-      map_textbox(str_maps_sconce_lit_no_torch);
-    }
-  } else {
-    if (player.has_torch) {
-      if (player.torch_gauge > 0) {
-        light_sconce(sconce->id, player.torch_color);
-      } else {
-        map_textbox(str_maps_sconce_torch_not_lit);
-      }
-    } else {
-      map_textbox(str_maps_sconce_no_torch);
-    }
+  if (!player.has_torch) {
+    const char *msg = is_sconce_lit(sconce->id) ?
+      str_maps_sconce_lit_no_torch :
+      str_maps_sconce_no_torch;
+    map_textbox(msg);
+    return true;
   }
+
+  if (is_sconce_lit(sconce->id)) {
+    if (sconce->id == SCONCE_STATIC) {
+      light_torch(sconce->color);
+    } else {
+      const uint8_t sconce_idx = get_sconce_index(sconce->id);
+      light_torch(sconce_colors[sconce_idx]);
+    }
+    return true;
+  }
+
+  if (player.torch_gauge > 0)
+    light_sconce(sconce->id, player.torch_color);
+  else
+    map_textbox(str_maps_sconce_torch_not_lit);
 
   return true;
 }
@@ -2052,8 +2070,8 @@ void update_map(void) {
   if (map.state == MAP_STATE_INACTIVE)
     return;
 
-  update_door_graphics();
   check_sconce_changed();
+  update_door_graphics();
 
   if (map.player_hp_and_sp_updated) {
     map.player_hp_and_sp_updated = false;
@@ -2066,7 +2084,7 @@ void update_map(void) {
       on_victory();
       break;
     }
-    if (on_init())
+    if (on_init() && map.execute_on_init)
       break;
     if (was_pressed(J_START)) {
       show_map_menu();

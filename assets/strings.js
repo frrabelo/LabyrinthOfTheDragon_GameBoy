@@ -180,7 +180,6 @@ addNamespace('player', 4, {
 addNamespace('maps', 2, {
   'chest_locked': "The chest is locked.",
   'chest_open': "You opened the chest!",
-  'chest_empty': "The chest was empty.",
   'chest_key_locked': "You need a magic key to unlock this chest...",
   'chest_unlock_key': "You unlock the chest with a magic key!",
   'get_magic_key': "You get a magic key!",
@@ -193,7 +192,7 @@ addNamespace('maps', 2, {
   'sconce_lit_no_torch': 'The sconce burns brightly.',
   'sconce_no_torch': 'Hmm... how do you light this?',
   'sconce_torch_not_lit': 'Your torch lacks a flame.',
-  'sign_monster_no_fire': 'Monsters fear fire!',
+  'boss_not_yet': 'Get out of here, runt!',
 });
 
 addNamespace('floor_test', 2, {
@@ -208,6 +207,14 @@ addNamespace('floor_test', 2, {
   'growl': "GROWL!",
   'healed': 'You are fully restored!',
 })
+
+addNamespace('floor1', 2, {
+  'sign_monster_no_fire': 'Monsters fear fire.',
+  'sign_empty_chest': "It's empty...",
+  'sign_tunnel_cave_in': 'The tunnel has collapsed behind you!',
+  'sign_skull_out_of_place': 'This skull seems out of place...',
+  'sign_missing_elite': 'A powerful foe once lived here.',
+});
 
 addNamespace('floor_common', 2, {
   'growl': "GROWL!",
@@ -234,6 +241,8 @@ addNamespace('chest_item', 2, {
   '1pots': 'You get a potions!',
   'haste_pot': 'You get a haste potion!',
   'regen_pot': 'You get a regen potion!',
+  '2pots': 'You get 2 potions!',
+  '1eth': 'You get an ether!',
 });
 
 addNamespace('items', 3, {

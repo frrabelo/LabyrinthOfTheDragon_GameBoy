@@ -28,7 +28,7 @@ bool chest_add_torch(Chest *chest) {
 const Item chest_item_2pot_1eth[] = {
   { ITEM_POTION, 2 },
   { ITEM_ETHER, 1 },
-  { END },
+  { END }
 };
 
 const Item chest_item_haste_pot[] = {
@@ -36,12 +36,23 @@ const Item chest_item_haste_pot[] = {
   { END }
 };
 
-extern const Item chest_item_regen_pot[] = {
+const Item chest_item_regen_pot[] = {
   { ITEM_REGEN, 1 },
-  { END },
+  { END }
 };
 
-extern const Item chest_item_1pot[] = {
+const Item chest_item_1pot[] = {
   { ITEM_POTION, 1 },
-  { END },
+  { END }
+};
+
+const Item chest_item_2pots[] = {
+  { ITEM_POTION, 1 },
+  { ITEM_POTION, 1 },
+  { END }
+};
+
+const Item chest_item_1eth[] = {
+  { ITEM_ETHER, 1 },
+  { END }
 };

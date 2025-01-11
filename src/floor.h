@@ -58,16 +58,11 @@ bool chest_add_magic_key(Chest *chest);
  */
 bool chest_add_torch(Chest *chest);
 
-// Chest contents: two potions and an ether
 extern const Item chest_item_2pot_1eth[];
-
-// Chest contents: one haste potion
 extern const Item chest_item_haste_pot[];
-
-// Chest contents: one regen potion
 extern const Item chest_item_regen_pot[];
-
-// Chest contents: potion
 extern const Item chest_item_1pot[];
+extern const Item chest_item_2pots[];
+extern const Item chest_item_1eth[];
 
 #endif

@@ -33,5 +33,7 @@ void sfx_monster_death(void);
 void sfx_level_up(void);
 void sfx_light_fire(void);
 void sfx_open_chest(void);
+void sfx_door_unlock(void);
+void sfx_big_door_open(void);
 
 #endif

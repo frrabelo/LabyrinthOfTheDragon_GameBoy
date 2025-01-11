@@ -1851,8 +1851,8 @@ static bool check_doors(void) {
   if (door->magic_key_unlock) {
     if (player.magic_keys > 0) {
       player.magic_keys--;
-      // map_textbox(str_maps_door_unlock_key);
       open_door(door->id);
+      play_sound(sfx_door_unlock);
     } else {
       map_textbox(str_maps_door_locked_key);
     }

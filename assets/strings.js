@@ -214,6 +214,7 @@ addNamespace('floor1', 2, {
   'sign_tunnel_cave_in': 'The tunnel has collapsed behind you!',
   'sign_skull_out_of_place': 'This skull seems out of place...',
   'sign_missing_elite': 'A powerful foe once lived here.',
+  'boss_defeated': "Yawp! You won't beat my friends below!",
 });
 
 addNamespace('floor_common', 2, {

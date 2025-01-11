@@ -20,7 +20,7 @@
 /**
  * Envelope helper.
  * @param i Initial volume for the envelope.
- * @param d Direction, `1` grow louder, `2` grow quieter.
+ * @param d Direction, `1` grow louder, `0` grow quieter.
  * @param l Length of each step. Smaller values go faster.
  */
 #define envelope(i, d, l) \
@@ -480,12 +480,52 @@ void sfx_open_chest(void) {
   register_init(&nr14, nr14_chest_open);
 }
 
-void sfx_test(void) {
+#define DOOR_UNLOCK_DELAY 20
 
-  // NR41_REG = 16;
-  // NR42_REG = envelope(0, 1, 1);
-  // NR43_REG = noise_freq(9, 1, 0);
-  // NR44_REG = 0xC0;
+const uint8_t nr41_door_unlock[] = {
+  1, 0x63,
+  SOUND_END,
+};
+
+const uint8_t nr42_door_unlock[] = {
+  DOOR_UNLOCK_DELAY, envelope(8, 0, 1),
+  DOOR_UNLOCK_DELAY, envelope(10, 0, 1),
+  SOUND_END
+};
+
+const uint8_t nr43_door_unlock[] = {
+  DOOR_UNLOCK_DELAY, noise_freq(8, 1, 2),
+  DOOR_UNLOCK_DELAY, noise_freq(1, 0, 0),
+  SOUND_END
+};
+
+const uint8_t nr44_door_unlock[] = {
+  DOOR_UNLOCK_DELAY, 0xC0,
+  DOOR_UNLOCK_DELAY, 0x80,
+  SOUND_END
+};
+
+void sfx_door_unlock(void) {
+  NR41_REG = 0;
+  register_init(&nr42, nr42_door_unlock);
+  register_init(&nr43, nr43_door_unlock);
+  register_init(&nr44, nr44_door_unlock);
+}
+
+void sfx_big_door_open(void) {
+  NR41_REG = 0;
+  NR42_REG = envelope(11, 0, 2);
+  NR43_REG = noise_freq(9, 1, 1);
+  NR44_REG = 0x80;
+}
+
+void sfx_test(void) {
+  // NR10_REG = 0;
+  // NR11_REG = 0;
+  // NR12_REG = envelope(5, 0, 1);
+  // NR13_REG = 0x15;
+  // NR14_REG = 0x84;
+
 
   // Boingg 2
   // NR10_REG = sweep(7, 0, 7);

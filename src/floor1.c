@@ -1,6 +1,7 @@
 #pragma bank 8
 
 #include "floor.h"
+#include "sound.h"
 
 //------------------------------------------------------------------------------
 // Floorwide settings
@@ -205,9 +206,15 @@ static const Sconce sconces[] = {
 // NPCs (IMPLS YET)
 //------------------------------------------------------------------------------
 
-static void boss_victory(void) NONBANKED {
+static bool boss_cleanup(void) {
   open_door(DOOR_3);
   set_npc_invisible(NPC_1);
+  play_sound(sfx_big_door_open);
+  return true;
+}
+
+static void boss_victory(void) NONBANKED {
+  map_textbox_with_action(str_floor1_boss_defeated, boss_cleanup);
 }
 
 static bool boss_encounter(void) {
@@ -254,7 +261,7 @@ static const NPC npcs[] = {
 static const EncounterTable encounter_lv5[] = {
   {
     ODDS_10P, MONSTER_LAYOUT_1,
-    MONSTER_KOBOLD, 7, B_TIER,
+    MONSTER_KOBOLD, 6, B_TIER,
   },
   {
     ODDS_20P, MONSTER_LAYOUT_1,
@@ -273,10 +280,10 @@ static const EncounterTable encounter_lv5[] = {
   { END }
 };
 
-static const EncounterTable encounter_lv8[] = {
+static const EncounterTable encounter_lv9[] = {
   {
-    ODDS_10P, MONSTER_LAYOUT_1,
-    MONSTER_GOBLIN, 10, B_TIER,
+    ODDS_20P, MONSTER_LAYOUT_1,
+    MONSTER_GOBLIN, 9, B_TIER,
   },
   {
     ODDS_25P, MONSTER_LAYOUT_3S,
@@ -285,22 +292,18 @@ static const EncounterTable encounter_lv8[] = {
     MONSTER_KOBOLD, 8, C_TIER,
   },
   {
-    ODDS_35P, MONSTER_LAYOUT_2,
-    MONSTER_ZOMBIE, 9, C_TIER,
-    MONSTER_KOBOLD, 5, C_TIER,
-  },
-  {
-    ODDS_30P, MONSTER_LAYOUT_3S,
+    ODDS_25P, MONSTER_LAYOUT_3S,
     MONSTER_GOBLIN, 9, C_TIER,
     MONSTER_KOBOLD, 7, C_TIER,
     MONSTER_KOBOLD, 7, C_TIER,
   },
+  {
+    ODDS_30P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 9, C_TIER,
+    MONSTER_KOBOLD, 5, C_TIER,
+  },
   { END }
 };
-
-static void on_load(void) {
-  special_encounter = true;
-}
 
 static bool on_init(void) {
   config_random_encounter(6, 1, 1, true);
@@ -308,7 +311,12 @@ static bool on_init(void) {
 }
 
 static bool on_special(void) {
-  if (player_at(29, 22) && special_encounter) {
+  // Special hidden "mini-boss"
+  if (
+    player_at(29, 22) &&
+    special_encounter &&
+    !disable_encounters
+  ) {
     special_encounter = false;
     Monster *monster = encounter.monsters;
     reset_encounter(MONSTER_LAYOUT_1);
@@ -325,10 +333,10 @@ static bool on_move(void) {
   if (!check_random_encounter())
     return false;
 
-  if (player.level < 8)
+  if (player.level < 9)
     generate_encounter(encounter_lv5);
   else
-    generate_encounter(encounter_lv8);
+    generate_encounter(encounter_lv9);
 
   start_battle();
   return true;
@@ -336,6 +344,10 @@ static bool on_move(void) {
 
 static bool on_action(void) {
   return false;
+}
+
+static void on_load(void) {
+  special_encounter = true;
 }
 
 //------------------------------------------------------------------------------

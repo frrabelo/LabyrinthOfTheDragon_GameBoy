@@ -42,9 +42,9 @@ void test_big_map(void) {
 void test_level(void) {
   init_test_player(CLASS_FIGHTER, 5);
 
-  // player.got_magic_key = true;
-  // player.magic_keys = 9;
-  // player.has_torch = true;
+  player.got_magic_key = true;
+  player.magic_keys = 9;
+  player.has_torch = true;
 
   set_active_floor(&bank_floor1);
   init_world_map();

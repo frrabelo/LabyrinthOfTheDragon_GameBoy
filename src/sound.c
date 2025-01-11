@@ -429,25 +429,24 @@ void sfx_level_up(void) {
 }
 
 const uint8_t nr41_light_fire[] = {
-  40, 0,
+  10, 16,
   30, 0,
   SOUND_END
 };
 
 const uint8_t nr42_light_fire[] = {
-  40, envelope(0, 1, 3),
-  30, envelope(8, 0, 1),
+  10, envelope(0, 1, 1),
+  30, envelope(10, 0, 1),
   SOUND_END
 };
 
 const uint8_t nr43_light_fire[] = {
-  40, noise_freq(3, 0, 1),
-  30, noise_freq(1, 0, 1),
+  1, noise_freq(9, 1, 0),
   SOUND_END
 };
 
 const uint8_t nr44_light_fire[] = {
-  40, 0x80,
+  10, 0xC0,
   30, 0x80,
   SOUND_END
 };
@@ -482,8 +481,18 @@ void sfx_open_chest(void) {
 }
 
 void sfx_test(void) {
-  // sfx_open_chest();
 
+  // NR41_REG = 16;
+  // NR42_REG = envelope(0, 1, 1);
+  // NR43_REG = noise_freq(9, 1, 0);
+  // NR44_REG = 0xC0;
+
+  // Boingg 2
+  // NR10_REG = sweep(7, 0, 7);
+  // NR11_REG = 0;
+  // NR12_REG = envelope(14, 0, 2);
+  // NR13_REG = 0x9B;
+  // NR14_REG = 0x80;
 
   // Boingg
   // NR10_REG = sweep(7, 0, 7);

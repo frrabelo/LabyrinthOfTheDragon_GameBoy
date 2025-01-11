@@ -221,7 +221,6 @@ static void on_load(void) NONBANKED {
   if (!floor_bank->floor->on_load)
     return;
   const uint8_t _prev_bank = CURRENT_BANK;
-  bool value;
   SWITCH_ROM(floor_bank->bank);
   floor_bank->floor->on_load();
   SWITCH_ROM(_prev_bank);
@@ -1655,10 +1654,11 @@ static bool check_chests(void) {
   if (map.flags_chest_open & chest->id)
     return false;
 
-
   if (chest->on_open) {
-    if (on_open(chest))
+    if (on_open(chest)) {
       open_chest(tile);
+      play_sound(sfx_open_chest);
+    }
     return true;
   }
 
@@ -1680,6 +1680,7 @@ static bool check_chests(void) {
   }
 
   open_chest(tile);
+  play_sound(sfx_open_chest);
 
   if (chest->items) {
     for (const Item *item = chest->items; item->id != END; item++)
@@ -1921,11 +1922,14 @@ static bool check_sconces(void) {
       const uint8_t sconce_idx = get_sconce_index(sconce->id);
       light_torch(sconce_colors[sconce_idx]);
     }
+    play_sound(sfx_light_fire);
     return true;
   }
 
-  if (player.torch_gauge > 0)
+  if (player.torch_gauge > 0) {
     light_sconce(sconce->id, player.torch_color);
+    play_sound(sfx_light_fire);
+  }
   else
     map_textbox(str_maps_sconce_torch_not_lit);
 

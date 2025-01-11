@@ -428,8 +428,69 @@ void sfx_level_up(void) {
   register_init(&nr24, nr24_level_up);
 }
 
+const uint8_t nr41_light_fire[] = {
+  40, 0,
+  30, 0,
+  SOUND_END
+};
+
+const uint8_t nr42_light_fire[] = {
+  40, envelope(0, 1, 3),
+  30, envelope(8, 0, 1),
+  SOUND_END
+};
+
+const uint8_t nr43_light_fire[] = {
+  40, noise_freq(3, 0, 1),
+  30, noise_freq(1, 0, 1),
+  SOUND_END
+};
+
+const uint8_t nr44_light_fire[] = {
+  40, 0x80,
+  30, 0x80,
+  SOUND_END
+};
+
+void sfx_light_fire(void) {
+  register_init(&nr41, nr41_light_fire);
+  register_init(&nr42, nr42_light_fire);
+  register_init(&nr43, nr43_light_fire);
+  register_init(&nr44, nr44_light_fire);
+}
+
+const uint8_t nr13_chest_open[] = {
+  8, 0xD6,
+  8, 0xCE,
+  8, 0xE0,
+  SOUND_END
+};
+
+const uint8_t nr14_chest_open[] = {
+  8, 0x87,
+  8, 0x87,
+  8, 0x87,
+  SOUND_END
+};
+
+void sfx_open_chest(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR12_REG = envelope(14, 0, 1);
+  register_init(&nr13, nr13_chest_open);
+  register_init(&nr14, nr14_chest_open);
+}
+
 void sfx_test(void) {
-  play_sound(sfx_level_up);
+  // sfx_open_chest();
+
+
+  // Boingg
+  // NR10_REG = sweep(7, 0, 7);
+  // NR11_REG = 0;
+  // NR12_REG = envelope(13, 0, 1);
+  // NR13_REG = 0x68;
+  // NR14_REG = 0x82;
 
   // "Hard Fall"
   // NR10_REG = sweep(7, 1, 7);

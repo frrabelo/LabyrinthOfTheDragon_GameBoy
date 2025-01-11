@@ -31,5 +31,7 @@ void sfx_no_no_square(void);
 void sfx_melee_attack(void);
 void sfx_monster_death(void);
 void sfx_level_up(void);
+void sfx_light_fire(void);
+void sfx_open_chest(void);
 
 #endif

@@ -3,6 +3,8 @@
 #include "encounter.h"
 #include "monster.h"
 
+bool disable_encounters = false;
+
 static uint8_t steps = 0;
 static uint8_t current_chance = 1;
 
@@ -19,6 +21,9 @@ void config_random_encounter(uint8_t s, uint8_t ic, uint8_t i, bool ts) {
 }
 
 bool check_random_encounter(void) {
+  if (disable_encounters)
+    return false;
+
   MapTile *here = local_tiles;
 
   if (here->map_attr == MAP_EXIT)

@@ -188,6 +188,11 @@ typedef struct Encounter {
 extern Encounter encounter;
 
 /**
+ * Set to `true` during testing to disable the random encounter system.
+ */
+extern bool disable_encounters;
+
+/**
  * Sets the victory callback for the encounter.
  * @param callback Victory callback to execute if the player is victorious.
  */

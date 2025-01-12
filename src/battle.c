@@ -1473,4 +1473,6 @@ void draw_battle(void) NONBANKED {
     }
     break;
   }
+  if (!is_screen_shaking)
+    move_bkg(0, 0);
 }

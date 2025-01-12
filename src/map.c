@@ -41,6 +41,12 @@ static MapTile tile_buf[2 * MAP_HORIZ_LOADS];
 static TileHashEntry tile_object_hashtable[TILE_HASHTABLE_SIZE];
 
 /**
+ * Timer used to add a small delay after the fade-out and before handing things
+ * over to the battle system.
+ */
+static Timer battle_wait_timer;
+
+/**
  * Holds the color of the flames for the sconces in the current floor.
  */
 FlameColor sconce_colors[8] = {
@@ -2138,6 +2144,7 @@ void update_map(void) {
     }
     return;
   case MAP_STATE_INITIATE_BATTLE:
+    init_timer(battle_wait_timer, 30);
     play_sound(sfx_start_battle);
     map_fade_out(MAP_STATE_START_BATTLE);
     return;
@@ -2156,6 +2163,8 @@ void update_map(void) {
 
 void update_world_map(void) NONBANKED {
   if (map.state == MAP_STATE_START_BATTLE) {
+    if (!update_timer(battle_wait_timer))
+      return;
     map.state = MAP_STATE_INACTIVE;
     DISPLAY_OFF;
     init_battle();

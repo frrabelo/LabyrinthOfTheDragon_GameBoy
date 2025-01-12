@@ -6,10 +6,10 @@
 const Tilemap textbox_tilemap = { 20, 6, 1, tilemap_textbox };
 
 const palette_color_t textbox_palette[4] = {
-  RGB8(24, 75, 105),
-  RGB8(24, 25, 105),
-  RGB8(100, 100, 100),
-  RGB8(200, 200, 200)
+  RGB8(22, 0, 0),
+  RGB8(81, 108, 186),
+  RGB8(3, 37, 135),
+  RGB8(22, 6, 4),
 };
 
 static void init_textbox(void) {

@@ -47,9 +47,9 @@ const palette_color_t monster_death_colors[] = {
 const palette_color_t data_battle_bg_colors[] = {
   // Palette 0 - Background / Textbox
   RGB_WHITE,
-  RGB8(111, 127, 243),
-  RGB8(60, 80, 60),
-  RGB8(28, 28, 0),
+  RGB8(81, 108, 186),
+  RGB8(3, 37, 135),
+  RGB8(22, 6, 4),
   // Palette 1 - Monster 1
   RGB_WHITE,
   RGB8(209, 206, 107),

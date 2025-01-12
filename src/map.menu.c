@@ -30,9 +30,9 @@ MapMenu map_menu;
 
 const palette_color_t main_menu_palette[] = {
   RGB_WHITE,
-  RGB8(150, 150, 150),
-  RGB8(24, 25, 170),
-  RGB_BLACK,
+  RGB8(101, 128, 186),
+  RGB8(3, 37, 135),
+  RGB8(22, 6, 4),
 };
 
 static const Tilemap map_menu_tilemap = { 20, 18, BANK_1, tilemap_map_menu };

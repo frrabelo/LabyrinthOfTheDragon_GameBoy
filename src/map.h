@@ -1002,6 +1002,12 @@ extern MapMenu map_menu;
 extern MapTile local_tiles[5];
 
 /**
+ * Whether or not the random seed should be initialized before the first move
+ * on the map. Set this to false when using a specific seed in testing.
+ */
+extern bool init_random;
+
+/**
  * Map system main state. Holds all global memory values used in the system.
  */
 typedef struct MapSystem {

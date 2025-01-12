@@ -7,6 +7,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <rand.h>
 
 #include "battle.h"
 #include "core.h"
@@ -45,6 +46,17 @@ static TileHashEntry tile_object_hashtable[TILE_HASHTABLE_SIZE];
  * over to the battle system.
  */
 static Timer battle_wait_timer;
+
+/**
+ * Whether or not the random seed should be initialized prior to the first move
+ * in a loaded map.
+ */
+bool init_random = true;
+
+/**
+ * Current random initialization seed.
+ */
+static uint16_t new_seed = 1;
 
 /**
  * Holds the color of the flames for the sconces in the current floor.
@@ -167,6 +179,8 @@ static void load_floor(FloorBank *f) NONBANKED {
   palette_color_t *local_color = floor_palettes;
   for (uint8_t k = 0; k < 7 * 4; k++, local_color++, color++)
     *local_color = *color;
+
+  init_random = true;
 
   SWITCH_ROM(_prev_bank);
 }
@@ -1439,6 +1453,12 @@ static bool handle_exit(void) {
  * @param d Direction the player is to move.
  */
 static void start_move(Direction d) {
+  if (init_random) {
+    *debug = 0xA0;
+    initarand(new_seed);
+    init_random = false;
+  }
+
   MapTile *destination = local_tiles + d;
 
   if (map.hero_direction != d) {
@@ -2078,6 +2098,9 @@ bool after_textbox(void) NONBANKED {
 void update_map(void) {
   if (map.state == MAP_STATE_INACTIVE)
     return;
+
+  if (init_random)
+    new_seed++;
 
   check_sconce_changed();
   update_door_graphics();

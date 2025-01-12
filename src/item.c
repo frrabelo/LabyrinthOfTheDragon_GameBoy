@@ -96,15 +96,18 @@ static inline void use_elixer(void) {
   player.hp = player.max_hp;
   player.sp = player.max_sp;
   sprintf(battle_pre_message, str_items_use_elixer);
+  SFX_HEAL;
   SKIP_POST_MSG;
 }
 
 static inline void use_regen_potion(void) {
   set_item_buff(BUFF_REGEN, FLAG_BUFF_REGEN, str_items_use_regen);
+  SFX_BIG_POWERUP;
 }
 
 static inline void use_haste_potion(void) {
   set_item_buff(BUFF_HASTE, FLAG_BUFF_HASTE, str_items_use_haste);
+  SFX_BIG_POWERUP;
 }
 
 static inline bool can_add_item_buff(StatusEffect effect) {

@@ -850,13 +850,79 @@ void sfx_heal(void) {
   register_init(&nr24, trigger_heal2);
 }
 
+static const uint8_t freq_big_powerup[] = {
+  8, 0x15,
+  8, 0x83,
+  8, 0xE4,
+  8, 0x11,
+  8, 0x63,
+  SOUND_END
+};
+
+static const uint8_t trigger_big_powerup[] = {
+  8, 0x84,
+  8, 0x84,
+  8, 0x84,
+  8, 0x85,
+  8, 0x85,
+  SOUND_END
+};
+
+static const uint8_t env_big_powerup2[] = {
+  10, envelope(0, 0, 1),
+  40, envelope(7, 0, 1),
+  1, envelope(2, 0, 1),
+  SOUND_END
+};
+
+static const uint8_t freq_big_powerup2[] = {
+  10, 0,
+  8, 0x0B,
+  8, 0x41,
+  8, 0x72,
+  8, 0x88,
+  8, 0xB1,
+  8, 0x41,
+  8, 0x72,
+  8, 0x88,
+  8, 0xB1,
+  SOUND_END
+};
+
+static const uint8_t trigger_big_powerup2[] = {
+  10, 0,
+  8, 0x86,
+  8, 0x86,
+  8, 0x86,
+  8, 0x86,
+  8, 0x86,
+  8, 0x86,
+  8, 0x86,
+  8, 0x86,
+  8, 0x86,
+  SOUND_END
+};
+
+void sfx_big_powerup(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR12_REG = envelope(10, 0, 1);
+  register_init(&nr13, freq_big_powerup);
+  register_init(&nr14, trigger_big_powerup);
+  NR21_REG = 0b10000000;
+  register_init(&nr22, env_big_powerup2);
+  register_init(&nr23, freq_big_powerup2);
+  register_init(&nr24, trigger_big_powerup2);
+}
+
 void sfx_test(void) {
 
-  // NR10_REG = 0;
+  // sfx_big_powerup();
+  // NR10_REG = sweep(7, 0, 7);
   // NR11_REG = 0;
-  // NR12_REG = envelope(5, 0, 1);
-  // NR13_REG = 0x15;
-  // NR14_REG = 0x84;
+  // NR12_REG = envelope(10, 0, 1);
+  // NR13_REG = 0x2C;
+  // NR14_REG = 0x80;
 
   // NR10_REG = sweep(7, 0, 5);
   // NR11_REG = 0;

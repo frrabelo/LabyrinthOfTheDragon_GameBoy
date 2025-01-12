@@ -45,5 +45,6 @@ void sfx_battle_death(void);
 void sfx_action_surge(void);
 void sfx_miss(void);
 void sfx_heal(void);
+void sfx_big_powerup(void);
 
 #endif

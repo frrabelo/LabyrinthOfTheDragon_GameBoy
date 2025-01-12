@@ -1,8 +1,10 @@
+#include <rand.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #include "battle.h"
 #include "core.h"
+#include "encounter.h"
 #include "floor.h"
 #include "item.h"
 #include "map.h"
@@ -11,10 +13,9 @@
 
 void init_test_player(PlayerClass c, uint8_t level) {
   init_player(c);
-  grant_ability(ABILITY_ALL);
   set_player_level(level);
   sprintf(player.name, "Tester");
-  player.message_speed = AUTO_PAGE_FAST;
+  player.message_speed = AUTO_PAGE_MED;
 }
 
 void test_battle_init(void) {
@@ -39,13 +40,28 @@ void test_big_map(void) {
   game_state = GAME_STATE_WORLD_MAP;
 }
 
-void test_level(void) {
-  init_test_player(CLASS_FIGHTER, 5);
+#define SET_MAGIC_KEYS(n) do { \
+    player.got_magic_key = true; \
+    player.magic_keys = (n); \
+  } while (0)
 
-  player.got_magic_key = true;
-  player.magic_keys = 9;
-  player.has_torch = true;
+#define SET_HAS_TORCH player.has_torch = true
+
+#define TEST_SEED(s) do {\
+  init_random = false; \
+  initarand(s); \
+  } while(0)
+
+void test_level(void) {
+  init_test_player(CLASS_FIGHTER, 4);
+  grant_ability(ABILITY_0);
+
+  // SET_MAGIC_KEYS(9);
+  // SET_HAS_TORCH;
+  // disable_encounters = true;
 
   set_active_floor(&bank_floor1);
   init_world_map();
+
+  // TEST_SEED(62);
 }

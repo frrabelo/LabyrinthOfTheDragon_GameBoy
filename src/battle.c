@@ -36,6 +36,7 @@ Timer effect_delay_timer;
 Timer monster_death_timer;
 uint8_t monster_death_step = 0;
 MonsterDeathAnimation monster_death_state = MONSTER_DEATH_START;
+static Timer no_post_sfx_timer;
 
 /**
  * Timer used to animate screen shakes when the player is hit.
@@ -1140,6 +1141,7 @@ static inline bool animate_monster_death(void) {
   return true;
 }
 
+
 /**
  * Update handler that animates the results of player & monster actions.
  */
@@ -1158,8 +1160,13 @@ static void animate_action_result(void) {
 
   switch (animation_state) {
   case ANIMATION_PREAMBLE:
+    if (skip_post_message && battle_sfx && update_timer(no_post_sfx_timer)) {
+      play_sound(battle_sfx);
+      battle_sfx = NULL;
+    }
+
     if (text_writer_done()) {
-      init_timer(effect_delay_timer, 30);
+      init_timer(effect_delay_timer, 24);
       animation_state = ANIMATION_EFFECT;
       if (battle_sfx) {
         play_sound(battle_sfx);
@@ -1396,6 +1403,8 @@ void update_battle(void) NONBANKED {
     take_action();
     text_writer.print(battle_pre_message);
     animation_state = ANIMATION_PREAMBLE;
+    if (skip_post_message)
+      init_timer(no_post_sfx_timer, 6);
     battle_state = BATTLE_ANIMATE;
     break;
   case BATTLE_ACTION_CLEANUP:

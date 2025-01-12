@@ -851,7 +851,6 @@ void sfx_heal(void) {
 }
 
 void sfx_test(void) {
-  sfx_heal();
 
   // NR10_REG = 0;
   // NR11_REG = 0;

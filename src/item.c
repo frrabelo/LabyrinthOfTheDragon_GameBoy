@@ -47,6 +47,7 @@ static inline uint16_t item_heal(
 
   sprintf(battle_pre_message, format, h);
   SKIP_POST_MSG;
+  SFX_HEAL;
 
   return result <= max ? result : max;
 }

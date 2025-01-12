@@ -1364,6 +1364,7 @@ void update_battle(void) NONBANKED {
     break;
   case BATTLE_NEXT_TURN:
     if (encounter.player_died) {
+      play_sound(sfx_battle_death);
       sprintf(rewards_buf, "You died.");
       text_writer.print(rewards_buf);
       battle_state = BATTLE_PLAYER_DIED;

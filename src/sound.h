@@ -40,5 +40,6 @@ void sfx_monster_attack1(void);
 void sfx_monster_attack2(void);
 void sfx_player_damage(void);
 void sfx_battle_success(void);
+void sfx_battle_death(void);
 
 #endif

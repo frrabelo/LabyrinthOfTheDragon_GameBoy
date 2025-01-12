@@ -662,8 +662,55 @@ void sfx_battle_success(void) {
   register_init(&nr24, trigger_battle_success);
 }
 
+#define BATTLE_DEATH_DURATION1 16
+#define BATTLE_DEATH_DURATION2 37
+
+const uint8_t env_battle_death[] = {
+  BATTLE_DEATH_DURATION1, envelope(10, 0, 1),
+  BATTLE_DEATH_DURATION1, envelope(9, 0, 1),
+  BATTLE_DEATH_DURATION1, envelope(9, 0, 1),
+  BATTLE_DEATH_DURATION1, envelope(8, 0, 1),
+  BATTLE_DEATH_DURATION1, envelope(8, 0, 1),
+  BATTLE_DEATH_DURATION1, envelope(7, 0, 1),
+  BATTLE_DEATH_DURATION2, envelope(7, 0, 3),
+  BATTLE_DEATH_DURATION1, envelope(12, 0, 3),
+  SOUND_END,
+};
+
+const uint8_t freq_battle_death[] = {
+  BATTLE_DEATH_DURATION1, 0x6B,
+  BATTLE_DEATH_DURATION1, 0x39,
+  BATTLE_DEATH_DURATION1, 0x05,
+  BATTLE_DEATH_DURATION1, 0xD6,
+  BATTLE_DEATH_DURATION1, 0x72,
+  BATTLE_DEATH_DURATION1, 0x0B,
+  BATTLE_DEATH_DURATION2, 0xAC,
+  BATTLE_DEATH_DURATION1, 0x58,
+  SOUND_END,
+};
+
+const uint8_t trigger_battle_death[] = {
+  BATTLE_DEATH_DURATION1, 0x87,
+  BATTLE_DEATH_DURATION1, 0x87,
+  BATTLE_DEATH_DURATION1, 0x87,
+  BATTLE_DEATH_DURATION1, 0x86,
+  BATTLE_DEATH_DURATION1, 0x86,
+  BATTLE_DEATH_DURATION1, 0x86,
+  BATTLE_DEATH_DURATION2, 0x85,
+  BATTLE_DEATH_DURATION1, 0x83,
+  SOUND_END
+};
+
+void sfx_battle_death(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  register_init(&nr12, env_battle_death);
+  register_init(&nr13, freq_battle_death);
+  register_init(&nr14, trigger_battle_death);
+}
+
 void sfx_test(void) {
-  sfx_battle_success();
+  // sfx_battle_death();
 
   // NR10_REG = 0;
   // NR11_REG = 0;

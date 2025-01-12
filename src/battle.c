@@ -39,6 +39,29 @@ MonsterDeathAnimation monster_death_state = MONSTER_DEATH_START;
 static Timer no_post_sfx_timer;
 
 /**
+ * Used for timing continuous cursor movement.
+ */
+static Timer cursor_timer;
+
+/**
+ * Handles D-Pad input for battle menus. Allows the player to hold a direction
+ * and have the cursor continue to move until they let go.
+ * @param button Button to check.
+ */
+inline bool on_dpad(uint8_t button) {
+  if (was_pressed(button)) {
+    init_timer(cursor_timer, 20);
+    return true;
+  } else if (is_down(button)) {
+    if (!update_timer(cursor_timer))
+      return false;
+    init_timer(cursor_timer, 9);
+    return true;
+  }
+  return false;
+}
+
+/**
  * Timer used to animate screen shakes when the player is hit.
  */
 static Timer screen_shake_timer;
@@ -966,21 +989,21 @@ static void main_menu_cursor_commit(void) {
 static inline void update_battle_menu(void) {
   switch (battle_menu.active_menu) {
   case BATTLE_MENU_MAIN:
-    if (was_pressed(J_UP))
-      main_menu_cursor_up();
-    else if (was_pressed(J_DOWN))
-      main_menu_cursor_down();
-    else if (was_pressed(J_A))
+    if (was_pressed(J_A))
       main_menu_cursor_commit();
+    else if (on_dpad(J_UP))
+      main_menu_cursor_up();
+    else if (on_dpad(J_DOWN))
+      main_menu_cursor_down();
     break;
   case BATTLE_MENU_FIGHT:
     if (was_pressed(J_B))
       open_battle_menu(BATTLE_MENU_MAIN);
     else if (was_pressed(J_A))
       confirm_fight();
-    else if (was_pressed(J_LEFT))
+    else if (on_dpad(J_LEFT))
       select_prev_enemy();
-    else if (was_pressed(J_RIGHT))
+    else if (on_dpad(J_RIGHT))
       select_next_enemy();
     break;
   case BATTLE_ABILITY_MONSTER_SELECT:
@@ -1013,9 +1036,9 @@ static inline void update_battle_menu(void) {
         confirm_ability(ability);
       }
     }
-    else if (was_pressed(J_UP))
+    else if (on_dpad(J_UP))
       submenu_cursor_up();
-    else if (was_pressed(J_DOWN))
+    else if (on_dpad(J_DOWN))
       submenu_cursor_down();
     break;
   case BATTLE_MENU_ITEM:
@@ -1037,9 +1060,9 @@ static inline void update_battle_menu(void) {
 
       confirm_item(item_id);
     }
-    else if (was_pressed(J_UP))
+    else if (on_dpad(J_UP))
       submenu_cursor_up();
-    else if (was_pressed(J_DOWN))
+    else if (on_dpad(J_DOWN))
       submenu_cursor_down();
     break;
   }

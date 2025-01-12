@@ -55,6 +55,7 @@ void test_big_map(void) {
 void test_level(void) {
   init_test_player(CLASS_FIGHTER, 4);
   grant_ability(ABILITY_0);
+  fill_inventory(5);
 
   // SET_MAGIC_KEYS(9);
   // SET_HAS_TORCH;

@@ -519,7 +519,55 @@ void sfx_big_door_open(void) {
   NR44_REG = 0x80;
 }
 
+#define BATTLE_START_DELAY 15
+#define BATTLE_START_DELAY2 18
+#define BATTLE_START_VOLUME 5
+
+const uint8_t nr42_battle_start[] = {
+  BATTLE_START_DELAY, envelope(BATTLE_START_VOLUME, 0, 0),
+  BATTLE_START_DELAY, envelope(BATTLE_START_VOLUME, 0, 0),
+  BATTLE_START_DELAY, envelope(BATTLE_START_VOLUME, 0, 0),
+  BATTLE_START_DELAY2, envelope(BATTLE_START_VOLUME, 0, 3),
+  BATTLE_START_DELAY, envelope(BATTLE_START_VOLUME, 0, 0),
+  BATTLE_START_DELAY, envelope(BATTLE_START_VOLUME, 0, 0),
+  BATTLE_START_DELAY, envelope(BATTLE_START_VOLUME, 0, 0),
+  BATTLE_START_DELAY2, envelope(BATTLE_START_VOLUME, 0, 3),
+  SOUND_END
+};
+
+const uint8_t nr43_battle_start[] = {
+  BATTLE_START_DELAY, noise_freq(4, 0, 0),
+  BATTLE_START_DELAY, noise_freq(6, 0, 1),
+  BATTLE_START_DELAY, noise_freq(6, 0, 2),
+  BATTLE_START_DELAY2, noise_freq(8, 1, 2),
+  BATTLE_START_DELAY, noise_freq(4, 0, 0),
+  BATTLE_START_DELAY, noise_freq(6, 0, 1),
+  BATTLE_START_DELAY, noise_freq(6, 0, 2),
+  BATTLE_START_DELAY2, noise_freq(8, 1, 2),
+  SOUND_END,
+};
+
+const uint8_t nr44_battle_start[] = {
+  BATTLE_START_DELAY, 0x80,
+  BATTLE_START_DELAY, 0x80,
+  BATTLE_START_DELAY, 0x80,
+  BATTLE_START_DELAY2, 0x80,
+  BATTLE_START_DELAY, 0x80,
+  BATTLE_START_DELAY, 0x80,
+  BATTLE_START_DELAY, 0x80,
+  BATTLE_START_DELAY2, 0x80,
+  SOUND_END
+};
+
+void sfx_start_battle(void) {
+  NR41_REG = 0;
+  register_init(&nr42, nr42_battle_start);
+  register_init(&nr43, nr43_battle_start);
+  register_init(&nr44, nr44_battle_start);
+}
+
 void sfx_test(void) {
+
   // NR10_REG = 0;
   // NR11_REG = 0;
   // NR12_REG = envelope(5, 0, 1);

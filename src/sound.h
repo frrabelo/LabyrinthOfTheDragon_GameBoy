@@ -35,5 +35,6 @@ void sfx_light_fire(void);
 void sfx_open_chest(void);
 void sfx_door_unlock(void);
 void sfx_big_door_open(void);
+void sfx_start_battle(void);
 
 #endif

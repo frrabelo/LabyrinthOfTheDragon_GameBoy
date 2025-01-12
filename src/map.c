@@ -2138,6 +2138,7 @@ void update_map(void) {
     }
     return;
   case MAP_STATE_INITIATE_BATTLE:
+    play_sound(sfx_start_battle);
     map_fade_out(MAP_STATE_START_BATTLE);
     return;
   case MAP_STATE_TELEPORT:

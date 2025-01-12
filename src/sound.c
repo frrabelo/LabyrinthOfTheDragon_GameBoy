@@ -709,8 +709,91 @@ void sfx_battle_death(void) {
   register_init(&nr14, trigger_battle_death);
 }
 
+const uint8_t freq_monster_fail[] = {
+  10, 0x9C,
+  10, 0xC9,
+  10, 0x9C,
+  SOUND_END
+};
+
+const uint8_t trigger_monster_fail[] = {
+  10, 0x81,
+  10, 0x81,
+  10, 0x81,
+  SOUND_END
+};
+
+void sfx_monster_fail(void) {
+  NR11_REG = 0;
+  NR12_REG = envelope(13, 0, 1);
+  register_init(&nr13, freq_monster_fail);
+  register_init(&nr14, trigger_monster_fail);
+}
+
+const uint8_t env_action_surge[] = {
+  4, envelope(0, 1, 1),
+  4, envelope(10, 0, 0),
+  4, envelope(10, 0, 0),
+  10, envelope(8, 0, 1),
+  4, envelope(0, 1, 1),
+  4, envelope(10, 0, 0),
+  4, envelope(10, 0, 0),
+  4, envelope(8, 0, 1),
+  SOUND_END
+};
+
+const uint8_t freq_action_surge[] = {
+  4, noise_freq(1, 0, 0),
+  4, noise_freq(2, 0, 1),
+  4, noise_freq(3, 0, 2),
+  10, noise_freq(4, 0, 3),
+  4, noise_freq(1, 0, 0),
+  4, noise_freq(2, 0, 1),
+  4, noise_freq(3, 0, 2),
+  4, noise_freq(4, 0, 3),
+  SOUND_END
+};
+
+const uint8_t trigger_action_surge[] = {
+  4, 0x80,
+  4, 0x80,
+  4, 0x80,
+  10, 0x80,
+  4, 0x80,
+  4, 0x80,
+  4, 0x80,
+  4, 0x80,
+  SOUND_END
+};
+
+void sfx_action_surge(void) {
+  NR41_REG = 0;
+  register_init(&nr42, env_action_surge);
+  register_init(&nr43, freq_action_surge);
+  register_init(&nr44, trigger_action_surge);
+}
+
+const uint8_t freq_miss[] = {
+  12, 0xDA,
+  10, 0x15,
+  SOUND_END
+};
+
+const uint8_t trigger_miss[] = {
+  12, 0x83,
+  10, 0x84,
+  SOUND_END
+};
+
+void sfx_miss(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR12_REG = envelope(12, 0, 1);
+  register_init(&nr13, freq_miss);
+  register_init(&nr14, trigger_miss);
+}
+
 void sfx_test(void) {
-  // sfx_battle_death();
 
   // NR10_REG = 0;
   // NR11_REG = 0;
@@ -727,6 +810,19 @@ void sfx_test(void) {
   // NR10_REG = sweep(7, 0, 5);
   // NR12_REG = envelope(14, 0, 2);
 
+
+  // Punch 1
+  // NR10_REG = sweep(1, 1, 3);
+  // NR11_REG = 0;
+  // NR12_REG = envelope(10, 0, 1);
+  // NR13_REG = 0x00;
+  // NR14_REG = 0x87;
+
+  // Punch 2
+  // NR41_REG = 0;
+  // NR42_REG = envelope(12, 0, 1);
+  // NR43_REG = noise_freq(4, 0, 3);
+  // NR44_REG = 0x80;
 
   // Boingg 2
   // NR10_REG = sweep(7, 0, 7);

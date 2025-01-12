@@ -5,6 +5,7 @@
 #include "battle.h"
 #include "data.h"
 #include "monster.h"
+#include "monster.sfx.h"
 #include "stats.h"
 #include "strings.h"
 
@@ -24,6 +25,7 @@ static void kobold_take_turn(Monster *m) {
   if (move_roll >= daze_chance[m->exp_tier]) {
     sprintf(battle_pre_message, str_monster_kobold_dazed, m->id);
     skip_post_message = true;
+    SFX_FAIL;
     return;
   }
 
@@ -51,8 +53,10 @@ static void kobold_take_turn(Monster *m) {
   } else if (d16() >= prone_chance[m->exp_tier]) {
     sprintf(battle_post_message, str_monster_kobold_miss);
     m->trip_turns = 1;
+    SFX_FAIL;
   } else {
     sprintf(battle_post_message, str_monster_miss);
+    SFX_MISS;
   }
 }
 
@@ -98,6 +102,7 @@ static void goblin_take_turn(Monster *monster) {
   if (d16() >= nose_pick_chance) {
     sprintf(battle_pre_message, str_monster_goblin_nose_pick, monster->id);
     skip_post_message = true;
+    SFX_FAIL;
     return;
   }
 
@@ -131,10 +136,13 @@ static void goblin_take_turn(Monster *monster) {
     damage_tier = monster->exp_tier;
   }
 
-  if (roll_attack_monster(atk, def))
-    damage_player(get_monster_dmg(monster->level - 1, damage_tier), type);
-  else
+  if (!roll_attack_monster(atk, def)) {
     sprintf(battle_post_message, str_monster_miss);
+    SFX_MISS;
+    return;
+  }
+
+  damage_player(get_monster_dmg(monster->level - 1, damage_tier), type);
 }
 
 void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {

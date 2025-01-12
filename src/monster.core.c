@@ -5,7 +5,7 @@
 #include "battle.h"
 #include "data.h"
 #include "monster.h"
-#include "sound.h"
+#include "monster.sfx.h"
 #include "stats.h"
 #include "strings.h"
 
@@ -100,15 +100,15 @@ uint16_t damage_player(uint16_t base_damage, DamageAspect type) BANKED {
     damage <<= 1;
 
   if (type == DAMAGE_PHYSICAL)
-    battle_sfx = sfx_monster_attack1;
+    SFX_MELEE;
   else
-    battle_sfx = sfx_monster_attack2;
+    SFX_MAGIC;
 
   if (barskin)
     sprintf(battle_post_message, str_monster_hit_barkskin, damage);
   else if (critical) {
     sprintf(battle_post_message, str_monster_hit_crit, damage);
-    battle_sfx = sfx_monster_critical;
+    SFX_CRIT;
   }
   else if (player.aspect_resist & type)
     sprintf(battle_post_message, str_monster_hit_resist, damage);

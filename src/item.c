@@ -86,10 +86,12 @@ static inline void use_remedy(void) {
 
 static inline void use_atkup_potion(void) {
   set_item_buff(BUFF_ATK_UP, FLAG_BUFF_ATK_UP, str_items_use_atkup);
+  SFX_MID_POWERUP;
 }
 
 static inline void use_defup_potion(void) {
   set_item_buff(BUFF_DEF_UP, FLAG_BUFF_DEF_UP, str_items_use_defup);
+  SFX_MID_POWERUP;
 }
 
 static inline void use_elixer(void) {

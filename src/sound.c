@@ -915,7 +915,16 @@ void sfx_big_powerup(void) {
   register_init(&nr24, trigger_big_powerup2);
 }
 
+void sfx_mid_powerup(void) {
+  NR10_REG = sweep(7, 0, 7);
+  NR11_REG = 0;
+  NR12_REG = envelope(13, 0, 2);
+  NR13_REG = 0x68;
+  NR14_REG = 0x80;
+}
+
 void sfx_test(void) {
+  // sfx_mid_powerup();
 
   // sfx_big_powerup();
   // NR10_REG = sweep(7, 0, 7);

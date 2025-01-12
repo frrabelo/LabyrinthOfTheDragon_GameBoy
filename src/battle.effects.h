@@ -46,6 +46,11 @@
 #define SFX_BIG_POWERUP battle_sfx = sfx_big_powerup
 
 /**
+ * Plays the "big powerup" sound during battle.
+ */
+#define SFX_MID_POWERUP battle_sfx = sfx_mid_powerup
+
+/**
  * Sets the flag to skip the post action message in the battle system.
  */
 #define SKIP_POST_MSG skip_post_message = true

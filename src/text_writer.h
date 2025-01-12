@@ -6,12 +6,12 @@
 /**
  * Number of frames to wait with a slow auto page speed.
  */
-#define AUTO_PAGE_SLOW_FRAMES 50
+#define AUTO_PAGE_SLOW_FRAMES 40
 
 /**
  * Number of frames to wait with a medium auto page speed.
  */
-#define AUTO_PAGE_MED_FRAMES 25
+#define AUTO_PAGE_MED_FRAMES 20
 
 /**
  * Number of frames to wait with a fast auto page speed.

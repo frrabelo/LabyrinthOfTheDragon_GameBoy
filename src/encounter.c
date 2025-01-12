@@ -1,6 +1,8 @@
 #pragma bank 3
 
 #include <stdio.h>
+
+#include "battle.effects.h"
 #include "encounter.h"
 #include "monster.h"
 #include "sound.h"
@@ -295,7 +297,7 @@ inline void player_turn(void) {
 
   if (paralyzed) {
     sprintf(battle_pre_message, str_battle_player_paralyzed);
-    skip_post_message = true;
+    SKIP_POST_MSG;
     return;
   }
 
@@ -308,20 +310,20 @@ inline void player_turn(void) {
       else
         player.hp -= damage;
       sprintf(battle_pre_message, str_battle_player_confused_attack, damage);
-      skip_post_message = true;
+      SKIP_POST_MSG;
       return;
     }
 
     if (d16() < 3) {
       sprintf(battle_pre_message, str_battle_player_confused_mumble);
-      skip_post_message = true;
+      SKIP_POST_MSG;
       return;
     }
   }
 
   if (afraid) {
     sprintf(battle_pre_message, str_battle_player_scared);
-    skip_post_message = true;
+    SKIP_POST_MSG;
     return;
   }
 
@@ -331,7 +333,7 @@ inline void player_turn(void) {
       sprintf(battle_pre_message, str_battle_player_get_up);
     else
       sprintf(battle_pre_message, str_battle_player_prone);
-    skip_post_message = true;
+    SKIP_POST_MSG;
     return;
   }
 
@@ -391,7 +393,7 @@ inline void monster_turn(void) {
       monster->trip_turns = 1;
       sprintf(battle_pre_message, str_battle_monster_ice_slip,
         monster->name, monster->id);
-      skip_post_message = true;
+      SKIP_POST_MSG;
       return;
     }
   }
@@ -407,7 +409,7 @@ inline void monster_turn(void) {
         monster->name, monster->id);
       monster->def = get_monster_def(level_offset(monster->level, -10), C_TIER);
     }
-    skip_post_message = true;
+    SKIP_POST_MSG;
     return;
   }
 
@@ -424,7 +426,7 @@ inline void monster_turn(void) {
       } else if (fear_shiver_roll(effect->tier)) {
         sprintf(battle_pre_message, str_battle_monster_scared_frozen,
           monster->name, monster->id);
-        skip_post_message = true;
+        SKIP_POST_MSG;
         return;
       }
       break;
@@ -432,7 +434,7 @@ inline void monster_turn(void) {
       if (paralyzed_roll(effect->tier)) {
         sprintf(battle_pre_message, str_battle_monster_paralyzed,
           monster->name, monster->id);
-        skip_post_message = true;
+        SKIP_POST_MSG;
         return;
       }
       break;
@@ -446,7 +448,7 @@ inline void monster_turn(void) {
       if (monster->target_hp == 0) {
         sprintf(battle_pre_message, str_battle_monster_poison_death,
           monster->name, monster->id);
-        skip_post_message = true;
+        SKIP_POST_MSG;
         return;
       }
       break;
@@ -480,12 +482,12 @@ inline void monster_turn(void) {
           sprintf(battle_pre_message, str_battle_monster_confuse_attack_other,
             monster->name, monster->id);
         }
-        skip_post_message = true;
+        SKIP_POST_MSG;
         return;
       } else {
         sprintf(battle_pre_message, str_battle_monster_confuse_stupor,
           monster->name, monster->id);
-        skip_post_message = true;
+        SKIP_POST_MSG;
         return;
       }
       break;

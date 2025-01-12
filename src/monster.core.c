@@ -5,7 +5,7 @@
 #include "battle.h"
 #include "data.h"
 #include "monster.h"
-#include "monster.sfx.h"
+#include "battle.effects.h"
 #include "stats.h"
 #include "strings.h"
 

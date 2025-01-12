@@ -3,9 +3,9 @@
 #include <stdio.h>
 
 #include "battle.h"
+#include "battle.effects.h"
 #include "data.h"
 #include "monster.h"
-#include "monster.sfx.h"
 #include "stats.h"
 #include "strings.h"
 
@@ -24,7 +24,7 @@ static void kobold_take_turn(Monster *m) {
   // Kobolds sometimes space out entirely
   if (move_roll >= daze_chance[m->exp_tier]) {
     sprintf(battle_pre_message, str_monster_kobold_dazed, m->id);
-    skip_post_message = true;
+    SKIP_POST_MSG;
     SFX_FAIL;
     return;
   }
@@ -101,7 +101,7 @@ static void goblin_take_turn(Monster *monster) {
   // See if the goblin forgets it's fighting and picks its nose
   if (d16() >= nose_pick_chance) {
     sprintf(battle_pre_message, str_monster_goblin_nose_pick, monster->id);
-    skip_post_message = true;
+    SKIP_POST_MSG;
     SFX_FAIL;
     return;
   }
@@ -394,7 +394,7 @@ static void gelatinous_cube_take_turn(Monster *monster) {
   if (d16() < 1) {
     // Search with feelers
     sprintf(battle_pre_message, str_monster_gcube_search, monster->id);
-    skip_post_message = true;
+    SKIP_POST_MSG;
     return;
   }
 
@@ -418,7 +418,7 @@ static void gelatinous_cube_take_turn(Monster *monster) {
     } else {
       sprintf(battle_pre_message, str_monster_gcube_engulf_fail, monster->id);
     }
-    skip_post_message = true;
+    SKIP_POST_MSG;
     return;
   }
 
@@ -696,7 +696,7 @@ static void dummy_take_turn(Monster *dummy) {
     }
     break;
   default:
-    skip_post_message = true;
+    SKIP_POST_MSG;
     break;
   }
 }

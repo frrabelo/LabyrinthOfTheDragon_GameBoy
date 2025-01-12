@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#include "battle.effects.h"
 #include "encounter.h"
 #include "item.h"
 #include "strings.h"
@@ -24,7 +25,7 @@ static void set_item_buff(StatusEffect s, uint8_t flag, const char *text) {
     0
   );
   sprintf(battle_pre_message, text);
-  skip_post_message = true;
+  SKIP_POST_MSG;
 }
 
 /**
@@ -45,7 +46,7 @@ static inline uint16_t item_heal(
   uint16_t result = current + h;
 
   sprintf(battle_pre_message, format, h);
-  skip_post_message = true;
+  SKIP_POST_MSG;
 
   return result <= max ? result : max;
 }
@@ -79,7 +80,7 @@ static inline void use_remedy(void) {
       effect->active = false;
   }
   sprintf(battle_pre_message, str_items_use_remedy);
-  skip_post_message = true;
+  SKIP_POST_MSG;
 }
 
 static inline void use_atkup_potion(void) {
@@ -94,7 +95,7 @@ static inline void use_elixer(void) {
   player.hp = player.max_hp;
   player.sp = player.max_sp;
   sprintf(battle_pre_message, str_items_use_elixer);
-  skip_post_message = true;
+  SKIP_POST_MSG;
 }
 
 static inline void use_regen_potion(void) {

@@ -25,8 +25,8 @@ char battle_pre_message[128];
 char battle_post_message[128];
 bool skip_post_message = false;
 void (*battle_sfx)(void);
-
 char rewards_buf[128];
+bool player_was_hit = false;
 
 bool flee_sound_played = false;
 
@@ -36,6 +36,26 @@ Timer effect_delay_timer;
 Timer monster_death_timer;
 uint8_t monster_death_step = 0;
 MonsterDeathAnimation monster_death_state = MONSTER_DEATH_START;
+
+/**
+ * Timer used to animate screen shakes when the player is hit.
+ */
+static Timer screen_shake_timer;
+
+/**
+ * Used to animate a shaking screen when hit.
+ */
+static uint8_t screen_shake_index = 0;
+
+/**
+ * Screen scroll x positions for the screen shake effect.
+ */
+static const int8_t screen_shake[] = { 6, -6, 4, -4, 0 };
+
+/**
+ * Whether or not the screen shake effect is active.
+ */
+static bool is_screen_shaking = false;
 
 /**
  * Finds the monster currently selected by the screen cursor.
@@ -1124,6 +1144,18 @@ static inline bool animate_monster_death(void) {
  * Update handler that animates the results of player & monster actions.
  */
 static void animate_action_result(void) {
+  if (is_screen_shaking) {
+    if (update_timer(screen_shake_timer)) {
+      reset_timer(screen_shake_timer);
+      const int8_t shake = *(screen_shake + screen_shake_index);
+      SCX_REG = shake;
+      screen_shake_index++;
+      if (shake == 0) {
+        is_screen_shaking = false;
+      }
+    }
+  }
+
   switch (animation_state) {
   case ANIMATION_PREAMBLE:
     if (text_writer_done()) {
@@ -1132,6 +1164,12 @@ static void animate_action_result(void) {
       if (battle_sfx) {
         play_sound(battle_sfx);
         battle_sfx = NULL;
+      }
+      if (player_was_hit) {
+        player_was_hit = false;
+        is_screen_shaking = true;
+        screen_shake_index = 0;
+        init_timer(screen_shake_timer, 3);
       }
     }
     break;
@@ -1147,6 +1185,7 @@ static void animate_action_result(void) {
     break;
   case ANIMATION_RESULT:
     bool graphics_updated = false;
+
 
     // If the player fled, play the "footsteps" sound
     if (encounter.player_fled && !flee_sound_played) {
@@ -1430,9 +1469,7 @@ void draw_battle(void) NONBANKED {
     if (fade_update()) {
       battle_state = BATTLE_STATE_MENU;
       toggle_sprites();
-      move_bkg(0, 0);
     }
     break;
   }
-  move_bkg(0, 0);
 }

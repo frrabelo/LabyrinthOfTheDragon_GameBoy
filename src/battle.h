@@ -350,7 +350,6 @@ typedef enum MonsterDeathAnimation {
 #define MONSTER_DEATH_INITIAL_DELAY 23
 #define MONSTER_DEATH_FADE_DELAY 5
 
-
 /**
  * Default palettes for the battle system.
  */
@@ -392,6 +391,11 @@ extern bool skip_post_message;
  * Sound effect to play for the attack.
  */
 extern void (*battle_sfx)(void);
+
+/**
+ * Whether or not the player was hit as of the last action.
+ */
+extern bool player_was_hit;
 
 /**
  * Battle rewards message.

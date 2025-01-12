@@ -566,13 +566,93 @@ void sfx_start_battle(void) {
   register_init(&nr44, nr44_battle_start);
 }
 
+#define MONSTER_ATTACK_DELAY 18
+
+const uint8_t nr10_monster_attack1[] = {
+  MONSTER_ATTACK_DELAY, sweep(7, 0, 5),
+  MONSTER_ATTACK_DELAY, sweep(7, 0, 5),
+  SOUND_END
+};
+
+const uint8_t nr12_monster_attack1[] = {
+  MONSTER_ATTACK_DELAY, envelope(14, 0, 0),
+  MONSTER_ATTACK_DELAY, envelope(14, 0, 2),
+  SOUND_END
+};
+
+const uint8_t nr14_monster_attack[] = {
+  MONSTER_ATTACK_DELAY, 0x80,
+  MONSTER_ATTACK_DELAY, 0x80,
+  SOUND_END
+};
+
+void sfx_monster_attack1(void) {
+  register_init(&nr10, nr10_monster_attack1);
+  NR11_REG = 0;
+  register_init(&nr12, nr12_monster_attack1);
+  NR13_REG = 0x9B;
+  register_init(&nr14, nr14_monster_attack);
+}
+
+void sfx_player_damage(void) {
+  NR41_REG = 0;
+  NR42_REG = envelope(13, 0, 3);
+  NR43_REG = noise_freq(8, 1, 2);
+  NR44_REG = 0x80;
+}
+
+#define MONSTER_ATTACK2_DURATION 4
+
+const uint8_t nr13_monster_attack2[] = {
+  MONSTER_ATTACK2_DURATION, 0x15,
+  MONSTER_ATTACK2_DURATION, 0xB5,
+  MONSTER_ATTACK2_DURATION, 0x63,
+  MONSTER_ATTACK2_DURATION, 0x0B,
+  MONSTER_ATTACK2_DURATION, 0x72,
+  MONSTER_ATTACK2_DURATION, 0x9D,
+  MONSTER_ATTACK2_DURATION, 0x05,
+  SOUND_END
+};
+
+const uint8_t nr14_monster_attack2[] = {
+  MONSTER_ATTACK2_DURATION, 0x84,
+  MONSTER_ATTACK2_DURATION, 0x84,
+  MONSTER_ATTACK2_DURATION, 0x85,
+  MONSTER_ATTACK2_DURATION, 0x86,
+  MONSTER_ATTACK2_DURATION, 0x86,
+  MONSTER_ATTACK2_DURATION, 0x86,
+  MONSTER_ATTACK2_DURATION, 0x87,
+  SOUND_END
+};
+
+
+void sfx_monster_attack2(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR12_REG = envelope(9, 0, 1);
+  register_init(&nr13, nr13_monster_attack2);
+  register_init(&nr14, nr14_monster_attack2);
+}
+
 void sfx_test(void) {
+  sfx_monster_attack2();
+
+
 
   // NR10_REG = 0;
   // NR11_REG = 0;
   // NR12_REG = envelope(5, 0, 1);
   // NR13_REG = 0x15;
   // NR14_REG = 0x84;
+
+  // NR10_REG = sweep(7, 0, 5);
+  // NR11_REG = 0;
+  // NR12_REG = envelope(14, 0, 2);
+  // NR13_REG = 0x9B;
+  // NR14_REG = 0x80;
+
+  // NR10_REG = sweep(7, 0, 5);
+  // NR12_REG = envelope(14, 0, 2);
 
 
   // Boingg 2

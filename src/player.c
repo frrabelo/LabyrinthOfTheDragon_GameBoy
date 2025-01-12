@@ -281,6 +281,7 @@ void druid_base_attack(void) {
 
   const uint16_t base_dmg = get_player_damage(player.level, damage_tier);
   damage_monster(base_dmg, DAMAGE_MAGICAL);
+  SFX_POISON_SPRAY;
 }
 
 void druid_cure_wounds(void) {

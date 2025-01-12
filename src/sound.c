@@ -793,7 +793,6 @@ void sfx_miss(void) {
   register_init(&nr14, trigger_miss);
 }
 
-
 static const uint8_t freq_heal[] = {
   15, 0x82,
   15, 0x9C,
@@ -923,7 +922,15 @@ void sfx_mid_powerup(void) {
   NR14_REG = 0x80;
 }
 
+void sfx_poison_spray(void) {
+  NR41_REG = 0;
+  NR42_REG = envelope(12, 0, 2);
+  NR43_REG = noise_freq(2, 0, 1);
+  NR44_REG = 0x80;
+}
+
 void sfx_test(void) {
+  // sfx_poison_spray();
   // sfx_mid_powerup();
 
   // sfx_big_powerup();

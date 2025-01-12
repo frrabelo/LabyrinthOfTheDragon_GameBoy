@@ -51,6 +51,11 @@
 #define SFX_MID_POWERUP battle_sfx = sfx_mid_powerup
 
 /**
+ * Plays the "poison spray" sound during battle.
+ */
+#define SFX_POISON_SPRAY battle_sfx = sfx_poison_spray
+
+/**
  * Sets the flag to skip the post action message in the battle system.
  */
 #define SKIP_POST_MSG skip_post_message = true

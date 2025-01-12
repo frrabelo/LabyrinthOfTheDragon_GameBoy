@@ -47,5 +47,6 @@ void sfx_miss(void);
 void sfx_heal(void);
 void sfx_big_powerup(void);
 void sfx_mid_powerup(void);
+void sfx_poison_spray(void);
 
 #endif

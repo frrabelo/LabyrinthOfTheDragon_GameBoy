@@ -857,8 +857,20 @@ static void submenu_cursor_up(void) {
     return;
   }
 
-  if (battle_menu.cursor == 0)
+  if (battle_menu.cursor == 0) {
+    if (battle_menu.entries == 1)
+      return;
+    battle_menu.cursor = battle_menu.entries - 1;
+    if (battle_menu.entries <= 4)
+      move_screen_cursor(BATTLE_CURSOR_ITEM_1 + battle_menu.cursor);
+    else {
+      battle_menu.scroll = battle_menu.entries - 4;
+      move_screen_cursor(BATTLE_CURSOR_ITEM_4);
+    }
+    redraw_submenu_text();
+    draw_submenu_scroll_arrows();
     return;
+  }
 
   battle_menu.cursor--;
 
@@ -883,8 +895,18 @@ static void submenu_cursor_down(void) {
     return;
   }
 
-  if (battle_menu.cursor == battle_menu.entries - 1)
+  if (battle_menu.cursor == battle_menu.entries - 1) {
+    if (battle_menu.entries == 1)
+      return;
+
+    battle_menu.cursor = 0;
+    battle_menu.scroll = 0;
+    move_screen_cursor(BATTLE_CURSOR_ITEM_1);
+    redraw_submenu_text();
+    draw_submenu_scroll_arrows();
+    play_sound(sfx_menu_move);
     return;
+  }
 
   battle_menu.cursor++;
 

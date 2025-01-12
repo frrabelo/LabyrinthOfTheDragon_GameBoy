@@ -634,10 +634,36 @@ void sfx_monster_attack2(void) {
   register_init(&nr14, nr14_monster_attack2);
 }
 
+#define BATTLE_SUCCESS_DELAY 15
+
+
+const uint8_t env_battle_success[] = {
+  BATTLE_SUCCESS_DELAY, envelope(11, 0, 1),
+  BATTLE_SUCCESS_DELAY, envelope(12, 0, 3),
+  SOUND_END
+};
+
+const uint8_t trigger_battle_success[] = {
+  BATTLE_SUCCESS_DELAY, 0x87,
+  BATTLE_SUCCESS_DELAY, 0x87,
+  SOUND_END
+};
+
+void sfx_battle_success(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR13_REG = 0x05;
+  register_init(&nr12, env_battle_success);
+  register_init(&nr14, trigger_battle_success);
+
+  NR21_REG = 0b11000000;
+  NR23_REG = 0x39;
+  register_init(&nr22, env_battle_success);
+  register_init(&nr24, trigger_battle_success);
+}
+
 void sfx_test(void) {
-  sfx_monster_attack2();
-
-
+  sfx_battle_success();
 
   // NR10_REG = 0;
   // NR11_REG = 0;

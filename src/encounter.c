@@ -566,15 +566,17 @@ void set_player_item(ItemId item_id) {
 }
 
 void apply_rewards(void) {
-  if (encounter.xp_reward == 0) {
-    sprintf(rewards_buf, str_battle_victory_no_xp);
-    return;
-  }
-
   if (level_up(encounter.xp_reward)) {
     const char *format = "LEVEL UP! Welcome\nto level %u!";
     play_sound(sfx_level_up);
     sprintf(rewards_buf, format, player.level);
+    return;
+  }
+
+  play_sound(sfx_battle_success);
+
+  if (encounter.xp_reward == 0) {
+    sprintf(rewards_buf, str_battle_victory_no_xp);
     return;
   }
 

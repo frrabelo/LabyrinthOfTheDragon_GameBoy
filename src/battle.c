@@ -1210,6 +1210,8 @@ static void fight_menu_isr(void) {
 void initialize_battle(void) {
   DISPLAY_OFF;
 
+  move_bkg(0, 0);
+
   // Reset the background, window, and sprites
   core.fill_bg(BATTLE_CLEAR_TILE, BATTLE_CLEAR_ATTR);
   hide_sprites();

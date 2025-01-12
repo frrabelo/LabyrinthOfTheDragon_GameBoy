@@ -141,7 +141,7 @@ addNamespace('player', 4, {
   'regen': 'You surge with vitality!',
   // Fighter abilities
   'fighter_attack': 'You rush forward!',
-  'second_wind': 'You heal %damage HP!',
+  'second_wind': 'You catch your breath...',
   'action_surge': 'You surge forth!',
   'cleave': 'You cleave through your enemies!',
   'trip_attack': 'You sweep your legs low...',

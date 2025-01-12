@@ -106,8 +106,10 @@ uint16_t damage_player(uint16_t base_damage, DamageAspect type) BANKED {
 
   if (barskin)
     sprintf(battle_post_message, str_monster_hit_barkskin, damage);
-  else if (critical)
+  else if (critical) {
     sprintf(battle_post_message, str_monster_hit_crit, damage);
+    battle_sfx = sfx_monster_critical;
+  }
   else if (player.aspect_resist & type)
     sprintf(battle_post_message, str_monster_hit_resist, damage);
   else if (player.aspect_vuln & type)

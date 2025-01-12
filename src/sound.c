@@ -594,7 +594,7 @@ void sfx_monster_attack1(void) {
   register_init(&nr14, nr14_monster_attack);
 }
 
-void sfx_player_damage(void) {
+void sfx_monster_critical(void) {
   NR41_REG = 0;
   NR42_REG = envelope(13, 0, 3);
   NR43_REG = noise_freq(8, 1, 2);

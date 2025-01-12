@@ -62,7 +62,7 @@ const Ability druid5 = {
 
 const Ability fighter0 = {
   1, str_ability_fighter_second_wind,
-  TARGET_SELF, 8, fighter_second_wind,
+  TARGET_SELF, 7, fighter_second_wind,
 };
 
 const Ability fighter1 = {

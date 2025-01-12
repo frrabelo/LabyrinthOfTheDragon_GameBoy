@@ -44,5 +44,6 @@ void sfx_battle_success(void);
 void sfx_battle_death(void);
 void sfx_action_surge(void);
 void sfx_miss(void);
+void sfx_heal(void);
 
 #endif

@@ -141,13 +141,10 @@ void monster_flee(Monster *monster) BANKED {
     monster->id
   );
 
-  if (roll_flee(monster->agl, player.agl)) {
-    sprintf(battle_post_message, str_monster_flee_success);
-    monster->fled = true;
-  } else {
-    sprintf(battle_post_message, str_monster_flee_failure);
-    monster->fled = false;
-  }
+  if (roll_flee(monster->agl, player.agl))
+    MONSTER_FLEE(monster);
+  else
+    MONSTER_FLEE_FAIL(monster);
 }
 
 void monster_take_turn(Monster *monster) NONBANKED {

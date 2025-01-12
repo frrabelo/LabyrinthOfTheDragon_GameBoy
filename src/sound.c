@@ -793,7 +793,65 @@ void sfx_miss(void) {
   register_init(&nr14, trigger_miss);
 }
 
+
+static const uint8_t freq_heal[] = {
+  15, 0x82,
+  15, 0x9C,
+  15, 0xAC,
+  15, 0xBD,
+  SOUND_END
+};
+
+static const uint8_t trigger_heal[] = {
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  SOUND_END
+};
+
+static const uint8_t env_heal2[] = {
+  30, envelope(0, 0, 1),
+  15, envelope(8, 0, 1),
+  15, envelope(7, 0, 1),
+  15, envelope(6, 0, 1),
+  15, envelope(5, 0, 1),
+  SOUND_END,
+};
+
+static const uint8_t freq_heal2[] = {
+  30, 0,
+  15, 0x82,
+  15, 0x9C,
+  15, 0xAC,
+  15, 0xBD,
+  SOUND_END
+};
+
+static const uint8_t trigger_heal2[] = {
+  30, 0x00,
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  SOUND_END
+};
+
+void sfx_heal(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR12_REG = envelope(10, 0, 1);
+  register_init(&nr13, freq_heal);
+  register_init(&nr14, trigger_heal);
+
+  NR21_REG = 0;
+  register_init(&nr22, env_heal2);
+  register_init(&nr23, freq_heal2);
+  register_init(&nr24, trigger_heal2);
+}
+
 void sfx_test(void) {
+  sfx_heal();
 
   // NR10_REG = 0;
   // NR11_REG = 0;

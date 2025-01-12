@@ -240,16 +240,15 @@ static void damage_all_no_miss(uint16_t base_damage, DamageAspect type) {
 /**
  * Heals the player without going over max HP.
  * @param hp Amount of HP to heal the player.
+ * @param msg_format Message format to use for the battle text.
  */
-uint8_t heal_player(uint8_t d16_roll, uint16_t base_hp) {
-  uint16_t hp = calc_damage(d16_roll, base_hp);
+uint16_t heal_player(uint16_t hp) {
   if (has_special(SPECIAL_HASTE))
-    hp += calc_damage(d16(), base_hp);
-
+    hp = (hp * 3) / 2;
   if (player.hp + hp > player.max_hp)
     hp = player.max_hp - player.hp;
   player.hp += hp;
-
+  PLAYER_HEAL(hp);
   return hp;
 }
 
@@ -286,9 +285,7 @@ void druid_base_attack(void) {
 
 void druid_cure_wounds(void) {
   sprintf(battle_pre_message, str_player_cure_wounds);
-  uint8_t heal_tier = B_TIER;
-  const uint8_t hp = player.max_hp / 4;
-  sprintf(battle_post_message, str_player_heal_hp, hp);
+  heal_player(player.max_hp / 2);
 }
 
 void druid_bark_skin(void) {
@@ -317,19 +314,7 @@ void druid_lightning(void) {
 
 void druid_heal(void) {
   sprintf(battle_pre_message, str_player_heal);
-
-  uint16_t heal_hp = player.max_hp / 2;
-  const uint8_t roll = d16();
-  if (is_critical(roll))
-    heal_hp = player.max_hp;
-
-  if (player.hp + heal_hp > player.max_hp) {
-    player.hp = player.max_hp;
-    sprintf(battle_post_message, str_player_heal_complete);
-  } else {
-    player.hp += heal_hp;
-    sprintf(battle_post_message, str_player_heal, heal_hp);
-  }
+  heal_player(player.max_hp);
 }
 
 void druid_insect_plague(void) {
@@ -388,12 +373,8 @@ void fighter_base_attack(void) {
 }
 
 void fighter_second_wind(void) {
-  uint16_t heal_hp = player.max_hp;
-  heal_hp /= 4;
-  if (player.hp + heal_hp > player.max_hp)
-    heal_hp = player.max_hp - player.hp;
-  sprintf(battle_pre_message, str_player_second_wind, heal_hp);
-  SKIP_POST_MSG;
+  sprintf(battle_pre_message, str_player_second_wind);
+  heal_player(player.max_hp / 4);
 }
 
 void fighter_action_surge(void) {

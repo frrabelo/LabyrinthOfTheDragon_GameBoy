@@ -6,29 +6,39 @@
 #include "strings.h"
 
 /**
- * Sets the "miss" sound effect to play during battle.
+ * Plays the "miss" sound during battle.
  */
 #define SFX_MISS battle_sfx = sfx_miss
 
 /**
- * Sets the monster melee attack sound to play during battle.
+ * Plays the "monster melee hit" sound during battle.
  */
 #define SFX_MELEE battle_sfx = sfx_monster_attack1
 
 /**
- * Sets the monster magic attack sound to play during battle.
+ * Plays the "monster magic hit" sound during battle.
  */
 #define SFX_MAGIC battle_sfx = sfx_monster_attack2
 
 /**
- * Sets the monster "action failed" sound effect to play during battle.
+ * Plays the "action failed" sound during battle.
  */
 #define SFX_FAIL battle_sfx = sfx_monster_fail
 
 /**
- * Sets the "critical hit" sound effect to play during battle.
+ * Plays the "critical hit" sound during battle.
  */
 #define SFX_CRIT battle_sfx = sfx_monster_critical
+
+/**
+ * Plays the "healing" sound during battle.
+ */
+#define SFX_HEAL battle_sfx = sfx_heal
+
+/**
+ * Plays the "fleeing" sound during battle.
+ */
+#define SFX_FLEE battle_sfx = sfx_stairs
 
 /**
  * Sets the flag to skip the post action message in the battle system.
@@ -57,6 +67,25 @@
  */
 #define PLAYER_HEAL(hp) do { \
   sprintf(battle_post_message, str_player_heal_hp, (hp)); \
+  SFX_HEAL; \
+  } while (0)
+
+/**
+ * Sets state, message, and sound effects when a monster flees.
+ */
+#define MONSTER_FLEE(monster) do { \
+  sprintf(battle_post_message, str_monster_flee_success); \
+  monster->fled = true; \
+  SFX_FLEE; \
+  } while (0)
+
+/**
+ * Sets state, message, and sound effects when a monster fails to flee.
+ */
+#define MONSTER_FLEE_FAIL(monster) do { \
+  sprintf(battle_post_message, str_monster_flee_failure); \
+  monster->fled = false; \
+  SFX_FAIL; \
   } while (0)
 
 #endif

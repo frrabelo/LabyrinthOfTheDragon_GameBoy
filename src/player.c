@@ -488,6 +488,7 @@ void monk_base_attack(void) {
 
   const uint16_t base_dmg = get_player_damage(player.level, B_TIER);
   damage_monster(base_dmg, DAMAGE_PHYSICAL);
+  SFX_MONK_STRIKE;
 }
 
 void monk_evasion(void) {
@@ -509,6 +510,7 @@ void monk_evasion(void) {
   }
 
   apply_agl_up(encounter.player_status_effects, agl_up_tier, agl_up_duration);
+  SFX_MID_POWERUP;
 }
 
 void monk_open_palm(void) {

@@ -82,6 +82,7 @@ uint16_t damage_player(uint16_t base_damage, DamageAspect type) BANKED {
       evade_chance = 5;
     if (d8() < evade_chance) {
       sprintf(battle_post_message, str_misc_monster_miss_evaded);
+      SFX_EVADE;
       return 0;
     }
   }

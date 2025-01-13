@@ -56,6 +56,16 @@
 #define SFX_POISON_SPRAY battle_sfx = sfx_poison_spray
 
 /**
+ * Plays the "monk strike" sound during battle.
+ */
+#define SFX_MONK_STRIKE battle_sfx = sfx_monk_strike;
+
+/**
+ * Plays the "monk evade" sound during battle.
+ */
+#define SFX_EVADE battle_sfx = sfx_evade;
+
+/**
  * Sets the flag to skip the post action message in the battle system.
  */
 #define SKIP_POST_MSG skip_post_message = true

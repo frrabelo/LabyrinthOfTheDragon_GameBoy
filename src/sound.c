@@ -929,11 +929,56 @@ void sfx_poison_spray(void) {
   NR44_REG = 0x80;
 }
 
-void sfx_test(void) {
-  // sfx_poison_spray();
-  // sfx_mid_powerup();
+const uint8_t monk_strike_envelope[] = {
+  40, envelope(0, 0, 1),
+  1, envelope(12, 0, 1),
+  SOUND_END
+};
 
-  // sfx_big_powerup();
+const uint8_t monk_strike_trigger[] = {
+  40, 0,
+  1, 0x80,
+  SOUND_END
+};
+
+void sfx_monk_strike(void) {
+  // Punch 1
+  NR10_REG = sweep(1, 1, 3);
+  NR11_REG = 0;
+  NR12_REG = envelope(12, 0, 1);
+  NR13_REG = 0x00;
+  NR14_REG = 0x87;
+
+  // Punch 2
+  NR41_REG = 0;
+  register_init(&nr42, monk_strike_envelope);
+  NR43_REG = noise_freq(4, 0, 3);
+  register_init(&nr44, monk_strike_trigger);
+}
+
+static const uint8_t env_evade[] = {
+  SFX_STAIRS_DURATION, envelope(9, 0, 1),
+  SFX_STAIRS_DURATION, envelope(8, 0, 1),
+  SOUND_END
+};
+
+static const uint8_t trigger_evade[] = {
+  SFX_STAIRS_DURATION, 0xC0,
+  SFX_STAIRS_DURATION, 0xC0,
+  SOUND_END
+};
+
+void sfx_evade(void) {
+  NR41_REG = 0x00;
+  NR43_REG = (2 << 4)| 3;
+  register_init(&nr42, env_evade);
+  register_init(&nr44, trigger_evade);
+}
+
+void sfx_test(void) {
+  // sfx_monk_strike();
+  sfx_evade();
+
   // NR10_REG = sweep(7, 0, 7);
   // NR11_REG = 0;
   // NR12_REG = envelope(10, 0, 1);

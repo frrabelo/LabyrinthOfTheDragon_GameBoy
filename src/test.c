@@ -53,7 +53,7 @@ void test_big_map(void) {
   } while(0)
 
 void test_level(void) {
-  init_test_player(CLASS_FIGHTER, 4);
+  init_test_player(CLASS_SORCERER, 4);
   grant_ability(ABILITY_0);
   fill_inventory(5);
 

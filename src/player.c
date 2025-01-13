@@ -648,19 +648,21 @@ void sorcerer_update_stats(void) {
 
 void sorcerer_base_attack(void) {
   sprintf(battle_pre_message, str_player_sorc_magic_missile_one);
-  PowerTier tier = B_TIER;
-  damage_monster(get_player_damage(player.level, tier), DAMAGE_MAGICAL);
+  const PowerTier tier = B_TIER;
+  const uint8_t level = level_offset(player.level, 1);
+  damage_monster(get_player_damage(level, tier), DAMAGE_MAGICAL);
+  SFX_MAGIC_MISSILE;
 }
 
 void sorcerer_darkness(void) {
   sprintf(battle_pre_message, str_player_sorc_darkness);
   SKIP_POST_MSG;
 
-  uint8_t turns = 2;
+  uint8_t turns = 3;
   if (player.level >= 30)
-    turns = 3;
-  if (player.level >= 50)
     turns = 4;
+  if (player.level >= 50)
+    turns = 5;
 
   PowerTier tier = B_TIER;
   if (player.level >= 45)
@@ -672,6 +674,8 @@ void sorcerer_darkness(void) {
       continue;
     apply_blind(monster->status_effects, tier, turns, monster->debuff_immune);
   }
+
+  SFX_MAGIC;
 }
 
 void sorcerer_fireball(void) {

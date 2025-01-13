@@ -94,7 +94,7 @@ const Ability fighter5 = {
 
 const Ability monk0 = {
   1, str_ability_monk_evasion,
-  TARGET_SELF, 3, monk_evasion
+  TARGET_SELF, 7, monk_evasion
 };
 
 const Ability monk1 = {

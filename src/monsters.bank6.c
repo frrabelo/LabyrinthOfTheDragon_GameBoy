@@ -196,8 +196,10 @@ static void zombie_take_turn(Monster *monster) {
         duration,
         player.debuff_immune);
       sprintf(battle_post_message, str_monster_zombie_bite_hit, monster->id);
+      SFX_MAGIC;
     } else {
       sprintf(battle_post_message, str_monster_zombie_bite_miss, monster->id);
+      SFX_FAIL;
     }
     return;
   }
@@ -208,8 +210,10 @@ static void zombie_take_turn(Monster *monster) {
     damage_player(
       get_monster_dmg(monster->level, monster->exp_tier), DAMAGE_PHYSICAL);
   }
-  else
+  else {
     sprintf(battle_post_message, str_monster_miss);
+    SFX_MISS;
+  }
 }
 
 void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {

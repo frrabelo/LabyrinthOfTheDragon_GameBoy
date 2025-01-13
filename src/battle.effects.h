@@ -66,6 +66,11 @@
 #define SFX_EVADE battle_sfx = sfx_evade;
 
 /**
+ * Plays the "magic missile" sound during battle.
+ */
+#define SFX_MAGIC_MISSILE battle_sfx = sfx_magic_missile;
+
+/**
  * Sets the flag to skip the post action message in the battle system.
  */
 #define SKIP_POST_MSG skip_post_message = true

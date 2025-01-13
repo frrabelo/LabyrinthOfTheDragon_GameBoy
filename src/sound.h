@@ -50,5 +50,6 @@ void sfx_mid_powerup(void);
 void sfx_poison_spray(void);
 void sfx_monk_strike(void);
 void sfx_evade(void);
+void sfx_magic_missile(void);
 
 #endif

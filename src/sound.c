@@ -975,9 +975,64 @@ void sfx_evade(void) {
   register_init(&nr44, trigger_evade);
 }
 
+static const uint8_t freq_magic_missile[] = {
+  15, 0x6B,
+  15, 0x7B,
+  15, 0x82,
+  15, 0xAC,
+  SOUND_END
+};
+
+static const uint8_t trigger_magic_missile[] = {
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  SOUND_END
+};
+
+static const uint8_t env_magic_missile2[] = {
+  30, envelope(0, 0, 1),
+  15, envelope(8, 0, 1),
+  15, envelope(7, 0, 1),
+  15, envelope(6, 0, 1),
+  15, envelope(5, 0, 1),
+  SOUND_END,
+};
+
+static const uint8_t freq_magic_missile2[] = {
+  30, 0,
+  15, 0x6B,
+  15, 0x7B,
+  15, 0x82,
+  15, 0xAC,
+  SOUND_END
+};
+
+static const uint8_t trigger_magic_missile2[] = {
+  30, 0x00,
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  15, 0x87,
+  SOUND_END
+};
+
+void sfx_magic_missile(void) {
+  NR10_REG = 0;
+  NR11_REG = 0;
+  NR12_REG = envelope(10, 0, 1);
+  register_init(&nr13, freq_magic_missile);
+  register_init(&nr14, trigger_magic_missile);
+
+  NR21_REG = 0;
+  register_init(&nr22, env_magic_missile2);
+  register_init(&nr23, freq_magic_missile2);
+  register_init(&nr24, trigger_magic_missile2);
+}
+
 void sfx_test(void) {
-  // sfx_monk_strike();
-  sfx_evade();
+  sfx_magic_missile();
 
   // NR10_REG = sweep(7, 0, 7);
   // NR11_REG = 0;

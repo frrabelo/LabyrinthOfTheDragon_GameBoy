@@ -1,6 +1,5 @@
 # The Monster Manual (GBC)
-Pokemon, but darker... and with D&D Monsters!
-
+An 8-bit Adventure RPG with D&D Monsters!
 
 ## How to Build the ROM
 

@@ -306,7 +306,7 @@ static const EncounterTable encounter_lv9[] = {
 };
 
 static bool on_init(void) {
-  config_random_encounter(6, 1, 1, true);
+  config_random_encounter(7, 1, 1, true);
   return false;
 }
 

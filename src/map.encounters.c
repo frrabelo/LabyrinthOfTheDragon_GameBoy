@@ -35,7 +35,7 @@ bool check_random_encounter(void) {
   if (++steps <= safe_steps)
     return false;
 
-  if (d64() > current_chance) {
+  if (d128() > current_chance) {
     current_chance += chance_increase;
     return false;
   }

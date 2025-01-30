@@ -150,6 +150,7 @@ void goblin_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
     m, MONSTER_GOBLIN, str_misc_goblin, &goblin_tileset, level, tier);
   m->palette = goblin_palettes;
 
+  m->palette = goblin_palettes + tier * 4;
   m->exp_level = level + 1;
   m->def_base = get_monster_def(level_offset(level, -2), tier);
   m->matk_base = get_monster_atk(level_offset(level, -1), tier);
@@ -220,7 +221,7 @@ void zombie_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_ZOMBIE, str_misc_zombie, &zombie_tileset, level, tier);
 
-  m->palette = zombie_palettes;
+  m->palette = zombie_palettes + tier * 4;
   m->exp_level = level + 2;
 
   m->max_hp = get_monster_hp(level_offset(level, 2), tier);
@@ -296,7 +297,7 @@ void bugbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_BUGBEAR, str_misc_bugbear, &bugbear_tileset, level, tier);
 
-  m->palette = bugbear_palettes;
+  m->palette = bugbear_palettes + tier * 4;
   m->atk_base = get_monster_atk(level_offset(level, 1), tier);
   m->mdef_base = get_monster_def(level_offset(level, 2), tier);
   m->agl_base = get_agl(level_offset(level, 3), tier);
@@ -370,7 +371,7 @@ static void owlbear_take_turn(Monster *monster) {
 void owlbear_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_OWLBEAR, str_misc_owlbear, &owlbear_tileset, level, tier);
-  m->palette = owlbear_palettes;
+  m->palette = owlbear_palettes + tier * 4;
   m->exp_tier = tier;
   m->level = level + 2;
 
@@ -453,7 +454,7 @@ void gelatinous_cube_generator(
   monster_init_instance(
     m, MONSTER_GELATINOUS_CUBE,
     str_misc_gelatinous_cube, &gelatinous_cube_tileset, level, tier);
-  m->palette = gelatinous_cube_palettes;
+  m->palette = gelatinous_cube_palettes + tier * 4;
   m->exp_level = level + 3;
 
   m->atk_base = get_monster_atk(level_offset(level, 2), tier);
@@ -508,7 +509,7 @@ void displacer_beast_generator(
   monster_init_instance(
     m, MONSTER_DISPLACER_BEAST,
     str_misc_displacer_beast, &displacer_beast_tileset, level, tier);
-  m->palette = displacer_beast_palettes;
+  m->palette = displacer_beast_palettes + tier * 4;
 
   m->exp_tier = tier;
   m->level = level + 2;
@@ -579,7 +580,7 @@ void will_o_wisp_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_WILL_O_WISP, str_misc_will_o_wisp, &will_o_wisp_tileset,
     level, tier);
-  m->palette = will_o_wisp_palettes;
+  m->palette = will_o_wisp_palettes + tier * 4;
 
   m->exp_tier = tier;
   m->level = level;
@@ -655,7 +656,7 @@ void deathknight_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_DEATHKNIGHT, str_misc_death_knight, &deathknight_tileset,
     level, tier);
-  m->palette = deathknight_palettes;
+  m->palette = deathknight_palettes + tier * 4;
   m->exp_level = level + 5;
 
   m->max_hp = get_monster_hp(level_offset(level, 5), tier);

@@ -81,7 +81,7 @@ void mindflayer_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   m->mdef = get_monster_def(level_offset(level, 5), tier);
   m->aspect_resist |= DAMAGE_MAGICAL;
 
-  m->palette = mindflayer_palettes;
+  m->palette = mindflayer_palettes + tier * 4;
   m->bank = BANK_7;
   m->take_turn = mindflayer_take_turn;
 
@@ -207,7 +207,7 @@ void beholder_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_BEHOLDER, str_misc_beholder, &beholder_tileset, level, tier);
 
-  m->palette = beholder_palettes;
+  m->palette = beholder_palettes + tier * 4;
   m->bank = BANK_7;
   m->take_turn = beholder_take_turn;
 
@@ -404,7 +404,7 @@ void dragon_generator(Monster *m, uint8_t level, PowerTier tier) BANKED {
   monster_init_instance(
     m, MONSTER_DRAGON, str_misc_dragon, &dragon_tileset, level, tier);
 
-  m->palette = dragon_palettes;
+  m->palette = dragon_palettes + tier * 4;
   m->bank = BANK_7;
   m->take_turn = dragon_take_turn;
 

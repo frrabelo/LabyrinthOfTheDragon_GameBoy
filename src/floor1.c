@@ -249,7 +249,7 @@ static const NPC npcs[] = {
     action_callback,  // Action callback to execute when the player interacts
   }
   */
-  { NPC_1, MAP_A, 12, 5, MONSTER_KOBOLD, on_npc_action },
+  { NPC_1, MAP_A, 12, 5, MONSTER_GOBLIN, on_npc_action },
 
   { END }
 };

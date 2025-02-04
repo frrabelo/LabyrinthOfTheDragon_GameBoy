@@ -56,3 +56,8 @@ const Item chest_item_1eth[] = {
   { ITEM_ETHER, 1 },
   { END }
 };
+
+const Item chest_item_1remedy[] = {
+  { ITEM_REMEDY, 1 },
+  { END }
+};

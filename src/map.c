@@ -1800,7 +1800,7 @@ void update_door_graphics(void) {
 
   for (
     uint8_t k = 0;
-    k < 8 && door->id != END;
+    k < 16 && door->id != END;
     k++, door++, map.doors_updated >>= 1
   ) {
     if (

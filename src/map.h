@@ -670,14 +670,22 @@ typedef struct Lever {
  * Ids/Flags used to denote specific doors.
  */
 typedef enum DoorId {
-  DOOR_1 = FLAG(0),
-  DOOR_2 = FLAG(1),
-  DOOR_3 = FLAG(2),
-  DOOR_4 = FLAG(3),
-  DOOR_5 = FLAG(4),
-  DOOR_6 = FLAG(5),
-  DOOR_7 = FLAG(6),
-  DOOR_8 = FLAG(7),
+  DOOR_1 = FLAG16(0),
+  DOOR_2 = FLAG16(1),
+  DOOR_3 = FLAG16(2),
+  DOOR_4 = FLAG16(3),
+  DOOR_5 = FLAG16(4),
+  DOOR_6 = FLAG16(5),
+  DOOR_7 = FLAG16(6),
+  DOOR_8 = FLAG16(7),
+  DOOR_9 = FLAG16(8),
+  DOOR_10 = FLAG16(9),
+  DOOR_11 = FLAG16(10),
+  DOOR_12 = FLAG16(11),
+  DOOR_13 = FLAG16(12),
+  DOOR_14 = FLAG16(13),
+  DOOR_15 = FLAG16(14),
+  DOOR_16 = FLAG16(15),
 } DoorId;
 
 /**
@@ -1120,7 +1128,8 @@ typedef struct MapSystem {
   /**
    * Door locked open/closed state.
    */
-  uint8_t flags_door_locked;
+  uint16_t flags_door_locked;
+  // uint8_t flags_door_locked;
   /**
    * Whether or not particular sconces are lit.
    */
@@ -1172,7 +1181,8 @@ typedef struct MapSystem {
    * Each bit represents a "changed" flag for doors. This will be set if the
    * state of the door is changed via scripts, etc.
    */
-  uint8_t doors_updated;
+  uint16_t doors_updated;
+  // uint8_t doors_updated;
   /**
    * Each bit represents a "changed" flag for sconces. This will be set if the
    * stat of a sconce changes (if it was lit, etc.).

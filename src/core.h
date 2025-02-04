@@ -237,6 +237,12 @@ typedef struct Timer {
 #define FLAG(b) (1 << (b))
 
 /**
+ * @param b Bit for the flag mask.
+ * @return 16-bit mask for the flag at the given bit.
+ */
+#define FLAG16(b) ((uint16_t)(1 << (b)))
+
+/**
  * Enumeration of names for each page in the global game flags.
  */
 typedef enum FlagPage {

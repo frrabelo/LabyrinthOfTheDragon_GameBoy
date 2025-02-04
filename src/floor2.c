@@ -1,14 +1,15 @@
 #pragma bank 8
 
 #include "floor.h"
+#include "sound.h"
 
 //------------------------------------------------------------------------------
 // Floorwide settings
 //------------------------------------------------------------------------------
 
 #define ID 99
-#define DEFAULT_X 6
-#define DEFAULT_Y 11
+#define DEFAULT_X 10
+#define DEFAULT_Y 13
 
 //------------------------------------------------------------------------------
 // Maps
@@ -16,8 +17,8 @@
 
 static const Map maps[] = {
   // id, bank, data, width, height
-  { MAP_A, BANK_16, floor_two_data, 32, 32 },
-
+  { MAP_A, BANK_17, floor_two_v2, 24, 24 },
+  { MAP_B, BANK_17, floor_two_v2_b, 32, 16 },
   { END },
 };
 
@@ -40,24 +41,34 @@ static const Chest chests[] = {
   */
   {
     CHEST_1,
-    MAP_A, 20, 11, false, false,
-    str_chest_item_2pot_1eth,
-    chest_item_2pot_1eth,
+    MAP_A, 16, 5, false, false,
+    str_chest_item_2pots,
+    chest_item_2pots,
   },
   {
     CHEST_2,
-    MAP_A, 24, 10, false, false,
-    str_chest_item_1pots,
-    chest_item_1pot,
+    MAP_A, 18, 5, false, false,
+    str_chest_item_1remedy,
+    chest_item_1remedy,
   },
   {
     CHEST_3,
-    MAP_A, 18, 3, false, false,
-    NULL,
-    NULL,
-    chest_add_magic_key,
+    MAP_B, 23, 5, false, false,
+    NULL, NULL,
+    chest_add_magic_key
   },
-
+  {
+    CHEST_4,
+    MAP_B, 25, 5, false, false,
+    NULL, NULL,
+    chest_add_magic_key
+  },
+  {
+    CHEST_5,
+    MAP_B, 29, 3, false, false,
+    str_chest_item_1pots,
+    chest_item_1pot
+  },
   { END },
 };
 
@@ -77,23 +88,29 @@ static const Exit exits[] = {
     EXIT_STAIRS   // Type of exit (not sure if we'll use this yet)
   },
   */
+  { MAP_A, 10, 8, MAP_A, 10, 5, UP, EXIT_STAIRS },
+  { MAP_A, 10, 5, MAP_A, 10, 8, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 2, 9, MAP_A, 21, 2, DOWN, EXIT_STAIRS },
-  { MAP_A, 21, 2, MAP_A, 2, 9, DOWN, EXIT_STAIRS },
+  { MAP_A, 3, 10, MAP_A, 3, 7, UP, EXIT_STAIRS },
+  { MAP_A, 3, 7, MAP_A, 3, 10, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 10, 9, MAP_A, 14, 2, DOWN, EXIT_STAIRS },
-  { MAP_A, 14, 2, MAP_A, 10, 9, DOWN, EXIT_STAIRS },
+  { MAP_A, 17, 10, MAP_A, 17, 7, UP, EXIT_STAIRS },
+  { MAP_A, 17, 7, MAP_A, 17, 10, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 29, 2, MAP_A, 4, 19, DOWN, EXIT_STAIRS },
-  { MAP_A, 4, 19, MAP_A, 29, 2, DOWN, EXIT_STAIRS },
+  { MAP_A, 18, 16, MAP_B, 14, 8, DOWN, EXIT_STAIRS },
+  { MAP_B, 14, 8, MAP_A, 18, 16, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 12, 17, MAP_A, 18, 16, DOWN, EXIT_STAIRS },
-  { MAP_A, 18, 16, MAP_A, 12, 17, DOWN, EXIT_STAIRS },
+  { MAP_A, 9, 19, MAP_B, 5, 11, DOWN, EXIT_STAIRS },
+  { MAP_B, 5, 11, MAP_A, 9, 19, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 6, 8, MAP_A, 9, 2, DOWN, EXIT_STAIRS },
-  { MAP_A, 9, 2, MAP_A, 6, 8, DOWN, EXIT_STAIRS },
+  { MAP_A, 11, 19, MAP_B, 7, 11, DOWN, EXIT_STAIRS },
+  { MAP_B, 7, 11, MAP_A, 11, 19, DOWN, EXIT_STAIRS },
 
-  { MAP_A, 3, 1, MAP_A, 5, 30, UP, EXIT_STAIRS, &bank_floor3 },
+  { MAP_B, 6, 2, MAP_B, 24, 8, UP, EXIT_STAIRS },
+  { MAP_B, 24, 8, MAP_B, 6, 2, DOWN, EXIT_STAIRS },
+
+  // TODO: add next level door
+  // { MAP_A, 10, 1, ... }
 
   { END },
 };
@@ -111,17 +128,45 @@ static const Sign signs[] = {
     "Hi there!" // The message to display
   }
   */
-
-  { MAP_A,  5, 8, UP, str_floor_common_light_fires },
-  { MAP_A, 26, 3, UP, str_floor_common_missing }, // Yep...
-  { MAP_A, 6, 12, DOWN, str_floor_common_no_return },
-
+  { MAP_A, 17, 4, UP, str_floor2_sign_items_room, },
+  { MAP_A, 10, 19, UP, str_floor2_sign_levers },
   { END },
 };
 
 //------------------------------------------------------------------------------
 // Levers
 //------------------------------------------------------------------------------
+
+void on_pulled(const Lever *lever) {
+  switch (lever->id) {
+  case LEVER_1:
+    toggle_door(DOOR_4);
+    toggle_door(DOOR_5);
+    toggle_door(DOOR_6);
+    toggle_door(DOOR_7);
+    break;
+  case LEVER_2:
+  case LEVER_3:
+    play_sound(sfx_light_fire);
+
+    if (lever->id == LEVER_2) {
+      light_sconce(SCONCE_1, FLAME_GREEN);
+      light_sconce(SCONCE_3, FLAME_GREEN);
+    } else {
+      light_sconce(SCONCE_2, FLAME_GREEN);
+      light_sconce(SCONCE_4, FLAME_GREEN);
+    }
+
+    if (is_lever_on(LEVER_2) && is_lever_on(LEVER_3))
+      open_door(DOOR_8);
+    break;
+  case LEVER_4:
+    map_textbox(str_floor2_door_opens);
+    play_sound(sfx_monster_critical);
+    open_door(DOOR_1);
+    break;
+  }
+}
 
 static const Lever levers[] = {
   /*
@@ -134,6 +179,10 @@ static const Lever levers[] = {
     NULL,     // Scripting callback for the lever
   }
   */
+  { LEVER_1, MAP_A, 10, 21, false, false, on_pulled },
+  { LEVER_2, MAP_B, 2, 6, true, false, on_pulled },
+  { LEVER_3, MAP_B, 10, 6, true, false, on_pulled },
+  { LEVER_4, MAP_B, 24, 5, true, false, on_pulled },
   { END },
 };
 
@@ -152,9 +201,19 @@ static const Door doors[] = {
     false,            // Does the door start opened?
   }
   */
-  { DOOR_1, MAP_A,  6,  8, DOOR_STAIRS_DOWN, false },
-  { DOOR_2, MAP_A, 20, 16, DOOR_NORMAL, true },
-  { DOOR_3, MAP_A,  3,  1, DOOR_NEXT_LEVEL, false },
+  { DOOR_1, MAP_A, 10, 8, DOOR_NORMAL, false, false },
+  { DOOR_2, MAP_A, 3, 10, DOOR_NORMAL, true, false },
+  { DOOR_3, MAP_A, 17, 10, DOOR_NORMAL, true, false },
+
+  { DOOR_4, MAP_A, 9, 19, DOOR_STAIRS_DOWN, false, true },
+  { DOOR_5, MAP_B, 5, 11, DOOR_STAIRS_UP, false, true },
+
+  { DOOR_6, MAP_A, 11, 19, DOOR_STAIRS_DOWN, false, false },
+  { DOOR_7, MAP_B, 7, 11, DOOR_STAIRS_UP, false, false },
+
+  { DOOR_8, MAP_B, 6, 2, DOOR_NORMAL, false, false },
+
+  { DOOR_9, MAP_A, 10, 1, DOOR_NEXT_LEVEL, false, false },
 
   { END }
 };
@@ -163,29 +222,8 @@ static const Door doors[] = {
 // Sconces
 //------------------------------------------------------------------------------
 
-static void on_lit(const Sconce* sconce) {
-  if (is_sconce_lit(SCONCE_2))
-    light_sconce(SCONCE_6, FLAME_RED);
-
-  if (is_sconce_lit(SCONCE_3))
-    light_sconce(SCONCE_7, FLAME_GREEN);
-
-  if (is_sconce_lit(SCONCE_4))
-    light_sconce(SCONCE_8, FLAME_BLUE);
-
-  if (is_sconce_lit(SCONCE_5)){ }
-    light_sconce(SCONCE_1, FLAME_RED);
-
-  if (
-    is_sconce_lit(SCONCE_5) &&
-    is_sconce_lit(SCONCE_6) &&
-    is_sconce_lit(SCONCE_7) &&
-    is_sconce_lit(SCONCE_8)
-  ) {
-    //open the door dave
-    open_door(DOOR_1);
-  }
-}
+// static void on_lit(const Sconce* sconce) {
+// }
 
 static const Sconce sconces[] = {
   /*
@@ -197,18 +235,27 @@ static const Sconce sconces[] = {
     FLAME_BLUE  // Flame color for the sconce if it starts lit.
   }
   */
-  { SCONCE_STATIC, MAP_A,  4, 14, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 13, 12, true, FLAME_RED },
 
-  { SCONCE_2, MAP_A,  8, 16, false, FLAME_RED, on_lit },
-  { SCONCE_3, MAP_A, 23, 16, false, FLAME_RED, on_lit },
-  { SCONCE_4, MAP_A, 15,  2, false, FLAME_RED, on_lit },
-  { SCONCE_5, MAP_A, 20,  2, false, FLAME_RED, on_lit },
+  // Map A
+  { SCONCE_STATIC, MAP_A, 3, 4, true, FLAME_GREEN },
+  { SCONCE_STATIC, MAP_A, 9, 1, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 11, 1, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 6, 11, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 14, 11, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 16, 16, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 8, 19, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 12, 19, true, FLAME_BLUE },
 
-  { SCONCE_6, MAP_A, 4,  7, false, FLAME_RED },
-  { SCONCE_7, MAP_A, 5,  7, false, FLAME_RED },
-  { SCONCE_8, MAP_A, 7,  7, false, FLAME_RED },
-  { SCONCE_1, MAP_A, 8,  7, false, FLAME_RED },
+  // Map B
+  { SCONCE_STATIC, MAP_B, 10, 2, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_B, 13, 8, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_B, 29, 1, true, FLAME_BLUE },
+
+  // Map B - Dynamic
+  { SCONCE_1, MAP_B, 5, 1, false, FLAME_GREEN },
+  { SCONCE_2, MAP_B, 7, 1, false, FLAME_GREEN },
+  { SCONCE_3, MAP_B, 2, 5, false, FLAME_GREEN },
+  { SCONCE_4, MAP_B, 10, 5, false, FLAME_GREEN },
 
   { END }
 };
@@ -218,23 +265,25 @@ static const Sconce sconces[] = {
 //------------------------------------------------------------------------------
 
 static void boss_victory(void) NONBANKED {
-  open_door(DOOR_3);
-  set_npc_invisible(NPC_1);
+  // open_door(DOOR_3);
+  // set_npc_invisible(NPC_1);
 }
 
 static bool boss_encounter(void) {
-  Monster *monster = encounter.monsters;
-  reset_encounter(MONSTER_LAYOUT_1);
-  kobold_generator(monster, player.level, A_TIER);
-  monster->id = 'A';
-  set_on_victory(boss_victory);
-  start_battle();
-  return true;
+  // Monster *monster = encounter.monsters;
+  // reset_encounter(MONSTER_LAYOUT_1);
+  // kobold_generator(monster, player.level, A_TIER);
+  // monster->id = 'A';
+  // set_on_victory(boss_victory);
+  // start_battle();
+  // return true;
+  return false;
 }
 
 static bool on_npc_action(const NPC *npc) {
-  map_textbox_with_action(str_floor_common_growl, boss_encounter);
-  return true;
+  // map_textbox_with_action(str_floor_common_growl, boss_encounter);
+  // return true;
+  return false;
 }
 
 static const NPC npcs[] = {
@@ -247,7 +296,7 @@ static const NPC npcs[] = {
     action_callback,  // Action callback to execute when the player interacts
   }
   */
-  { NPC_1, MAP_A, 3, 3, MONSTER_KOBOLD, on_npc_action },
+  // { NPC_1, MAP_A, 3, 3, MONSTER_KOBOLD, on_npc_action },
 
   { END }
 };
@@ -287,11 +336,11 @@ static bool on_special(void) {
 }
 
 static bool on_move(void) {
-  if (check_random_encounter()) {
-    generate_encounter(random_encounters);
-    start_battle();
-    return true;
-  }
+  // if (check_random_encounter()) {
+  //   generate_encounter(random_encounters);
+  //   start_battle();
+  //   return true;
+  // }
   return false;
 }
 
@@ -304,26 +353,26 @@ static bool on_action(void) {
 //------------------------------------------------------------------------------
 
 static const palette_color_t palettes[] = {
-  // Palette 1 - Core background tiles
-  RGB8(190, 200, 190),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
-  RGB8(24, 0, 0),
-  // Palette 2 - Treasure chests
-  RGB8(192, 138, 40),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
-  RGB8(24, 0, 0),
-  // Palette 3
+  // Palette 1 - Floor
+  RGB8(194, 192, 190),
+  RGB8(131, 100, 59),
+  RGB8(55, 56, 0),
+  RGB8(0, 29, 49),
+  // Palette 2 - Walls
+  RGB8(212, 222, 207),
+  RGB8(163, 139, 54),
+  RGB8(110, 56, 46),
+  RGB8(8, 12, 50),
+  // Palette 3 - Treasure Chests
+  RGB8(219, 191, 34),
+  RGB8(163, 139, 54),
+  RGB8(110, 56, 46),
+  RGB8(54, 55, 0),
+  // Palette 4 - Levers
   RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 4
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
+  RGB8(163, 139, 54),
+  RGB8(110, 56, 46),
+  RGB8(54, 55, 0),
   // Palette 5
   RGB_WHITE,
   RGB8(120, 120, 120),

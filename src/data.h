@@ -55,5 +55,7 @@ INCBIN_EXTERN(floor_seven_data)
 INCBIN_EXTERN(floor_eight_data)
 
 INCBIN_EXTERN(floor_one_v2)
+INCBIN_EXTERN(floor_two_v2)
+INCBIN_EXTERN(floor_two_v2_b)
 
 #endif

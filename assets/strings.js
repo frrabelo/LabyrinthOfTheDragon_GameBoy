@@ -217,6 +217,12 @@ addNamespace('floor1', 2, {
   'boss_defeated': "Yawp! You won't beat my friends below!",
 });
 
+addNamespace('floor2', 2, {
+  'sign_items_room': 'Soon you will have to choose.',
+  'sign_levers': 'Levers change many things.',
+  'door_opens': 'Somewhere a door opens...',
+});
+
 addNamespace('floor_common', 2, {
   'growl': "GROWL!",
   'light_fires': "Light these fires to open this door!",
@@ -244,6 +250,7 @@ addNamespace('chest_item', 2, {
   'regen_pot': 'You get a regen potion!',
   '2pots': 'You get 2 potions!',
   '1eth': 'You get an ether!',
+  '1remedy': 'You get a remedy!',
 });
 
 addNamespace('items', 3, {

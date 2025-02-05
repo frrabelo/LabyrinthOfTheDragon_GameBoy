@@ -256,11 +256,13 @@ static void load_monster_tiles(MonsterTiles tiles, MonsterTilePosition pos) {
     break;
   case MONSTER_TILES_OWLBEAR:
   case MONSTER_TILES_GELATINOUS_CUBE:
-  case MONSTER_TILES_DISPLACER_BEAST:
   case MONSTER_TILES_WILL_O_WISP:
+  case MONSTER_TILES_DISPLACER_BEAST:
     tileset = &monsters_tileset_page2;
+    tiles -= 4;
     break;
   default:
+    tiles -= 8;
     tileset = &monsters_tileset_page3;
   }
 

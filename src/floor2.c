@@ -9,7 +9,7 @@
 
 #define ID 99
 #define DEFAULT_X 10
-#define DEFAULT_Y 13
+#define DEFAULT_Y 4 // 13 (normal), 4 (for boss)
 
 //------------------------------------------------------------------------------
 // Maps
@@ -109,8 +109,8 @@ static const Exit exits[] = {
   { MAP_B, 6, 2, MAP_B, 24, 8, UP, EXIT_STAIRS },
   { MAP_B, 24, 8, MAP_B, 6, 2, DOWN, EXIT_STAIRS },
 
-  // TODO: add next level door
-  // { MAP_A, 10, 1, ... }
+  // TODO: add next level door (instead of looping)
+  { MAP_A, 10, 1, MAP_A, 10, 13, UP, EXIT_STAIRS, &bank_floor2 },
 
   { END },
 };
@@ -213,7 +213,7 @@ static const Door doors[] = {
 
   { DOOR_8, MAP_B, 6, 2, DOOR_NORMAL, false, false },
 
-  { DOOR_9, MAP_A, 10, 1, DOOR_NEXT_LEVEL, false, false },
+  { DOOR_9, MAP_A, 10, 1, DOOR_NEXT_LEVEL, false, true },
 
   { END }
 };
@@ -264,25 +264,52 @@ static const Sconce sconces[] = {
 // NPCs (IMPLS YET)
 //------------------------------------------------------------------------------
 
+static void elite_victory(void) {
+  set_npc_invisible(NPC_1);
+  grant_ability(ABILITY_1);
+  play_sound(sfx_big_powerup);
+  map_textbox(get_grant_message(ABILITY_1));
+}
+
+static bool elite_encounter(void) {
+  reset_encounter(MONSTER_LAYOUT_1);
+  Monster *monster = encounter.monsters;
+  bugbear_generator(monster, 20, A_TIER);
+  monster->id = 'A';
+  set_on_victory(elite_victory);
+  start_battle();
+  return true;
+}
+
 static void boss_victory(void) NONBANKED {
-  // open_door(DOOR_3);
-  // set_npc_invisible(NPC_1);
+  open_door(DOOR_9);
+  play_sound(sfx_big_door_open);
+  set_npc_invisible(NPC_2);
 }
 
 static bool boss_encounter(void) {
-  // Monster *monster = encounter.monsters;
-  // reset_encounter(MONSTER_LAYOUT_1);
-  // kobold_generator(monster, player.level, A_TIER);
-  // monster->id = 'A';
-  // set_on_victory(boss_victory);
-  // start_battle();
-  // return true;
-  return false;
+  Monster *monster = encounter.monsters;
+  reset_encounter(MONSTER_LAYOUT_1);
+  owlbear_generator(monster, 23, S_TIER);
+  monster->id = 'A';
+  set_on_victory(boss_victory);
+  start_battle();
+  return true;
 }
 
 static bool on_npc_action(const NPC *npc) {
-  // map_textbox_with_action(str_floor_common_growl, boss_encounter);
-  // return true;
+
+  switch (npc->id) {
+  case NPC_1:
+    play_sound(sfx_monster_attack1);
+    map_textbox_with_action(str_floor2_elite_msg, elite_encounter);
+    return true;
+  case NPC_2:
+    play_sound(sfx_monster_attack2);
+    map_textbox_with_action(str_floor2_boss_msg, boss_encounter);
+    return true;
+  }
+
   return false;
 }
 
@@ -293,11 +320,13 @@ static const NPC npcs[] = {
     MAP_A,            // Map for the npc
     0, 0              // (x, y) tile for the npc
     MONSTER_KOBOLD,   // Monster graphic to use for the NPC
+    B_TIER,           // Tier for the monster (determines palette)
     action_callback,  // Action callback to execute when the player interacts
   }
   */
-  // { NPC_1, MAP_A, 3, 3, MONSTER_KOBOLD, on_npc_action },
 
+  { NPC_1, MAP_A, 3, 5, MONSTER_BUGBEAR, B_TIER, on_npc_action }, // Elite
+  { NPC_2, MAP_A, 10, 3, MONSTER_OWLBEAR, S_TIER, on_npc_action }, // Boss
   { END }
 };
 

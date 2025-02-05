@@ -279,6 +279,12 @@ extern const Ability null_ability;
 void grant_ability(AbilityFlag flag) BANKED;
 
 /**
+ * @param flag Ability flag just granted.
+ * @return THe message to display upon granting the ability.
+ */
+const char *get_grant_message(AbilityFlag flag) BANKED;
+
+/**
  * Sets the player's level to a specific value.
  * @param level Level to set.
  */

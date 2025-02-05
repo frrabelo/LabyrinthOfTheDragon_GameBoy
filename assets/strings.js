@@ -221,6 +221,8 @@ addNamespace('floor2', 2, {
   'sign_items_room': 'Soon you will have to choose.',
   'sign_levers': 'Levers change many things.',
   'door_opens': 'Somewhere a door opens...',
+  'elite_msg': "An adventurer? Come, let's test your mettle!",
+  'boss_msg': 'SCREEEEEECH!',
 });
 
 addNamespace('floor_common', 2, {
@@ -235,6 +237,35 @@ addNamespace('floor_common', 2, {
   'love': "I LOVE YOU!",
   'strange_wind': "You feel a strong breeze from the north.",
 })
+
+function grant_ability_str(name, cast=true) {
+  return cast ?
+    `You learn to cast ${name}!` :
+    `You learn to use ${name}!`
+}
+
+addNamespace('gain_ability', 2, {
+  'druid1': grant_ability_str('Bark Skin'),
+  'druid2': grant_ability_str('Lightning'),
+  'druid3': grant_ability_str('Heal'),
+  'druid4': grant_ability_str('Insect Plague'),
+  'druid5': grant_ability_str('Regenerate'),
+  'fighter1': grant_ability_str('Action Surge', false),
+  'fighter2': grant_ability_str('Cleave', false),
+  'fighter3': grant_ability_str('Trip Attack', false),
+  'fighter4': grant_ability_str('Menace', false),
+  'fighter5': grant_ability_str('Indomitable', false),
+  'monk1': grant_ability_str('Open Palm', false),
+  'monk2': grant_ability_str('Still Mind', false),
+  'monk3': grant_ability_str('Flurry', false),
+  'monk4': grant_ability_str('Diamond Body', false),
+  'monk5': grant_ability_str('Quivering Palm', false),
+  'sorcerer1': grant_ability_str('Fireball'),
+  'sorcerer2': grant_ability_str('Haste'),
+  'sorcerer3': grant_ability_str('Sleetstorm'),
+  'sorcerer4': grant_ability_str('Disintegrate'),
+  'sorcerer5': grant_ability_str('Wild Magic'),
+});
 
 addNamespace('floor_three', 2, {
   'lever_puzzle': "Levers below open these doors.",

@@ -956,6 +956,79 @@ void grant_ability(AbilityFlag flag) BANKED {
   set_player_abilities();
 }
 
+char *get_druid_grant_message(AbilityFlag flag) {
+  switch (flag) {
+  case ABILITY_1:
+    return str_gain_ability_druid1;
+  case ABILITY_2:
+    return str_gain_ability_druid2;
+  case ABILITY_3:
+    return str_gain_ability_druid3;
+  case ABILITY_4:
+    return str_gain_ability_druid4;
+  default:
+    return str_gain_ability_druid5;
+  }
+}
+
+char *get_fighter_grant_message(AbilityFlag flag) {
+  switch (flag) {
+  case ABILITY_1:
+    return str_gain_ability_fighter1;
+  case ABILITY_2:
+    return str_gain_ability_fighter2;
+  case ABILITY_3:
+    return str_gain_ability_fighter3;
+  case ABILITY_4:
+    return str_gain_ability_fighter4;
+  default:
+    return str_gain_ability_fighter5;
+  }
+}
+
+char *get_monk_grant_message(AbilityFlag flag) {
+  switch (flag) {
+  case ABILITY_1:
+    return str_gain_ability_monk1;
+  case ABILITY_2:
+    return str_gain_ability_monk2;
+  case ABILITY_3:
+    return str_gain_ability_monk3;
+  case ABILITY_4:
+    return str_gain_ability_monk4;
+  default:
+    return str_gain_ability_monk5;
+  }
+}
+
+char *get_sorcerer_grant_message(AbilityFlag flag) {
+  switch (flag) {
+  case ABILITY_1:
+    return str_gain_ability_sorcerer1;
+  case ABILITY_2:
+    return str_gain_ability_sorcerer2;
+  case ABILITY_3:
+    return str_gain_ability_sorcerer3;
+  case ABILITY_4:
+    return str_gain_ability_sorcerer4;
+  default:
+    return str_gain_ability_sorcerer5;
+  }
+}
+
+const char *get_grant_message(AbilityFlag flag) BANKED {
+  switch (player.player_class) {
+  case CLASS_DRUID:
+    return get_druid_grant_message(flag);
+  case CLASS_FIGHTER:
+    return get_fighter_grant_message(flag);
+  case CLASS_MONK:
+    return get_monk_grant_message(flag);
+  default:
+    return get_sorcerer_grant_message(flag);
+  }
+}
+
 void set_player_level(uint8_t level) BANKED {
   player.level = level;
   player.exp = get_exp(player.level);

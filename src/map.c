@@ -238,11 +238,10 @@ static bool on_action(void) NONBANKED {
  * Switches to the floor's bank and calls the `on_action` function.
  */
 static void on_load(void) NONBANKED {
-  if (!floor_bank->floor->on_load)
-    return;
   const uint8_t _prev_bank = CURRENT_BANK;
   SWITCH_ROM(floor_bank->bank);
-  floor_bank->floor->on_load();
+  if (floor_bank->floor->on_load)
+    floor_bank->floor->on_load();
   SWITCH_ROM(_prev_bank);
 }
 

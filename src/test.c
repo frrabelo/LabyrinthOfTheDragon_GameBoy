@@ -59,9 +59,9 @@ void test_level(void) {
 
   SET_MAGIC_KEYS(9);
   SET_HAS_TORCH;
-  // disable_encounters = true;
+  disable_encounters = true;
 
-  set_active_floor(&bank_floor_test2);
+  set_active_floor(&bank_floor2);
   init_world_map();
 
   // TEST_SEED(62);

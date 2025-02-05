@@ -17,6 +17,11 @@ uint8_t joypad_pressed;
 uint8_t joypad_released;
 
 /**
+ * Uncomment to enable sound effect testing when pressing the 'B' button.
+ */
+// #define SFX_TEST
+
+/**
  * Random Seed to use for the game. If set to 0 then the game will generate a
  * seed value on the title while waiting for the player to begin the game.
  */
@@ -41,11 +46,8 @@ static inline void initialize(void) {
   initarand(RANDOM_SEED);
   hide_window();
 
-  // initialize_game();
-  // test_combat_general(MONSTER_LAYOUT_1, DUMMY_NORMAL);
-  // test_flee();
-  // test_big_map();
   test_level();
+  // test_battle();
 }
 
 /**
@@ -126,8 +128,10 @@ void main(void) {
   while (1) {
     update_joypad();
 
+    #ifdef SFX_TEST
     if (was_pressed(J_B))
       play_sound(sfx_test);
+    #endif
 
     game_loop();
     vsync();

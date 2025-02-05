@@ -53,16 +53,25 @@ void test_big_map(void) {
   } while(0)
 
 void test_level(void) {
-  init_test_player(CLASS_SORCERER, 4);
+  init_test_player(CLASS_SORCERER, 32);
   grant_ability(ABILITY_0);
   fill_inventory(5);
 
-  // SET_MAGIC_KEYS(9);
-  // SET_HAS_TORCH;
+  SET_MAGIC_KEYS(9);
+  SET_HAS_TORCH;
   // disable_encounters = true;
 
-  set_active_floor(&bank_floor1);
+  set_active_floor(&bank_floor_test2);
   init_world_map();
 
   // TEST_SEED(62);
+}
+
+void test_battle(void) {
+  reset_encounter(MONSTER_LAYOUT_2);
+  Monster *monster = encounter.monsters;
+  dragon_generator(monster++, 10, C_TIER);
+  dragon_generator(monster++, 10, B_TIER);
+
+  test_battle_init();
 }

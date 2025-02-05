@@ -251,8 +251,9 @@ static const NPC npcs[] = {
     NPC_1,            // Use NPC_* constants for ids.
     MAP_A,            // Map for the npc
     0, 0              // (x, y) tile for the npc
-    MONSTER_KOBOLD,   // Monster type
-    on_monster_action // Action callback
+    MONSTER_KOBOLD,   // Monster graphic to use for the NPC
+    B_TIER,           // Tier for the monster (determines palette)
+    action_callback,  // Action callback to execute when the player interacts
   }
   */
   { END }

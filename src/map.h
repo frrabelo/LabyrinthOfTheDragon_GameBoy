@@ -827,6 +827,10 @@ typedef struct NPC {
    */
   MonsterType monster_type;
   /**
+   * Power tier for the monster (used to select palette).
+   */
+  PowerTier power_tier;
+  /**
    * Scripting callback to execute when the player interacts with the NPC.
    * @param npc The NPC that initiated the callback.
    * @return `true` if the default action should be skipped.

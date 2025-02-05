@@ -538,8 +538,52 @@ static MonsterTiles monster_tiles_by_type(MonsterType type) {
  * @return Palette colors for the monster.
  * @param type Type of monster for which to find the palette colors.
  */
-static palette_color_t *monster_palette_by_type(MonsterType type) {
-  return kobold_palettes;
+static palette_color_t *monster_palette_by_type(
+  MonsterType type,
+  PowerTier tier
+) {
+  palette_color_t *palette;
+
+  switch (type) {
+  case MONSTER_GOBLIN:
+    palette = goblin_palettes;
+    break;
+  case MONSTER_ZOMBIE:
+    palette = zombie_palettes;
+    break;
+  case MONSTER_BUGBEAR:
+    palette = bugbear_palettes;
+    break;
+  case MONSTER_OWLBEAR:
+    palette = owlbear_palettes;
+    break;
+  case MONSTER_GELATINOUS_CUBE:
+    palette = gelatinous_cube_palettes;
+    break;
+  case MONSTER_DISPLACER_BEAST:
+    palette = displacer_beast_palettes;
+    break;
+  case MONSTER_WILL_O_WISP:
+    palette = will_o_wisp_palettes;
+    break;
+  case MONSTER_DEATHKNIGHT:
+    palette = deathknight_palettes;
+    break;
+  case MONSTER_MINDFLAYER:
+    palette = mindflayer_palettes;
+    break;
+  case MONSTER_BEHOLDER:
+    palette = beholder_palettes;
+    break;
+  case MONSTER_DRAGON:
+    palette = dragon_palettes;
+    break;
+  default:
+    palette = kobold_palettes;
+    break;
+  }
+
+  return palette + tier * 4;
 }
 
 /**
@@ -556,11 +600,12 @@ static void init_npcs(void) {
     npc++, pos++
   ) {
     MonsterTiles monster_tiles = monster_tiles_by_type(npc->monster_type);
-    palette_color_t *palette = monster_palette_by_type(npc->monster_type);
+    palette_color_t *palette = monster_palette_by_type(
+      npc->monster_type, npc->power_tier);
 
     const uint8_t palette_num = pos + 6;
     core.load_monster_tiles(monster_tiles, pos);
-    core.load_sprite_palette(kobold_palettes, palette_num, 1);
+    core.load_sprite_palette(palette, palette_num, 1);
 
     const uint8_t sprite_root = NPC_SPRITE_1 + 4 * pos;
     const uint8_t tile_root = NPC_1_TILE_ROOT + 0x20 * pos;

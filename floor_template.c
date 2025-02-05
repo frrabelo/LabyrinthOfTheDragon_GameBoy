@@ -162,6 +162,7 @@ static const NPC npcs[] = {
     MAP_A,            // Map for the npc
     0, 0              // (x, y) tile for the npc
     MONSTER_KOBOLD,   // Monster graphic to use for the NPC
+    B_TIER,           // Tier for the monster (determines palette)
     action_callback,  // Action callback to execute when the player interacts
   }
   */

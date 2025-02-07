@@ -213,7 +213,7 @@ static const Door doors[] = {
 
   { DOOR_8, MAP_B, 6, 2, DOOR_NORMAL, false, false },
 
-  { DOOR_9, MAP_A, 10, 1, DOOR_NEXT_LEVEL, false, true },
+  { DOOR_9, MAP_A, 10, 1, DOOR_NEXT_LEVEL, false, false },
 
   { END }
 };

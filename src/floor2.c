@@ -9,7 +9,7 @@
 
 #define ID 99
 #define DEFAULT_X 10
-#define DEFAULT_Y 4 // 13 (normal), 4 (for boss)
+#define DEFAULT_Y 13
 
 //------------------------------------------------------------------------------
 // Maps

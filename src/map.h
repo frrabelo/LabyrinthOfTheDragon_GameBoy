@@ -1020,192 +1020,96 @@ extern MapTile local_tiles[5];
 extern bool init_random;
 
 /**
- * Map system main state. Holds all global memory values used in the system.
+ * Top-level state for the map system.
  */
-typedef struct MapSystem {
-  /**
-   * Top-level state for the map system.
-   */
-  MapState state;
-  /**
-   * Horizontal map coordinate.
-   */
-  int8_t x;
-  /**
-   * Veritcal map coordinate.
-   */
-  int8_t y;
-  /**
-   * Horizontal background scroll position.
-   */
-  int8_t scroll_x;
-  /**
-   * Vertical background scroll position.
-   */
-  int8_t scroll_y;
-  /**
-   * Direction the player is currently moving.
-   */
-  Direction move_direction;
-  /**
-   * Animation step for the move.
-   */
-  uint8_t move_step;
-  /**
-   * Current VRAM progressive load origin x-position.
-   */
-  int8_t vram_x;
-  /**
-   * Curren VRAM progressive load origin y-position.
-   */
-  int8_t vram_y;
-  /**
-   * Position in the buffer for the next map tile to be loaded.
-   */
-  uint8_t buffer_pos;
-  /**
-   * Maximum number of map tiles to load during a move.
-   */
-  uint8_t buffer_max;
-  /**
-   * VRAM start colum to use during a progressive load.
-   */
-  int8_t vram_col;
-  /**
-   * VRAM start row to use during a progressive load.
-   */
-  int8_t vram_row;
-  /**
-   * Amount added to the vram column position after loading each tile during a
-   * progressive load.
-   */
-  int8_t vram_d_col;
-  /**
-   * Amount added to the vram row position after loading each tile during a
-   * progressive load.
-   */
-  int8_t vram_d_row;
-  /**
-   * The active floor.
-   */
-  const Floor *active_floor;
-  /**
-   * Active map in the active floor.
-   */
-  const Map *active_map;
-  /**
-   * State of the hero sprites.
-   */
-  HeroState hero_state;
-  /**
-   * Direction the hero is facing.
-   */
-  Direction hero_direction;
-  /**
-   * Hero walk animation timer.
-   */
-  Timer walk_timer;
-  /**
-   * Hero walk animation frame.
-   */
-  uint8_t walk_frame;
-  /**
-   * Map state to set after a fade in/out is complete.
-   */
-  MapState fade_to_state;
-  /**
-   * Chest "opened" flags for the current floor.
-   */
-  uint8_t flags_chest_open;
-  /**
-   * Chest "locked" flags for the current floor.
-   */
-  uint8_t flags_chest_locked;
-  /**
-   * Lever on/off states for the current floor.
-   */
-  uint8_t flags_lever_on;
-  /**
-   * Lever stuck/unstuck states for the current floor.
-   */
-  uint8_t flags_lever_stuck;
-  /**
-   * Door locked open/closed state.
-   */
-  uint16_t flags_door_locked;
-  // uint8_t flags_door_locked;
-  /**
-   * Whether or not particular sconces are lit.
-   */
-  uint8_t flags_sconce_lit;
-  /**
-   * Timer for animating the sconce flame sprites.
-   */
-  Timer flame_timer;
-  /**
-   * The current flame sprite frame.
-   */
-  uint8_t flame_frame;
-  /**
-   * Timer used to slowly reduce the amount of torch guage remaining.
-   */
-  Timer torch_timer;
-  /**
-   * Whether or not the BG priority was set for the destination during a move.
-   */
-  bool bg_priority_set;
-  /**
-   * Whether or not to execute the `on_init` function after finishing the next
-   * map move.
-   */
-  bool execute_on_init;
-  /**
-   * Scripting callback to execute before closing the map textbox. This callback
-   * is cleared every time the textbox is closed.
-   * @return `true` to override default textbox closing behavior.
-   */
-  bool (*after_textbox)(void);
-  /**
-   * Whether or not NPCs are visible.
-   */
-  uint8_t npc_visible;
-  /**
-   * Walk animation timer for NPCs.
-   */
-  Timer npc_walk_timer;
-  /**
-   * Current walk frame for NPCs.
-   */
-  uint8_t npc_walk_frame;
-  /**
-   * Message to set when opening the map textbox.
-   */
-  const char *textbox_message;
-  /**
-   * Each bit represents a "changed" flag for doors. This will be set if the
-   * state of the door is changed via scripts, etc.
-   */
-  uint16_t doors_updated;
-  // uint8_t doors_updated;
-  /**
-   * Each bit represents a "changed" flag for sconces. This will be set if the
-   * stat of a sconce changes (if it was lit, etc.).
-   */
-  uint8_t sconces_updated;
-  /**
-   * Set if the player's HP and SP were updated as a result of a floor script.
-   */
-  bool player_hp_and_sp_updated;
-  /**
-   * Set to tell the system to reset local tiles on the next game loop update.
-   */
-  bool refresh_local_tiles;
-} MapSystem;
+extern MapState map_state;
 
 /**
- * Main state for the map system.
+ * Horizontal map coordinate.
  */
-extern MapSystem map;
+extern int8_t map_x;
+
+/**
+ * Veritcal map coordinate.
+ */
+extern int8_t map_y;
+
+/**
+ * Horizontal background scroll position.
+ */
+extern int8_t map_scroll_x;
+
+/**
+ * Vertical background scroll position.
+ */
+extern int8_t map_scroll_y;
+
+/**
+ * Direction the hero is facing.
+ */
+extern Direction hero_direction;
+
+/**
+ * Chest "opened" flags for the current floor.
+ */
+extern uint8_t flags_chest_open;
+
+/**
+ * Chest "locked" flags for the current floor.
+ */
+extern uint8_t flags_chest_locked;
+
+/**
+ * Lever on/off states for the current floor.
+ */
+extern uint8_t flags_lever_on;
+
+/**
+ * Lever stuck/unstuck states for the current floor.
+ */
+extern uint8_t flags_lever_stuck;
+
+/**
+ * Door locked open/closed state.
+ */
+extern uint16_t flags_door_locked;
+
+/**
+ * Whether or not particular sconces are lit.
+ */
+extern uint8_t flags_sconce_lit;
+
+/**
+ * Whether or not NPCs are visible.
+ */
+extern uint8_t npc_visible;
+
+/**
+ * Message to set when opening the map textbox.
+ */
+extern const char *textbox_message;
+
+/**
+ * Each bit represents a "changed" flag for doors. This will be set if the
+ * state of the door is changed via scripts, etc.
+ */
+extern uint16_t doors_updated;
+
+/**
+ * Each bit represents a "changed" flag for sconces. This will be set if the
+ * stat of a sconce changes (if it was lit, etc.).
+ */
+extern uint8_t sconces_updated;
+
+/**
+ * Set if the player's HP and SP were updated as a result of a floor script.
+ */
+extern bool player_hp_and_sp_updated;
+
+/**
+ * Set to tell the system to reset local tiles on the next game loop update.
+ */
+extern bool refresh_local_tiles;
 
 /**
  * Exit used for exit movement and teleporting.
@@ -1217,6 +1121,21 @@ extern Exit active_exit;
  */
 extern FlameColor sconce_colors[8];
 
+
+typedef struct MapCallbacks {
+  /**
+   * Scripting callback to execute before closing the map textbox. This callback
+   * is cleared every time the textbox is closed.
+   * @return `true` to override default textbox closing behavior.
+   */
+  bool (*after_textbox)(void);
+} MapCallbacks;
+
+/**
+ * Encapsulates various map callbacks used by helpers and external systems.
+ */
+extern MapCallbacks map_callbacks;
+
 /**
  * Sets the position of the active map. Note this method will not re-render the
  * map based on the position set. You must call `refresh_map_screen()` or load
@@ -1225,8 +1144,8 @@ extern FlameColor sconce_colors[8];
  * @param y Vertical position.
  */
 inline void set_map_position(int8_t x, int8_t y) {
-  map.x = x;
-  map.y = y;
+  map_x = x;
+  map_y = y;
 }
 
 /**
@@ -1234,8 +1153,8 @@ inline void set_map_position(int8_t x, int8_t y) {
  * must call `refresh_map_screen()` or load the screen progresively.
  */
 inline void set_hero_position(int8_t x, int8_t y) {
-  map.x = x - HERO_X_OFFSET;
-  map.y = y - HERO_X_OFFSET;
+  map_x = x - HERO_X_OFFSET;
+  map_y = y - HERO_X_OFFSET;
 }
 
 /**
@@ -1266,7 +1185,7 @@ void draw_world_map(void);
  * state used by the battle system.
  */
 inline void start_battle(void) {
-  map.state = MAP_STATE_INITIATE_BATTLE;
+  map_state = MAP_STATE_INITIATE_BATTLE;
 }
 
 /**
@@ -1329,7 +1248,7 @@ inline void teleport(
   active_exit.to_row = row;
   active_exit.to_floor = NULL;
   active_exit.heading = heading;
-  map.state = MAP_STATE_TELEPORT;
+  map_state = MAP_STATE_TELEPORT;
 }
 
 /**
@@ -1337,8 +1256,8 @@ inline void teleport(
  * @param text Text to display in the text box.
  */
 inline void map_textbox(const char *text) {
-  map.state = MAP_STATE_TEXTBOX_OPEN;
-  map.textbox_message = text;
+  map_state = MAP_STATE_TEXTBOX_OPEN;
+  textbox_message = text;
 }
 
 /**
@@ -1347,7 +1266,7 @@ inline void map_textbox(const char *text) {
  * @param action Action to execute.
  */
 inline void map_textbox_with_action(const char *text, bool (*action)(void)) {
-  map.after_textbox = action;
+  map_callbacks.after_textbox = action;
   map_textbox(text);
 }
 
@@ -1357,7 +1276,7 @@ inline void map_textbox_with_action(const char *text, bool (*action)(void)) {
  * @return `true` If the player is at the given column and row in the map.
  */
 inline bool player_at(uint8_t c, uint8_t r) {
-  return map.x + 4 == c && map.y + 4 == r;
+  return map_x + 4 == c && map_y + 4 == r;
 }
 
 /**
@@ -1368,7 +1287,7 @@ inline bool player_at(uint8_t c, uint8_t r) {
  *   facing the given direction.
  */
 inline bool player_at_facing(uint8_t col, uint8_t row, Direction d) {
-  return map.x + 4 == col && map.y + 4 == row && map.hero_direction == d;
+  return map_x + 4 == col && map_y + 4 == row && hero_direction == d;
 }
 
 /**
@@ -1389,14 +1308,14 @@ inline bool player_facing(uint8_t col, uint8_t row) {
  * @return The x-position of the player in the current map.
  */
 inline int8_t hero_x(void) {
-  return map.x + HERO_X_OFFSET;
+  return map_x + HERO_X_OFFSET;
 }
 
 /**
  * @return The y-position of the player in the current map.
  */
 inline int8_t hero_y(void) {
-  return map.y + HERO_Y_OFFSET;
+  return map_y + HERO_Y_OFFSET;
 }
 
 /**
@@ -1404,7 +1323,7 @@ inline int8_t hero_y(void) {
  * @param chest Chest to set as opened.
  */
 inline void set_chest_open(ChestId id) {
-  map.flags_chest_open |= id;
+  flags_chest_open |= id;
 }
 
 /**
@@ -1412,7 +1331,7 @@ inline void set_chest_open(ChestId id) {
  * @param id Id of the chest to check.
  */
 inline bool is_chest_open(ChestId id) {
-  return map.flags_chest_open & id;
+  return flags_chest_open & id;
 }
 
 /**
@@ -1420,7 +1339,7 @@ inline bool is_chest_open(ChestId id) {
  * @param chest Chest to set as locked.
  */
 inline void set_chest_locked(ChestId id) {
-  map.flags_chest_locked |= id;
+  flags_chest_locked |= id;
 }
 
 /**
@@ -1428,7 +1347,7 @@ inline void set_chest_locked(ChestId id) {
  * @param chest Chest to set as unlocked.
  */
 inline void set_chest_unlocked(ChestId id) {
-  map.flags_chest_locked &= ~id;
+  flags_chest_locked &= ~id;
 }
 
 /**
@@ -1436,7 +1355,7 @@ inline void set_chest_unlocked(ChestId id) {
  * @param chest The chest to check.
  */
 inline bool is_chest_locked(ChestId id) {
-  return map.flags_chest_locked & id;
+  return flags_chest_locked & id;
 }
 
 /**
@@ -1444,7 +1363,7 @@ inline bool is_chest_locked(ChestId id) {
  * @param level The lever to test.
  */
 inline bool is_lever_on(LeverId id) {
-  return map.flags_lever_on & id;
+  return flags_lever_on & id;
 }
 
 /**
@@ -1453,7 +1372,7 @@ inline bool is_lever_on(LeverId id) {
  * @param lever The lever to toggle.
  */
 inline bool toggle_lever_state(LeverId id) {
-  map.flags_lever_on ^= id;
+  flags_lever_on ^= id;
 }
 
 /**
@@ -1461,7 +1380,7 @@ inline bool toggle_lever_state(LeverId id) {
  * @param lever The lever to check.
  */
 inline bool is_lever_stuck(LeverId id) {
-  return map.flags_lever_stuck & id;
+  return flags_lever_stuck & id;
 }
 
 /**
@@ -1469,7 +1388,7 @@ inline bool is_lever_stuck(LeverId id) {
  * @param lever The lever to stick.
  */
 inline void stick_lever(LeverId id) {
-  map.flags_lever_stuck |= id;
+  flags_lever_stuck |= id;
 }
 
 /**
@@ -1477,7 +1396,7 @@ inline void stick_lever(LeverId id) {
  * @param lever The lever to unstick.
  */
 inline void unstick_lever(LeverId id) {
-  map.flags_lever_stuck &= ~id;
+  flags_lever_stuck &= ~id;
 }
 
 /**
@@ -1485,7 +1404,7 @@ inline void unstick_lever(LeverId id) {
  * @param id Id of the door to test.
  */
 inline bool is_door_open(DoorId id) {
-  return ~map.flags_door_locked & id;
+  return ~flags_door_locked & id;
 }
 
 /**
@@ -1495,8 +1414,8 @@ inline bool is_door_open(DoorId id) {
 inline void close_door(DoorId id) {
   if (!is_door_open(id))
     return;
-  map.flags_door_locked |= id;
-  map.doors_updated |= id;
+  flags_door_locked |= id;
+  doors_updated |= id;
 }
 
 /**
@@ -1506,8 +1425,8 @@ inline void close_door(DoorId id) {
 inline void open_door(DoorId id) {
   if (is_door_open(id))
     return;
-  map.flags_door_locked &= ~id;
-  map.doors_updated |= id;
+  flags_door_locked &= ~id;
+  doors_updated |= id;
 }
 
 /**
@@ -1526,7 +1445,7 @@ inline void toggle_door(DoorId id) {
  * @param id Id of the sconce to test.
  */
 inline bool is_sconce_lit(SconceId id) {
-  return id == SCONCE_STATIC || (map.flags_sconce_lit & id);
+  return id == SCONCE_STATIC || (flags_sconce_lit & id);
 }
 
 /**
@@ -1549,8 +1468,8 @@ uint8_t get_sconce_index(SconceId sconce_id) NONBANKED;
 inline void light_sconce(SconceId id, FlameColor color) {
   if (id == SCONCE_STATIC)
     return;
-  map.flags_sconce_lit |= id;
-  map.sconces_updated |= id;
+  flags_sconce_lit |= id;
+  sconces_updated |= id;
   sconce_colors[get_sconce_index(id)] = color;
   const uint8_t sprite = get_sconce_flame_sprite(id);
   set_sprite_prop(sprite, FLAME_SPRITE_PROP | color);
@@ -1561,7 +1480,7 @@ inline void light_sconce(SconceId id, FlameColor color) {
  * @param id Id of the sconce to extinguish.
  */
 inline void extinguish_sconce(SconceId id) {
-  map.flags_sconce_lit &= ~id;
+  flags_sconce_lit &= ~id;
 }
 
 /**
@@ -1569,7 +1488,7 @@ inline void extinguish_sconce(SconceId id) {
  * @param id Id of the NPC to check.
  */
 inline bool is_npc_visible(NpcId id) {
-  return map.npc_visible & id;
+  return npc_visible & id;
 }
 
 /**
@@ -1577,8 +1496,8 @@ inline bool is_npc_visible(NpcId id) {
  * @param id Id of the NPC to set.
  */
 inline void set_npc_visible(NpcId id) {
-  map.npc_visible |= id;
-  map.refresh_local_tiles = true;
+  npc_visible |= id;
+  refresh_local_tiles = true;
 }
 
 /**
@@ -1586,8 +1505,8 @@ inline void set_npc_visible(NpcId id) {
  * @param id Id of the NPC to set.
  */
 inline void set_npc_invisible(NpcId id) {
-  map.npc_visible &= ~id;
-  map.refresh_local_tiles = true;
+  npc_visible &= ~id;
+  refresh_local_tiles = true;
 }
 
 /**

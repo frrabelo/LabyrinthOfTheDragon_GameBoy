@@ -132,7 +132,7 @@ void init_map_menu(void) {
 }
 
 void show_map_menu(void) {
-  map.state = MAP_STATE_MENU;
+  map_state = MAP_STATE_MENU;
   map_menu.state = MAP_MENU_OPEN;
 
   LCDC_REG |= 0b00001000;
@@ -149,7 +149,7 @@ void hide_map_menu(void) {
   map_menu.state = MAP_MENU_CLOSED;
   core.load_bg_palette(textbox_palette, 7, 1);
   LCDC_REG &= 0b11110111;
-  move_bkg(map.scroll_x, map.scroll_y);
+  move_bkg(map_scroll_x, map_scroll_y);
   hide_cursor();
   play_sound(sfx_next_round);
 }

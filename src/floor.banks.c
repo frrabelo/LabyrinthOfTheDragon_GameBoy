@@ -2,9 +2,6 @@
 
 #include "floor.h"
 
-const FloorBank bank_floor_test  = { BANK_31, &floor_test };
-const FloorBank bank_floor_test2 = { BANK_31, &floor_test2 };
-
 const FloorBank bank_floor1 = { BANK_8, &floor1 };
 const FloorBank bank_floor2 = { BANK_8, &floor2 };
 const FloorBank bank_floor3 = { BANK_8, &floor3 };

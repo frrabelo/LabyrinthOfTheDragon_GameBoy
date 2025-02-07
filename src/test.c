@@ -11,6 +11,20 @@
 #include "sound.h"
 #include "stats.h"
 
+#define SET_MAGIC_KEYS(n) do { \
+    player.got_magic_key = true; \
+    player.magic_keys = (n); \
+  } while (0)
+
+#define SET_HAS_TORCH player.has_torch = true
+
+#define TEST_SEED(s) do {\
+  init_random = false; \
+  initarand(s); \
+  } while(0)
+
+#define DISABLE_ENCOUNTERS disable_encounters = true
+
 void init_test_player(PlayerClass c, uint8_t level) {
   init_player(c);
   set_player_level(level);
@@ -30,36 +44,14 @@ void fill_inventory(uint8_t amt) {
     item->quantity = amt;
 }
 
-void test_big_map(void) {
-  init_test_player(CLASS_FIGHTER, 45);
-
-  player.has_torch = true;
-  grant_ability(ABILITY_ALL);
-  set_active_floor(&bank_floor1);
-  init_world_map();
-  game_state = GAME_STATE_WORLD_MAP;
-}
-
-#define SET_MAGIC_KEYS(n) do { \
-    player.got_magic_key = true; \
-    player.magic_keys = (n); \
-  } while (0)
-
-#define SET_HAS_TORCH player.has_torch = true
-
-#define TEST_SEED(s) do {\
-  init_random = false; \
-  initarand(s); \
-  } while(0)
-
 void test_level(void) {
-  init_test_player(CLASS_SORCERER, 32);
+  init_test_player(CLASS_SORCERER, 12);
   grant_ability(ABILITY_0);
   fill_inventory(5);
 
-  SET_MAGIC_KEYS(9);
   SET_HAS_TORCH;
-  disable_encounters = true;
+  // DISABLE_ENCOUNTERS
+  // disable_encounters = true;
 
   set_active_floor(&bank_floor2);
   init_world_map();

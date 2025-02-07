@@ -2226,6 +2226,11 @@ void update_map(void) {
   update_flames();
   update_hud();
   update_npcs();
+
+  if (map.refresh_local_tiles) {
+    map.refresh_local_tiles = false;
+    update_local_tiles();
+  }
 }
 
 void update_world_map(void) NONBANKED {

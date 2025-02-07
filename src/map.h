@@ -1196,6 +1196,10 @@ typedef struct MapSystem {
    * Set if the player's HP and SP were updated as a result of a floor script.
    */
   bool player_hp_and_sp_updated;
+  /**
+   * Set to tell the system to reset local tiles on the next game loop update.
+   */
+  bool refresh_local_tiles;
 } MapSystem;
 
 /**
@@ -1574,6 +1578,7 @@ inline bool is_npc_visible(NpcId id) {
  */
 inline void set_npc_visible(NpcId id) {
   map.npc_visible |= id;
+  map.refresh_local_tiles = true;
 }
 
 /**
@@ -1582,6 +1587,7 @@ inline void set_npc_visible(NpcId id) {
  */
 inline void set_npc_invisible(NpcId id) {
   map.npc_visible &= ~id;
+  map.refresh_local_tiles = true;
 }
 
 /**

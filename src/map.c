@@ -2254,12 +2254,12 @@ void on_victory(void) NONBANKED {
 }
 
 bool after_textbox(void) NONBANKED {
-  if (!after_textbox)
+  if (!map_callbacks.after_textbox)
     return false;
   if (textbox.state != TEXT_BOX_CLOSING)
     return false;
 
-  bool (*callback)(void) = after_textbox;
+  bool (*callback)(void) = map_callbacks.after_textbox;
   map_callbacks.after_textbox = NULL;
 
   uint8_t _prev_bank = CURRENT_BANK;

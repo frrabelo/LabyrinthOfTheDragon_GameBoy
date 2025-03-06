@@ -320,6 +320,8 @@ static void load_floor(FloorBank *f) NONBANKED {
  * Switches to the floors bank and calls its `on_init` function.
  */
 static bool on_init(void) NONBANKED {
+  if (!execute_on_init)
+    return false;
   execute_on_init = false;
   const uint8_t _prev_bank = CURRENT_BANK;
   bool value;
@@ -2291,7 +2293,7 @@ void update_map(void) {
       on_victory();
       break;
     }
-    if (on_init() && execute_on_init)
+    if (on_init())
       break;
     if (was_pressed(J_START)) {
       show_map_menu();

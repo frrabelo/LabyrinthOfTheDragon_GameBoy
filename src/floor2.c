@@ -304,6 +304,10 @@ static bool on_npc_action(const NPC *npc) {
     map_textbox_with_action(str_floor2_elite_msg, elite_encounter);
     return true;
   case NPC_2:
+    if (player.level < 17) {
+      map_textbox(str_maps_boss_not_yet);
+      return true;
+    }
     play_sound(sfx_monster_attack2);
     map_textbox_with_action(str_floor2_boss_msg, boss_encounter);
     return true;

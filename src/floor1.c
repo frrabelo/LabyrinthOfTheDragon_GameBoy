@@ -235,6 +235,8 @@ static bool on_npc_action(const NPC *npc) {
     map_textbox(str_maps_boss_not_yet);
     return true;
   }
+
+  play_sound(sfx_monster_attack1);
   map_textbox_with_action(str_floor_common_growl, boss_encounter);
   return true;
 }

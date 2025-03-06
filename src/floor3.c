@@ -289,23 +289,60 @@ static const NPC npcs[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
-static const EncounterTable random_encounters[] = {
+/*
+Owlbear
+Bugbear
+Zombie
+Goblin
+Kobold
+*/
+
+// Max Level: 19
+static const EncounterTable encounters_low[] = {
+  {
+    ODDS_10P, MONSTER_LAYOUT_1,
+    MONSTER_BUGBEAR, 18, B_TIER,
+  },
+  {
+    ODDS_20P, MONSTER_LAYOUT_1,
+    MONSTER_ZOMBIE, 18, B_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_3S,
+    MONSTER_KOBOLD, 17, B_TIER,
+    MONSTER_KOBOLD, 19, B_TIER,
+    MONSTER_KOBOLD, 18, B_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 19, C_TIER,
+    MONSTER_BUGBEAR, 18, C_TIER,
+  },
+  { END }
+};
+
+// Max Level: 23
+static const EncounterTable encounters_high[] = {
+  {
+    ODDS_20P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 21, A_TIER,
+  },
+  {
+    ODDS_25P, MONSTER_LAYOUT_1M_2S,
+    MONSTER_BUGBEAR, 20, B_TIER,
+    MONSTER_GOBLIN, 23, C_TIER,
+    MONSTER_GOBLIN, 21, C_TIER,
+  },
   {
     ODDS_25P, MONSTER_LAYOUT_2,
-    MONSTER_ZOMBIE, 6, C_TIER,
-    MONSTER_KOBOLD, 5, C_TIER,
+    MONSTER_ZOMBIE, 22, C_TIER,
+    MONSTER_ZOMBIE, 22, C_TIER,
   },
   {
-    ODDS_25P, MONSTER_LAYOUT_1,
-    MONSTER_GOBLIN, 7, C_TIER,
-  },
-  {
-    ODDS_25P, MONSTER_LAYOUT_1,
-    MONSTER_KOBOLD, 7, C_TIER,
-  },
-  {
-    ODDS_25P, MONSTER_LAYOUT_1,
-    MONSTER_KOBOLD, 5, C_TIER,
+    ODDS_30P, MONSTER_LAYOUT_3S,
+    MONSTER_KOBOLD, 21, C_TIER,
+    MONSTER_GOBLIN, 20, B_TIER,
+    MONSTER_KOBOLD, 19, C_TIER,
   },
   { END }
 };
@@ -320,7 +357,7 @@ static bool on_init(void) {
   special_enc_2 = false;
   special_enc_3 = false;
   special_enc_4 = false;
-  config_random_encounter(6, 1, 1, true);
+  config_random_encounter(4, 1, 1, true);
   return false;
 }
 
@@ -362,7 +399,10 @@ static bool on_special(void) {
 
 static bool on_move(void) {
   if (check_random_encounter()) {
-    generate_encounter(random_encounters);
+    if (player.level < 21)
+      generate_encounter(encounters_low);
+    else
+      generate_encounter(encounters_high);
     start_battle();
     return true;
   }

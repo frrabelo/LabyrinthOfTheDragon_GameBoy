@@ -692,11 +692,11 @@ void sorcerer_fireball(void) {
       mdef = monster->mdef;
   }
 
-  PowerTier tier = A_TIER;
+  PowerTier tier = C_TIER;
   if (player.level >= 50)
-    tier = S_TIER;
+    tier = B_TIER;
 
-  uint16_t damage = get_player_damage(level_offset(player.level, 5), tier);
+  uint16_t damage = get_player_damage(player.level, tier);
 
   if (!roll_attack_player(player.matk, mdef))
     damage /= 2;

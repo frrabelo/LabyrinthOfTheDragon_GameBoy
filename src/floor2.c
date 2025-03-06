@@ -290,7 +290,7 @@ static void boss_victory(void) NONBANKED {
 static bool boss_encounter(void) {
   Monster *monster = encounter.monsters;
   reset_encounter(MONSTER_LAYOUT_1);
-  owlbear_generator(monster, 23, S_TIER);
+  owlbear_generator(monster, 17, S_TIER);
   monster->id = 'A';
   set_on_victory(boss_victory);
   start_battle();
@@ -298,7 +298,6 @@ static bool boss_encounter(void) {
 }
 
 static bool on_npc_action(const NPC *npc) {
-
   switch (npc->id) {
   case NPC_1:
     play_sound(sfx_monster_attack1);

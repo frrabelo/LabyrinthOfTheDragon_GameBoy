@@ -45,15 +45,17 @@ void fill_inventory(uint8_t amt) {
 }
 
 void test_level(void) {
-  init_test_player(CLASS_SORCERER, 12);
+  init_test_player(CLASS_SORCERER, 21);
   grant_ability(ABILITY_0);
   fill_inventory(5);
 
   SET_HAS_TORCH;
-  // DISABLE_ENCOUNTERS
-  // disable_encounters = true;
+  DISABLE_ENCOUNTERS;
+  // SET_MAGIC_KEYS(1);
 
-  set_active_floor(&bank_floor2);
+  // set_active_floor(&bank_floor1);
+  // set_active_floor(&bank_floor2);
+  set_active_floor(&bank_floor3);
   init_world_map();
 
   // TEST_SEED(62);

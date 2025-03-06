@@ -254,16 +254,19 @@ static bool on_elite_encouter(void) {
 static bool on_npc_action(const NPC *npc) {
   switch (npc->id) {
   case NPC_1:
-    if (player.level < 24)
+    if (player.level < 24) {
       map_textbox(str_floor3_boss_not_yet);
-    else
-      map_textbox_with_action(str_floor3_boss, on_boss_encouter);
-    break;
+      return true;
+    }
+    play_sound(sfx_monster_attack2);
+    map_textbox_with_action(str_floor3_boss, on_boss_encouter);
+    return true;
   case NPC_2:
+    play_sound(sfx_monster_attack1);
     map_textbox_with_action(str_floor3_brains, on_elite_encouter);
-    break;
+    return true;
   }
-  return true;
+  return false;
 }
 
 static const NPC npcs[] = {

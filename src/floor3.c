@@ -1,6 +1,7 @@
 #pragma bank 8
 
 #include "floor.h"
+#include "sound.h"
 
 //------------------------------------------------------------------------------
 // Floorwide settings
@@ -37,24 +38,37 @@ static const Chest chests[] = {
     NULL,       // Scripting "on open" callback (optional)
   }
   */
-  // {
-  //   CHEST_1,
-  //   MAP_A, 15, 12, true, true,
-  //   str_chest_item_2pot_1eth,
-  //   chest_item_2pot_1eth,
-  // },
-  // {
-  //   CHEST_2,
-  //   MAP_A, 18, 13, false, false,
-  //   str_chest_item_1pots,
-  //   chest_item_1pot,
-  // },
-  // {
-  //   CHEST_3,
-  //   MAP_A, 3, 12, false, false,
-  //   NULL, NULL,
-  //   chest_add_magic_key,
-  // },
+  {
+    CHEST_1,
+    MAP_A, 1, 3, false, false,
+    NULL, NULL,
+    chest_add_magic_key
+  },
+  {
+    CHEST_2,
+    MAP_A, 13, 15, false, false,
+    str_chest_item_1pots,
+    chest_item_1pot,
+  },
+  {
+    CHEST_3,
+    MAP_A, 18, 22, false, false,
+    str_chest_item_1eths,
+    chest_item_1eth,
+  },
+  {
+    CHEST_4,
+    MAP_A, 25, 23, true, true,
+    str_chest_item_regen_pot,
+    chest_item_regen_pot,
+  },
+  {
+    CHEST_5,
+    MAP_A, 29, 23, true, true,
+    str_chest_item_1remedy,
+    chest_item_1remedy,
+  },
+
   { END },
 };
 
@@ -90,6 +104,7 @@ static const Exit exits[] = {
   { MAP_A, 17, 6, MAP_A, 3, 5, UP, EXIT_STAIRS },
   { MAP_A, 3, 5, MAP_A, 17, 6, DOWN, EXIT_STAIRS },
 
+  // TODO Fix this to point to floor 4
   { MAP_A, 4, 12, MAP_A, DEFAULT_X, DEFAULT_Y, UP, EXIT_STAIRS, &bank_floor3},
 
   {END},
@@ -108,11 +123,7 @@ static const Sign signs[] = {
     "Hi there!" // The message to display
   }
   */
-  // { MAP_A, 13, 6, UP, str_floor_common_tbd },
-  // { MAP_A, 24, 9, UP, str_floor_three_lever_puzzle },
-  // { MAP_A, 23, 13, UP, str_floor_three_lever_one },
-  // { MAP_A, 27, 13, UP, str_floor_three_lever_two },
-  // { MAP_A, 16, 28, UP, str_floor_common_steve_jobs },
+  { MAP_A, 27, 26, UP, str_floor3_choose_wisely},
 
   { END },
 };
@@ -122,6 +133,9 @@ static const Sign signs[] = {
 //------------------------------------------------------------------------------
 
 static void on_lever_pull(const Lever *lever) {
+  play_sound(sfx_monster_critical);
+  open_door(DOOR_1);
+  map_textbox(str_floor2_door_opens);
 }
 
 static const Lever levers[] = {
@@ -135,7 +149,7 @@ static const Lever levers[] = {
     NULL,     // Scripting callback for the lever
   }
   */
-  // { LEVER_1, MAP_A,  4, 28, true, false, on_lever_pull },
+  { LEVER_1, MAP_A,  1, 30, true, false, on_lever_pull },
   { END },
 };
 
@@ -154,7 +168,9 @@ static const Door doors[] = {
     false,            // Does the door start opened?
   }
   */
-  // { DOOR_1, MAP_A,  6, 26, DOOR_NORMAL, false },
+  { DOOR_1, MAP_A, 17, 6, DOOR_NORMAL, false, false },
+  { DOOR_2, MAP_A, 26, 14, DOOR_STAIRS_DOWN, false, false },
+  { DOOR_3, MAP_A, 4, 12, DOOR_NEXT_LEVEL, false, false },
   { END }
 };
 
@@ -175,7 +191,26 @@ static const Sconce sconces[] = {
     FLAME_BLUE  // Flame color for the sconce if it starts lit.
   }
   */
-  // { SCONCE_STATIC, MAP_A, 12, 26, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 13, 6, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 25, 6, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 3, 12, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 5, 12, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 6, 29, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 18, 29, true, FLAME_BLUE },
+
+  // Boss Door sconces
+  { SCONCE_1, MAP_A, 24, 13, false, FLAME_RED },
+  { SCONCE_2, MAP_A, 25, 13, false, FLAME_RED },
+  { SCONCE_3, MAP_A, 27, 13, false, FLAME_RED },
+  { SCONCE_4, MAP_A, 28, 13, false, FLAME_RED },
+
+  // Skull "push button" sconces
+  { SCONCE_5, MAP_A, 3, 24, false, FLAME_RED },
+  { SCONCE_6, MAP_A, 9, 24, false, FLAME_RED },
+
+  { SCONCE_7, MAP_A, 22, 1, false, FLAME_RED },
+  { SCONCE_8, MAP_A, 28, 1, false, FLAME_RED },
+
   { END }
 };
 
@@ -184,37 +219,50 @@ static const Sconce sconces[] = {
 //------------------------------------------------------------------------------
 
 static void on_boss_victory(void) NONBANKED {
+  open_door(DOOR_3);
+  set_npc_invisible(NPC_1);
+  play_sound(sfx_big_door_open);
 }
 
 static void on_elite_victory(void) NONBANKED {
+  set_npc_invisible(NPC_2);
+  grant_ability(ABILITY_2);
+  play_sound(sfx_big_powerup);
+  map_textbox(get_grant_message(ABILITY_2));
 }
 
 static bool on_boss_encouter(void) {
-  // Monster *monster = encounter.monsters;
-  // reset_encounter(MONSTER_LAYOUT_1);
-  // kobold_generator(monster, player.level, B_TIER);
-  // monster->id = 'A';
-  // set_on_victory(on_boss_victory);
-  // start_battle();
+  Monster *monster = encounter.monsters;
+  reset_encounter(MONSTER_LAYOUT_1);
+  gelatinous_cube_generator(monster, 24, B_TIER);
+  monster->id = 'A';
+  set_on_victory(on_boss_victory);
+  start_battle();
   return true;
 }
 
 static bool on_elite_encouter(void) {
-  // Monster *monster = encounter.monsters;
-  // reset_encounter(MONSTER_LAYOUT_1);
-  // kobold_generator(monster, player.level, B_TIER);
-  // monster->id = 'A';
-  // set_on_victory(on_elite_victory);
-  // start_battle();
+  Monster *monster = encounter.monsters;
+  reset_encounter(MONSTER_LAYOUT_1);
+  zombie_generator(monster, 21, B_TIER);
+  monster->id = 'A';
+  set_on_victory(on_elite_victory);
+  start_battle();
   return true;
 }
 
 static bool on_npc_action(const NPC *npc) {
-  // if (npc->id == NPC_2){
-  //   map_textbox_with_action(str_floor_common_fight_me, on_boss_encouter);
-  // } else {
-  //   map_textbox_with_action(str_floor_common_love, on_elite_encouter);
-  // }
+  switch (npc->id) {
+  case NPC_1:
+    if (player.level < 24)
+      map_textbox(str_floor3_boss_not_yet);
+    else
+      map_textbox_with_action(str_floor3_boss, on_boss_encouter);
+    break;
+  case NPC_2:
+    map_textbox_with_action(str_floor3_brains, on_elite_encouter);
+    break;
+  }
   return true;
 }
 
@@ -229,8 +277,8 @@ static const NPC npcs[] = {
     action_callback,  // Action callback to execute when the player interacts
   }
   */
-  // { NPC_1, MAP_A, 15, 20, MONSTER_KOBOLD, A_TIER, on_npc_action },
-  // { NPC_2, MAP_A, 23, 22, MONSTER_KOBOLD, S_TIER, on_npc_action },
+  { NPC_1, MAP_A, 4, 14, MONSTER_GELATINOUS_CUBE, S_TIER, on_npc_action },
+  { NPC_2, MAP_A, 3, 2, MONSTER_ZOMBIE, A_TIER, on_npc_action },
   { END }
 };
 
@@ -259,21 +307,53 @@ static const EncounterTable random_encounters[] = {
   { END }
 };
 
+bool special_enc_1 = false;
+bool special_enc_2 = false;
+bool special_enc_3 = false;
+bool special_enc_4 = false;
 
 static bool on_init(void) {
-  // config_random_encounter(600, 1, 1, true);
+  special_enc_1 = false;
+  special_enc_2 = false;
+  special_enc_3 = false;
+  special_enc_4 = false;
+  config_random_encounter(6, 1, 1, true);
   return false;
 }
 
+static void goblin_defender_encounter(void) {
+  Monster *monster = encounter.monsters;
+  reset_encounter(MONSTER_LAYOUT_1);
+  goblin_generator(monster, 19, B_TIER);
+  monster->id = 'A';
+  start_battle();
+}
+
 static bool on_special(void) {
-  // if (player_at(20, 15) &&
-  //     (is_lever_on(LEVER_8) ||
-  //      is_lever_on(LEVER_7) ||
-  //      is_lever_on(LEVER_6) ||
-  //      !is_lever_on(LEVER_5))){
-  //   teleport(MAP_A, 25, 15, LEFT);
-  //   return true;
-  // }
+  if (player_at(3, 26) && !special_enc_1) {
+    goblin_defender_encounter();
+    special_enc_1 = true;
+    return true;
+  }
+
+  if (player_at(9, 26) && !special_enc_2) {
+    goblin_defender_encounter();
+    special_enc_2 = true;
+    return true;
+  }
+
+  if (player_at(22, 3) && !special_enc_3) {
+    goblin_defender_encounter();
+    special_enc_3 = true;
+    return true;
+  }
+
+  if (player_at(28, 3) && !special_enc_4) {
+    goblin_defender_encounter();
+    special_enc_4 = true;
+    return true;
+  }
+
   return false;
 }
 
@@ -286,7 +366,50 @@ static bool on_move(void) {
   return false;
 }
 
+static void check_sconces(void) {
+  if (
+    is_sconce_lit(SCONCE_1) &&
+    is_sconce_lit(SCONCE_2) &&
+    is_sconce_lit(SCONCE_3) &&
+    is_sconce_lit(SCONCE_4)
+  ) {
+    play_sound(sfx_monster_critical);
+    open_door(DOOR_2);
+    map_textbox(str_floor2_door_opens);
+  } else {
+    play_sound(sfx_light_fire);
+  }
+}
+
 static bool on_action(void) {
+  if (player_at_facing(3, 26, UP) && !is_sconce_lit(SCONCE_1)) {
+    light_sconce(SCONCE_1, FLAME_RED);
+    light_sconce(SCONCE_5, FLAME_RED);
+    check_sconces();
+    return true;
+  }
+
+  if (player_at_facing(9, 26, UP) && !is_sconce_lit(SCONCE_2)) {
+    light_sconce(SCONCE_2, FLAME_RED);
+    light_sconce(SCONCE_6, FLAME_RED);
+    check_sconces();
+    return true;
+  }
+
+  if (player_at_facing(22, 3, UP) && !is_sconce_lit(SCONCE_3)) {
+    light_sconce(SCONCE_3, FLAME_RED);
+    light_sconce(SCONCE_7, FLAME_RED);
+    check_sconces();
+    return true;
+  }
+
+  if (player_at_facing(28, 3, UP) && !is_sconce_lit(SCONCE_4)) {
+    light_sconce(SCONCE_4, FLAME_RED);
+    light_sconce(SCONCE_8, FLAME_RED);
+    check_sconces();
+    return true;
+  }
+
   return false;
 }
 

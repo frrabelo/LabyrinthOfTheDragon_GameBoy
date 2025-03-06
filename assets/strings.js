@@ -225,6 +225,13 @@ addNamespace('floor2', 2, {
   'boss_msg': 'SCREEEEEECH!',
 });
 
+addNamespace('floor3', 2, {
+  'choose_wisely': 'Choose, but choose wisely...',
+  'brains': 'BRAIINNNNSS...',
+  'boss': 'Jiggle Jiggle... Jiggle...',
+  'boss_not_yet': 'Jiggle?',
+});
+
 addNamespace('floor_common', 2, {
   'growl': "GROWL!",
   'light_fires': "Light these fires to open this door!",
@@ -267,12 +274,6 @@ addNamespace('gain_ability', 2, {
   'sorcerer5': grant_ability_str('Wild Magic'),
 });
 
-addNamespace('floor_three', 2, {
-  'lever_puzzle': "Levers below open these doors.",
-  'lever_one': "Nine to the boss, Five to a good fight",
-  'lever_two': "Try them all if you have a key",
-})
-
 addNamespace('chest_item', 2, {
   '2pot_1eth': 'You get 2 potions and an ether!',
   '1pot': 'You get a potion!',
@@ -281,6 +282,7 @@ addNamespace('chest_item', 2, {
   'regen_pot': 'You get a regen potion!',
   '2pots': 'You get 2 potions!',
   '1eth': 'You get an ether!',
+  '1eths': 'You get an ethers!',
   '1remedy': 'You get a remedy!',
 });
 

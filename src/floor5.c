@@ -1,14 +1,16 @@
 #pragma bank 8
 
 #include "floor.h"
+#include "monster.h"
+#include "sound.h"
 
 //------------------------------------------------------------------------------
 // Floorwide settings
 //------------------------------------------------------------------------------
 
 #define ID 99
-#define DEFAULT_X 14
-#define DEFAULT_Y 14
+#define DEFAULT_X 3 // 12
+#define DEFAULT_Y 19 // 30
 
 //------------------------------------------------------------------------------
 // Maps
@@ -17,7 +19,7 @@
 static const Map maps[] = {
   // id, bank, data, width, height
   { MAP_A, BANK_16, floor_five_data, 32, 32 },
-  { MAP_B, BANK_16, floor_five_sub_data, 15, 10 },
+  { MAP_B, BANK_16, floor_five_sub_data, 23, 7 },
 
   { END },
 };
@@ -39,11 +41,17 @@ static const Chest chests[] = {
     NULL,       // Scripting "on open" callback (optional)
   }
   */
-  { CHEST_1, MAP_A,  2,  2, false, false, NULL, NULL, chest_add_magic_key },
-  { CHEST_1, MAP_A,  9, 10, false, false, NULL, NULL, chest_add_magic_key },
-  { CHEST_1, MAP_A,  6, 16, false, false, str_chest_item_2pot_1eth, chest_item_2pot_1eth },
-  { CHEST_1, MAP_A, 21, 18, false, false, NULL, NULL, chest_add_magic_key },
-  { CHEST_1, MAP_A, 23, 11, false, false, NULL, NULL, chest_add_magic_key },
+
+  // Maze Chests
+  { CHEST_1, MAP_A, 23, 11, false, false, str_chest_item_1remedy, chest_item_1remedy },
+  { CHEST_2, MAP_A, 21, 18, false, false, str_chest_item_3potions, chest_item_3potions },
+  { CHEST_3, MAP_A, 6, 16, false, false, NULL, NULL, chest_add_magic_key },
+  { CHEST_4, MAP_A, 6, 30, false, false, NULL, NULL, chest_add_magic_key },
+
+  // Treasure Room Chests
+  { CHEST_5, MAP_B, 17, 3, true, true, str_chest_item_3ethers, chest_item_3ethers },
+  { CHEST_6, MAP_B, 19, 2, true, true, str_chest_item_1elixer, chest_item_1elixer },
+  { CHEST_7, MAP_B, 21, 3, true, true, str_chest_item_1atkup_1defup, chest_item_1atkup_1defup },
 
   { END },
 };
@@ -65,14 +73,20 @@ static const Exit exits[] = {
   },
   */
   // Boss
-  { MAP_A, 3, 18, MAP_B, 3, 8, UP, EXIT_STAIRS },
-  { MAP_B, 3, 8, MAP_A, 3, 18, DOWN, EXIT_STAIRS },
+  { MAP_A, 3, 18, MAP_B, 3, 5, UP, EXIT_STAIRS },
+  { MAP_B, 3, 5, MAP_A, 3, 18, DOWN, EXIT_STAIRS },
 
   // Elite
-  { MAP_A, 26, 6, MAP_B, 12, 4, UP, EXIT_STAIRS },
-  { MAP_B, 12, 4, MAP_A, 26, 6, DOWN, EXIT_STAIRS },
+  { MAP_A, 26, 6, MAP_B, 11, 5, UP, EXIT_STAIRS },
+  { MAP_B, 11, 5, MAP_A, 26, 6, DOWN, EXIT_STAIRS },
 
-  { MAP_B, 3, 2, MAP_A, 3, 2, DOWN, EXIT_STAIRS, &bank_floor5 },
+  // Item Room
+  { MAP_A, 2, 9, MAP_B, 19, 5, UP, EXIT_STAIRS },
+  { MAP_B, 19, 5, MAP_A, 2, 9, DOWN, EXIT_STAIRS },
+
+  // Next Level
+  // TODO Map this to floor 6
+  { MAP_B, 3, 1, MAP_A, 12, 30, UP, EXIT_STAIRS, &bank_floor5 },
   { END },
 };
 
@@ -89,9 +103,12 @@ static const Sign signs[] = {
     "Hi there!" // The message to display
   }
   */
-  { MAP_A,  2, 18, UP, str_floor_common_tbd }, // Boss
-  { MAP_A, 13, 14, UP, str_floor_common_tbd }, // Entrance
-  { MAP_A, 25,  6, UP, str_floor_common_tbd }, // Elite
+  { MAP_A, 12, 27, UP, str_floor5_demands }, // Cryptic entry message
+  { MAP_A, 20, 29, UP, str_floor5_secrets }, // Cryptic secret message
+
+  // { MAP_A,  2, 18, UP, str_floor_common_tbd }, // Boss
+  // { MAP_A, 13, 14, UP, str_floor_common_tbd }, // Entrance
+  // { MAP_A, 25,  6, UP, str_floor_common_tbd }, // Elite
 
   { END },
 };
@@ -99,6 +116,58 @@ static const Sign signs[] = {
 //------------------------------------------------------------------------------
 // Levers
 //------------------------------------------------------------------------------
+
+/**
+ * Holds the state of the flame above the first lever for the boss door puzzle.
+ */
+FlameColor lever1_flame = FLAME_NONE;
+
+/**
+ * Holds the state of the flame above the second lever for the boss door puzzle.
+ */
+FlameColor lever2_flame = FLAME_NONE;
+
+/**
+ * Holds the state of the flame above the third lever for the boss door puzzle.
+ */
+FlameColor lever3_flame = FLAME_NONE;
+
+static void on_lever_pulled(const Lever *lever) {
+  switch (lever->id) {
+  case LEVER_1:
+    lever1_flame++;
+    if (lever1_flame > FLAME_BLUE)
+      lever1_flame = FLAME_RED;
+    light_sconce(SCONCE_1, lever1_flame);
+    break;
+  case LEVER_2:
+    lever2_flame++;
+    if (lever2_flame > FLAME_BLUE)
+      lever2_flame = FLAME_RED;
+    light_sconce(SCONCE_2, lever2_flame);
+    break;
+  case LEVER_3:
+    lever3_flame++;
+    if (lever3_flame > FLAME_BLUE)
+      lever3_flame = FLAME_RED;
+    light_sconce(SCONCE_3, lever3_flame);
+    break;
+  }
+
+
+  if (
+    lever1_flame == FLAME_RED &&
+    lever2_flame == FLAME_GREEN &&
+    lever3_flame == FLAME_BLUE
+  ) {
+    play_sound(sfx_big_door_open);
+    open_door(DOOR_3);
+    map_textbox(str_floor2_door_opens);
+  } else {
+    play_sound(sfx_door_unlock);
+    close_door(DOOR_3);
+  }
+}
 
 static const Lever levers[] = {
   /*
@@ -111,6 +180,16 @@ static const Lever levers[] = {
     NULL,     // Scripting callback for the lever
   }
   */
+
+  // Skull Lever (needs red)
+  { LEVER_1, MAP_A, 10, 12, false, false, on_lever_pulled },
+
+  // Potion Lever (needs green)
+  { LEVER_2, MAP_A, 2, 3, false, false, on_lever_pulled },
+
+  // Boss Lever (needs blue)
+  { LEVER_3, MAP_A, 27, 20, false, false, on_lever_pulled },
+
   { END },
 };
 
@@ -129,7 +208,15 @@ static const Door doors[] = {
     false,            // Does the door start opened?
   }
   */
-  { DOOR_1, MAP_B,  3, 2, DOOR_NEXT_LEVEL, false },
+
+  // Next Level Door
+  { DOOR_1, MAP_B,  3, 1, DOOR_NEXT_LEVEL, false },
+
+  // Item Room Door
+  { DOOR_2, MAP_A, 2, 9, DOOR_STAIRS_DOWN, false, false },
+
+  // Boss Room Door
+  { DOOR_3, MAP_A, 3, 18, DOOR_STAIRS_DOWN, false, false },
 
   { END }
 };
@@ -137,6 +224,14 @@ static const Door doors[] = {
 //------------------------------------------------------------------------------
 // Sconces
 //------------------------------------------------------------------------------
+
+static void on_lit(const Sconce* sconce) {
+  if (sconce->id == SCONCE_4) {
+    // Open the door to the item room
+    open_door(DOOR_2);
+    play_sound(sfx_big_door_open);
+  }
+}
 
 static const Sconce sconces[] = {
   /*
@@ -148,29 +243,37 @@ static const Sconce sconces[] = {
     FLAME_BLUE  // Flame color for the sconce if it starts lit.
   }
   */
-  // BOSS
-  { SCONCE_STATIC, MAP_B, 2, 2, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_B, 4, 2, true, FLAME_RED },
 
-  // ELITE
-  { SCONCE_STATIC, MAP_B, 11,  1, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_B, 13, 1, true, FLAME_RED },
+  // Puzzle Sconces
+  { SCONCE_1, MAP_A, 10, 10, false },
+  { SCONCE_2, MAP_A, 2, 1, false },
+  { SCONCE_3, MAP_A, 27, 18, false },
 
-  // MAZE
-  { SCONCE_STATIC, MAP_A, 7, 3, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 11, 4, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 27, 6, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 30, 7, true, FLAME_RED },
+  // Lightable Maze Sconces
+  { SCONCE_4, MAP_A, 3, 9, false, FLAME_NONE, on_lit },
+  { SCONCE_5, MAP_A, 13, 12, false },
+  { SCONCE_6, MAP_A, 7, 11, false },
+  { SCONCE_7, MAP_A, 22, 7, false },
+  { SCONCE_8, MAP_A, 30, 7, false },
+
+  // Signpost Sconces in Entryway
+  { SCONCE_STATIC, MAP_A, 11, 26, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 12, 26, true, FLAME_GREEN },
+  { SCONCE_STATIC, MAP_A, 13, 26, true, FLAME_BLUE },
+
+  // Static Maze Sconces
+  { SCONCE_STATIC, MAP_A, 5, 1, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 14, 17, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 8, 27, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 16, 27, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 28, 27, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 19, 1, true, FLAME_RED },
   { SCONCE_STATIC, MAP_A, 28, 11, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 15, 14, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 23, 14, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 4, 18, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 12, 20, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 18, 20, true, FLAME_RED },
-  { SCONCE_STATIC, MAP_A, 8, 23, true, FLAME_GREEN },
-  { SCONCE_STATIC, MAP_A, 4, 26, true, FLAME_RED },
-  // { SCONCE_STATIC, MAP_A, 14, 26, true, FLAME_RED },
-  // { SCONCE_STATIC, MAP_A, 29, 27, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 4, 18, true, FLAME_BLUE },
+
+  // Static Boss Room
+  { SCONCE_STATIC, MAP_B, 2, 1, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_B, 4, 1, true, FLAME_RED },
 
   { END }
 };
@@ -182,19 +285,20 @@ static const Sconce sconces[] = {
 static void on_boss_victory(void) NONBANKED {
   open_door(DOOR_1);
   set_npc_invisible(NPC_1);
+  play_sound(sfx_big_door_open);
 }
 
 static void on_elite_victory(void) NONBANKED {
-  // TODO: correct ability given
-  grant_ability(ABILITY_1);
   set_npc_invisible(NPC_2);
-  map_textbox(str_floor_common_new_ability);
+  grant_ability(ABILITY_4);
+  play_sound(sfx_big_powerup);
+  map_textbox(get_grant_message(ABILITY_4));
 }
 
 static bool on_boss_encouter(void) {
   Monster *monster = encounter.monsters;
   reset_encounter(MONSTER_LAYOUT_1);
-  kobold_generator(monster, player.level, B_TIER);
+  deathknight_generator(monster, 39, B_TIER);
   monster->id = 'A';
   set_on_victory(on_boss_victory);
   start_battle();
@@ -204,7 +308,7 @@ static bool on_boss_encouter(void) {
 static bool on_elite_encouter(void) {
   Monster *monster = encounter.monsters;
   reset_encounter(MONSTER_LAYOUT_1);
-  kobold_generator(monster, player.level, B_TIER);
+  gelatinous_cube_generator(monster, 37, B_TIER);
   monster->id = 'A';
   set_on_victory(on_elite_victory);
   start_battle();
@@ -212,12 +316,21 @@ static bool on_elite_encouter(void) {
 }
 
 static bool on_npc_action(const NPC *npc) {
-  if (npc->id == NPC_1){
-    map_textbox_with_action(str_floor_common_fight_me, on_boss_encouter);
-  } else {
-    map_textbox_with_action(str_floor_common_love, on_elite_encouter);
+  switch (npc->id) {
+  case NPC_1:
+    if (player.level < 40) {
+      map_textbox(str_floor5_boss_not_yet);
+      return true;
+    }
+    play_sound(sfx_monster_attack2);
+    map_textbox_with_action(str_floor5_boss, on_boss_encouter);
+    return true;
+  case NPC_2:
+    play_sound(sfx_monster_attack1);
+    map_textbox_with_action(str_floor5_elite_attack, on_elite_encouter);
+    return true;
   }
-  return true;
+  return false;
 }
 
 static const NPC npcs[] = {
@@ -231,8 +344,8 @@ static const NPC npcs[] = {
     action_callback,  // Action callback to execute when the player interacts
   }
   */
-  { NPC_1, MAP_B, 3, 5, MONSTER_KOBOLD, S_TIER, on_npc_action }, // Boss
-  { NPC_2, MAP_B, 12, 2, MONSTER_KOBOLD, A_TIER, on_npc_action }, // Elite
+  { NPC_1, MAP_B, 3, 3, MONSTER_DEATHKNIGHT, S_TIER, on_npc_action }, // Boss
+  { NPC_2, MAP_B, 11, 3, MONSTER_GELATINOUS_CUBE, A_TIER, on_npc_action }, // Elite
 
   { END }
 };
@@ -241,7 +354,69 @@ static const NPC npcs[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
+/*
+G. Cube
+Owlbear
+Bugbear
+Zombie
+*/
+
+// Max Level: 36
+static const EncounterTable encounters_low[] = {
+  {
+    ODDS_10P, MONSTER_LAYOUT_1,
+    MONSTER_GELATINOUS_CUBE, 30, B_TIER,
+  },
+  {
+    ODDS_20P, MONSTER_LAYOUT_2,
+    MONSTER_BUGBEAR, 32, C_TIER,
+    MONSTER_BUGBEAR, 32, C_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_1,
+    MONSTER_OWLBEAR, 30, B_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 30, C_TIER,
+    MONSTER_ZOMBIE, 32, C_TIER,
+  },
+  { END }
+};
+
+// Max Level: 42
+static const EncounterTable encounters_high[] = {
+  {
+    ODDS_25P, MONSTER_LAYOUT_2,
+    MONSTER_GELATINOUS_CUBE, 34, C_TIER,
+    MONSTER_GELATINOUS_CUBE, 34, C_TIER,
+  },
+  {
+    ODDS_30P, MONSTER_LAYOUT_1,
+    MONSTER_OWLBEAR, 38, B_TIER,
+  },
+  {
+    ODDS_30P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 36, C_TIER,
+    MONSTER_ZOMBIE, 36, B_TIER,
+  },
+  {
+    ODDS_15P, MONSTER_LAYOUT_3S,
+    MONSTER_GOBLIN, 39, C_TIER,
+    MONSTER_GOBLIN, 38, B_TIER,
+    MONSTER_GOBLIN, 39, C_TIER,
+  },
+  { END }
+};
+
 static bool on_init(void) {
+  config_random_encounter(4, 1, 1, true);
+
+  // Reset the boss door flame puzzle
+  lever1_flame = FLAME_NONE;
+  lever2_flame = FLAME_NONE;
+  lever3_flame = FLAME_NONE;
+
   return false;
 }
 
@@ -254,6 +429,14 @@ static bool on_special(void) {
 }
 
 static bool on_move(void) {
+  if (check_random_encounter()) {
+    if (player.level < 37)
+      generate_encounter(encounters_low);
+    else
+      generate_encounter(encounters_high);
+    start_battle();
+    return true;
+  }
   return false;
 }
 
@@ -267,15 +450,15 @@ static bool on_action(void) {
 
 static const palette_color_t palettes[] = {
   // Palette 1 - Core background tiles
-  RGB8(190, 200, 190),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
+  RGB8(80, 0, 80),
+  RGB8(50, 0, 60),
   RGB8(24, 0, 0),
+  RGB8(0, 0, 24),
   // Palette 2 - Treasure chests
-  RGB8(192, 138, 40),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
+  RGB8(172, 128, 20),
+  RGB8(50, 0, 60),
   RGB8(24, 0, 0),
+  RGB8(0, 0, 24),
   // Palette 3
   RGB_WHITE,
   RGB8(120, 120, 120),

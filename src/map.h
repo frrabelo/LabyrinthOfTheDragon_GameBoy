@@ -1121,6 +1121,10 @@ extern Exit active_exit;
  */
 extern FlameColor sconce_colors[8];
 
+/**
+ * Debugging flag that allows the player to pass through locked doors.
+ */
+extern bool pass_doors;
 
 typedef struct MapCallbacks {
   /**
@@ -1373,6 +1377,7 @@ inline bool is_lever_on(LeverId id) {
  */
 inline bool toggle_lever_state(LeverId id) {
   flags_lever_on ^= id;
+  *debug = flags_lever_on;
 }
 
 /**
@@ -1473,6 +1478,14 @@ inline void light_sconce(SconceId id, FlameColor color) {
   sconce_colors[get_sconce_index(id)] = color;
   const uint8_t sprite = get_sconce_flame_sprite(id);
   set_sprite_prop(sprite, FLAME_SPRITE_PROP | color);
+}
+
+/**
+ * @param id Id of the sconce for which to get the color.
+ * @return The color of the sconce if lit.
+ */
+inline FlameColor get_sconce_color(SconceId id) {
+  return sconce_colors[get_sconce_index(id)];
 }
 
 /**

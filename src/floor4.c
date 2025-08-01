@@ -1,14 +1,15 @@
 #pragma bank 8
 
 #include "floor.h"
+#include "sound.h"
 
 //------------------------------------------------------------------------------
 // Floorwide settings
 //------------------------------------------------------------------------------
 
 #define ID 99
-#define DEFAULT_X 14
-#define DEFAULT_Y 19
+#define DEFAULT_X 24
+#define DEFAULT_Y 30
 
 //------------------------------------------------------------------------------
 // Maps
@@ -38,6 +39,49 @@ static const Chest chests[] = {
     NULL,       // Scripting "on open" callback (optional)
   }
   */
+  // Secret 1
+  {
+    CHEST_1,
+    MAP_A, 12, 28, false, false,
+    str_chest_item_1pots,
+    chest_item_1pot,
+  },
+  // Secret 2
+  {
+    CHEST_2,
+    MAP_A, 3, 28, false, false,
+    str_chest_item_1eths,
+    chest_item_1eth,
+  },
+  // West Wing Chest
+  {
+    CHEST_3,
+    MAP_A, 2, 13, false, false,
+    NULL, NULL,
+    chest_add_magic_key
+  },
+  // East Wing Chest
+  {
+    CHEST_4,
+    MAP_A, 18, 13, false, false,
+    str_chest_item_1eth,
+    chest_item_1eth,
+  },
+
+  // Treasure Room
+  {
+    CHEST_5,
+    MAP_A, 18, 3, true, true,
+    str_chest_item_regen_pot,
+    chest_item_regen_pot,
+  },
+  {
+    CHEST_6,
+    MAP_A, 20, 3, true, true,
+    str_chest_item_haste_pot,
+    chest_item_haste_pot,
+  },
+
   { END },
 };
 
@@ -50,18 +94,47 @@ static const Exit exits[] = {
   {
     MAP_A,        // Map the exit is on
     0, 0,         // Column and row on that map for the exit
-    FLOOR_TEST_ID,    // Floor to which the exit leads (last door, basically)
     DEST_MAP      // Id of the destination map
     0, 0,         // Column and row
     UP,           // Way the player should be facing leaving the exit
-    EXIT_STAIRS   // Type of exit (not sure if we'll use this yet)
+    EXIT_STAIRS,  // Type of exit (not sure if we'll use this yet)
+    &bank_floor2  // (optional) bank reference for exits between floors
   },
   */
+
+  // Boss door
+  { MAP_A, 28, 27, MAP_A, 28, 23, UP, EXIT_STAIRS },
+  { MAP_A, 28, 23, MAP_A, 28, 27, DOWN, EXIT_STAIRS },
+
+  // West Wing
+  { MAP_A, 19, 27, MAP_A,  5,  9, DOWN, EXIT_STAIRS },
+  { MAP_A,  5,  9, MAP_A, 19, 27, DOWN, EXIT_STAIRS },
+
+  // Elite Room
+  { MAP_A, 1, 8, MAP_A, 1, 5, UP, EXIT_STAIRS },
+  { MAP_A, 1, 5, MAP_A, 1, 8, DOWN, EXIT_STAIRS },
+
+  // Central Hall
+  { MAP_A, 20, 27, MAP_A, 10, 12, UP, EXIT_STAIRS },
+  { MAP_A, 10, 12, MAP_A, 20, 27, DOWN, EXIT_STAIRS },
+
+  // East Wing
+  { MAP_A, 21, 27, MAP_A, 15,  9, DOWN, EXIT_STAIRS },
+  { MAP_A, 15,  9, MAP_A, 21, 27, DOWN, EXIT_STAIRS },
+
+  // Treasure Room
+  { MAP_A, 19, 8, MAP_A, 19, 5, UP, EXIT_STAIRS },
+  { MAP_A, 19, 5, MAP_A, 19, 8, DOWN, EXIT_STAIRS },
+
+  // Floor Exit
+  // TODO Map this to floor 5
+  { MAP_A, 28, 19, MAP_A, DEFAULT_X, DEFAULT_Y, UP, EXIT_STAIRS },
+
   { END },
 };
 
 //------------------------------------------------------------------------------
-// Exits
+// Signs
 //------------------------------------------------------------------------------
 
 static const Sign signs[] = {
@@ -80,6 +153,24 @@ static const Sign signs[] = {
 // Levers
 //------------------------------------------------------------------------------
 
+static void on_pull(const Lever *lever) {
+  const bool lever1 = is_lever_on(LEVER_1);
+  const bool lever2 = is_lever_on(LEVER_2);
+  const bool lever3 = is_lever_on(LEVER_3);
+
+
+  if (!lever1 && lever2 && lever3) {
+    play_sound(sfx_big_powerup);
+    open_door(DOOR_3);
+    open_door(DOOR_4);
+    map_textbox(str_floor2_door_opens);
+  } else {
+    play_sound(sfx_door_unlock);
+    close_door(DOOR_3);
+    close_door(DOOR_4);
+  }
+}
+
 static const Lever levers[] = {
   /*
   {
@@ -91,6 +182,16 @@ static const Lever levers[] = {
     NULL,     // Scripting callback for the lever
   }
   */
+
+  // West Wing
+  { LEVER_1, MAP_A, 1, 17, false, false, on_pull },
+
+  // Central Hall
+  { LEVER_2, MAP_A, 10, 16, false, false, on_pull },
+
+  // East Wing
+  { LEVER_3, MAP_A, 19, 17, false, false, on_pull },
+
   { END },
 };
 
@@ -109,6 +210,19 @@ static const Door doors[] = {
     false,            // Does the door start opened?
   }
   */
+
+  // Boss Door
+  { DOOR_1, MAP_A, 28, 27, DOOR_NORMAL, false, false },
+
+  // Next Floor
+  { DOOR_2, MAP_A, 28, 19, DOOR_NEXT_LEVEL, false, false },
+
+  // Elite Door (West Wing)
+  { DOOR_3, MAP_A, 1, 8, DOOR_NORMAL, false, false },
+
+  // Treasure Room Door (East Wing)
+  { DOOR_4, MAP_A, 19, 8, DOOR_NORMAL, false, false },
+
   { END }
 };
 
@@ -116,8 +230,49 @@ static const Door doors[] = {
 // Sconces
 //------------------------------------------------------------------------------
 
-static void on_lit(const Sconce* sconce) {
+/**
+ * Keeps track of the number of sconce puzzles (out of 3) that have been solved.
+ */
+uint8_t puzzle_count = 0;
 
+/**
+ * Handles the logic for the three color flame puzzle.
+ */
+static void test_sconces(SconceId a, SconceId b, FlameColor c) {
+  if (is_sconce_lit(a) && is_sconce_lit(b)) {
+    if (get_sconce_color(a) == c && get_sconce_color(b) == c) {
+      puzzle_count++;
+      if (puzzle_count >= 3) {
+        play_sound(sfx_monster_critical);
+        map_textbox(str_floor2_door_opens);
+        open_door(DOOR_1);
+      } else {
+        play_sound(sfx_big_powerup);
+      }
+    }
+    else {
+      play_sound(sfx_error);
+      extinguish_sconce(a);
+      extinguish_sconce(b);
+    }
+  }
+}
+
+static void on_lit(const Sconce* sconce) {
+  switch (sconce->id) {
+  case SCONCE_1:
+  case SCONCE_2:
+    test_sconces(SCONCE_1, SCONCE_2, FLAME_GREEN);
+    break;
+  case SCONCE_3:
+  case SCONCE_4:
+    test_sconces(SCONCE_3, SCONCE_4, FLAME_RED);
+    break;
+  case SCONCE_5:
+  case SCONCE_6:
+    test_sconces(SCONCE_5, SCONCE_6, FLAME_BLUE);
+    break;
+  }
 }
 
 static const Sconce sconces[] = {
@@ -130,6 +285,28 @@ static const Sconce sconces[] = {
     FLAME_BLUE  // Flame color for the sconce if it starts lit.
   }
   */
+
+  // West Wing
+  { SCONCE_1, MAP_A, 2, 9, false, FLAME_NONE, on_lit },
+  { SCONCE_2, MAP_A, 4, 9, false, FLAME_NONE, on_lit },
+
+  // Central Hall
+  { SCONCE_3, MAP_A, 9, 9, false, FLAME_NONE, on_lit },
+  { SCONCE_4, MAP_A, 10, 9, false, FLAME_NONE, on_lit },
+
+  // East Wing
+  { SCONCE_5, MAP_A, 17, 9, false, FLAME_NONE, on_lit },
+  { SCONCE_6, MAP_A, 18, 9, false, FLAME_NONE, on_lit },
+
+  // Main Room (colored sconces)
+  { SCONCE_STATIC, MAP_A, 23, 27, true, FLAME_BLUE },
+  { SCONCE_STATIC, MAP_A, 24, 27, true, FLAME_GREEN },
+  { SCONCE_STATIC, MAP_A, 25, 27, true, FLAME_RED },
+
+  // Treasure & Elite Room
+  { SCONCE_STATIC, MAP_A, 1, 2, true, FLAME_RED },
+  { SCONCE_STATIC, MAP_A, 19, 2, true, FLAME_RED },
+
   { END }
 };
 
@@ -137,22 +314,55 @@ static const Sconce sconces[] = {
 // NPCs (IMPLS YET)
 //------------------------------------------------------------------------------
 
-static void boss_victory(void) NONBANKED {
+static void on_boss_victory(void) NONBANKED {
+  open_door(DOOR_2);
+  set_npc_invisible(NPC_1);
+  play_sound(sfx_big_door_open);
 }
 
-static bool boss_encounter(void) {
+static void on_elite_victory(void) NONBANKED {
+  set_npc_invisible(NPC_2);
+  grant_ability(ABILITY_3);
+  play_sound(sfx_big_powerup);
+  map_textbox(get_grant_message(ABILITY_3));
+}
+
+static bool on_boss_encouter(void) {
   Monster *monster = encounter.monsters;
   reset_encounter(MONSTER_LAYOUT_1);
-  kobold_generator(monster, player.level, A_TIER);
+  displacer_beast_generator(monster, 31, A_TIER);
   monster->id = 'A';
-  set_on_victory(boss_victory);
+  set_on_victory(on_boss_victory);
+  start_battle();
+  return true;
+}
+
+static bool on_elite_encouter(void) {
+  Monster *monster = encounter.monsters;
+  reset_encounter(MONSTER_LAYOUT_1);
+  owlbear_generator(monster, 29, B_TIER);
+  monster->id = 'A';
+  set_on_victory(on_elite_victory);
   start_battle();
   return true;
 }
 
 static bool on_npc_action(const NPC *npc) {
-  map_textbox_with_action(str_floor_common_growl, boss_encounter);
-  return true;
+  switch (npc->id) {
+  case NPC_1:
+    if (player.level < 29) {
+      map_textbox(str_floor4_boss_not_yet);
+      return true;
+    }
+    play_sound(sfx_monster_attack2);
+    map_textbox_with_action(str_floor4_boss, on_boss_encouter);
+    return true;
+  case NPC_2:
+    play_sound(sfx_monster_attack1);
+    map_textbox_with_action(str_floor4_elite_attack, on_elite_encouter);
+    return true;
+  }
+  return false;
 }
 
 static const NPC npcs[] = {
@@ -168,6 +378,9 @@ static const NPC npcs[] = {
   */
   // { NPC_1, MAP_A, 6, 6, MONSTER_KOBOLD, on_npc_action },
 
+  { NPC_1, MAP_A, 28, 21, MONSTER_DISPLACER_BEAST, S_TIER, on_npc_action },
+  { NPC_2, MAP_A, 1, 3, MONSTER_OWLBEAR, A_TIER, on_npc_action },
+
   { END }
 };
 
@@ -175,7 +388,64 @@ static const NPC npcs[] = {
 // Scripting Callbacks
 //------------------------------------------------------------------------------
 
+/*
+Owlbear
+Bugbear
+Zombie
+Goblin
+*/
+
+// Max Level: 29
+static const EncounterTable encounters_low[] = {
+  {
+    ODDS_10P, MONSTER_LAYOUT_1,
+    MONSTER_OWLBEAR, 25, B_TIER,
+  },
+  {
+    ODDS_20P, MONSTER_LAYOUT_1,
+    MONSTER_BUGBEAR, 24, C_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_2,
+    MONSTER_GOBLIN, 25, C_TIER,
+    MONSTER_GOBLIN, 25, B_TIER,
+  },
+  {
+    ODDS_35P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 19, C_TIER,
+    MONSTER_ZOMBIE, 18, C_TIER,
+  },
+  { END }
+};
+
+// Max Level: 33
+static const EncounterTable encounters_high[] = {
+  {
+    ODDS_20P, MONSTER_LAYOUT_2,
+    MONSTER_OWLBEAR, 27, C_TIER,
+    MONSTER_OWLBEAR, 29, C_TIER,
+  },
+  {
+    ODDS_25P, MONSTER_LAYOUT_1,
+    MONSTER_BUGBEAR, 31, B_TIER,
+  },
+  {
+    ODDS_25P, MONSTER_LAYOUT_2,
+    MONSTER_ZOMBIE, 29, C_TIER,
+    MONSTER_ZOMBIE, 29, C_TIER,
+  },
+  {
+    ODDS_30P, MONSTER_LAYOUT_3S,
+    MONSTER_GOBLIN, 28, C_TIER,
+    MONSTER_GOBLIN, 29, B_TIER,
+    MONSTER_GOBLIN, 28, C_TIER,
+  },
+  { END }
+};
+
 static bool on_init(void) {
+  puzzle_count = 0;
+  config_random_encounter(4, 1, 1, true);
   return false;
 }
 
@@ -184,6 +454,14 @@ static bool on_special(void) {
 }
 
 static bool on_move(void) {
+  if (check_random_encounter()) {
+    if (player.level < 29)
+      generate_encounter(encounters_low);
+    else
+      generate_encounter(encounters_high);
+    start_battle();
+    return true;
+  }
   return false;
 }
 
@@ -197,30 +475,30 @@ static bool on_action(void) {
 
 static const palette_color_t palettes[] = {
   // Palette 1 - Core background tiles
-  RGB8(190, 200, 190),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
-  RGB8(24, 0, 0),
+  RGB8(175, 160, 177),
+  RGB8(110, 70, 110),
+  RGB8(40, 50, 40),
+  RGB8(32, 0, 32),
   // Palette 2 - Treasure chests
   RGB8(192, 138, 40),
-  RGB8(100, 100, 140),
-  RGB8(40, 60, 40),
-  RGB8(24, 0, 0),
-  // Palette 3
-  RGB8(120, 120, 120),
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB8(36, 0, 0),
-  // Palette 4
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 5
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
+  RGB8(110, 70, 110),
+  RGB8(40, 50, 40),
+  RGB8(32, 0, 32),
+  // Palette 3 - Levers
+  RGB8(192, 40, 40),
+  RGB8(110, 70, 110),
+  RGB8(40, 50, 40),
+  RGB8(32, 0, 32),
+  // Palette 4 - Special Skull
+  RGB8(20, 100, 177),
+  RGB8(110, 70, 110),
+  RGB8(40, 50, 40),
+  RGB8(32, 0, 32),
+  // Palette 5 - Regen Chest
+  RGB8(20, 177, 100),
+  RGB8(110, 70, 110),
+  RGB8(40, 50, 40),
+  RGB8(32, 0, 32),
   // Palette 6
   RGB_WHITE,
   RGB8(120, 120, 120),

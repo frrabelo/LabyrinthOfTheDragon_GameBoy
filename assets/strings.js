@@ -232,6 +232,20 @@ addNamespace('floor3', 2, {
   'boss_not_yet': 'Jiggle?',
 });
 
+addNamespace('floor4', 2, {
+  'elite_attack': 'KWAAAAAAHHH!',
+  'boss': 'NyaAAAHHHH!',
+  'boss_not_yet': 'Nya?',
+});
+
+addNamespace('floor5', 2, {
+  'demands': 'The Dragon demands a rainbow...',
+  'secrets': 'The walls have secrets...',
+  'elite_attack': 'JIGGLE!',
+  'boss': 'Come and meet DEATH!',
+  'boss_not_yet': 'You are... unworthy.',
+});
+
 addNamespace('floor_common', 2, {
   'growl': "GROWL!",
   'light_fires': "Light these fires to open this door!",
@@ -284,6 +298,10 @@ addNamespace('chest_item', 2, {
   '1eth': 'You get an ether!',
   '1eths': 'You get an ethers!',
   '1remedy': 'You get a remedy!',
+  '3potions': 'You get 3 potions!',
+  '3ethers': 'You get 3 ethers!',
+  '1elixer': 'You get an elixer!',
+  '1atkup_1defup': 'You get an ATK& and DEF&!'
 });
 
 addNamespace('items', 3, {

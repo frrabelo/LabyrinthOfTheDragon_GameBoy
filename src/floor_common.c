@@ -47,8 +47,7 @@ const Item chest_item_1pot[] = {
 };
 
 const Item chest_item_2pots[] = {
-  { ITEM_POTION, 1 },
-  { ITEM_POTION, 1 },
+  { ITEM_POTION, 2 },
   { END }
 };
 
@@ -60,4 +59,25 @@ const Item chest_item_1eth[] = {
 const Item chest_item_1remedy[] = {
   { ITEM_REMEDY, 1 },
   { END }
+};
+
+const Item chest_item_3potions[] = {
+  { ITEM_POTION, 3 },
+  { END }
+};
+
+const Item chest_item_3ethers[] = {
+  { ITEM_ETHER, 3 },
+  { END },
+};
+
+const Item chest_item_1elixer[] = {
+  { ITEM_ELIXER, 1 },
+  { END },
+};
+
+const Item chest_item_1atkup_1defup[] = {
+  { ITEM_ATK_UP, 1 },
+  { ITEM_DEF_UP, 1 },
+  { END },
 };

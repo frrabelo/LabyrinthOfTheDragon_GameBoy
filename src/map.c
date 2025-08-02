@@ -174,6 +174,12 @@ static MapTile tile_buf[2 * MAP_HORIZ_LOADS];
 static TileHashEntry tile_object_hashtable[TILE_HASHTABLE_SIZE];
 
 /**
+ * Hashtable that holds palette and tile id overrides. Makes it easy to set and
+ * lookup overrides for tile position in a floor's map.
+ */
+static TileOverrideHashEntry tile_override_hashtable[TILE_HASHTABLE_SIZE];
+
+/**
  * Timer used to add a small delay after the fade-out and before handing things
  * over to the battle system.
  */
@@ -299,7 +305,7 @@ static void load_floor(FloorBank *f) NONBANKED {
   default_y = floor->default_y;
 
   list_copy(floor->maps, maps, MAX_MAPS, sizeof(Map));
-  list_copy(floor->exits, exits, MAX_EXITS, sizeof(Map));
+  list_copy(floor->exits, exits, MAX_EXITS, sizeof(Exit));
   list_copy(floor->signs, signs, MAX_SIGNS, sizeof(Sign));
   list_copy(floor->chests, chests, MAX_CHESTS, sizeof(Chest));
   list_copy(floor->levers, levers, MAX_LEVERS, sizeof(Lever));
@@ -369,13 +375,25 @@ static bool on_action(void) NONBANKED {
 }
 
 /**
- * Switches to the floor's bank and calls the `on_action` function.
+ * Switches to the floor's bank and calls the `on_load` function.
  */
 static void on_load(void) NONBANKED {
   const uint8_t _prev_bank = CURRENT_BANK;
   SWITCH_ROM(floor_bank->bank);
   if (floor_bank->floor->on_load)
     floor_bank->floor->on_load();
+  SWITCH_ROM(_prev_bank);
+}
+
+/**
+ * Switches to the floor's bank and calls the `on_draw` function.
+ */
+static void on_draw(void) NONBANKED {
+  *(debug + 0x20) = *(debug + 0x20) + 1;
+  const uint8_t _prev_bank = CURRENT_BANK;
+  SWITCH_ROM(floor_bank->bank);
+  if (floor_bank->floor->on_draw)
+    floor_bank->floor->on_draw();
   SWITCH_ROM(_prev_bank);
 }
 
@@ -487,6 +505,68 @@ static void hash_object(
 }
 
 /**
+ * TODO document me
+ */
+static TileOverrideHashEntry *find_override_entry(
+  int8_t x,
+  int8_t y
+) {
+  uint8_t map_id = active_map->id;
+  TileOverrideHashEntry *entry = tile_override_hashtable + hash(map_id, x, y);
+  while (entry) {
+    if (entry->map_id == 0xFF)
+      return NULL;
+    if (entry->map_id == map_id && entry->x == x && entry->y == y)
+      return entry;
+    entry = entry->next;
+  }
+  return NULL;
+}
+
+/**
+ * TODO document me
+ */
+static TileOverrideHashEntry *find_or_create_override_entry(
+  uint8_t map_id,
+  int8_t x,
+  int8_t y
+) {
+  TileOverrideHashEntry *entry = tile_override_hashtable + hash(map_id, x, y);
+
+  // The first bucket item is empty, so reserve it
+  if (entry->map_id == 0xFF) {
+    entry->map_id = map_id;
+    entry->x = x;
+    entry->y = y;
+    return entry;
+  }
+
+  // We've found the override entry for the given coordinates
+  if (entry->map_id == map_id && entry->x == x && entry->y == y)
+    return entry;
+
+  // Handle collisions
+  while (entry->next) {
+    entry = entry->next;
+    if (entry->map_id == map_id && entry->x == x && entry->y == y)
+      return entry;
+  }
+
+  // All previous entries were set for other coorindates, make a new entry
+  TileOverrideHashEntry *next =
+    (TileOverrideHashEntry*)malloc(sizeof(TileOverrideHashEntry));
+  entry->next = next;
+  entry = next;
+  entry->next = NULL;
+
+  entry->map_id = map_id;
+  entry->x = x;
+  entry->y = y;
+
+  return entry;
+}
+
+/**
  * Gets a hash entry at the given coordinates in the active map.
  */
 static TileHashEntry *get_hash_entry(int8_t x, int8_t y) {
@@ -504,9 +584,9 @@ static TileHashEntry *get_hash_entry(int8_t x, int8_t y) {
 }
 
 /**
- * Resets the object hash and frees allocated bucket items.
+ * Resets the object and override hashtables and frees allocated bucket items.
  */
-static void reset_object_hash(void) {
+static void reset_hashtables(void) {
   TileHashEntry *entry = tile_object_hashtable;
 
   for (uint8_t k = 0; k < TILE_HASHTABLE_SIZE; k++, entry++) {
@@ -520,8 +600,26 @@ static void reset_object_hash(void) {
 
     while (sibling) {
       TileHashEntry *tmp = sibling;
-      free(tmp);
       sibling = sibling->next;
+      free(tmp);
+    }
+  }
+
+  TileOverrideHashEntry *override = tile_override_hashtable;
+  for (uint8_t k = 0; k < TILE_HASHTABLE_SIZE; k++, override++) {
+    override->map_id = 0xFF;
+    override->x = (int8_t)0xFF;
+    override->y = (int8_t)0xFF;
+    override->palette = 0xFF;
+    override->tile = 0xFF;
+
+    TileOverrideHashEntry *sibling = override->next;
+    override->next = NULL;
+
+    while (sibling) {
+      TileOverrideHashEntry *tmp = sibling;
+      sibling = sibling->next;
+      free(tmp);
     }
   }
 }
@@ -1218,6 +1316,16 @@ static void get_map_tile(MapTile *tile, int8_t x, int8_t y) NONBANKED {
   tile->sconce = NULL;
   tile->npc = NULL;
 
+  TileOverrideHashEntry *override = find_override_entry(x, y);
+  if (override) {
+    if (override->tile != 0xFF) {
+      map_tile = map_tile_lookup[override->tile & MAP_TILE_MASK];
+    }
+    if (override->palette < 8) {
+      attr = (attr & 0xF8) | override->palette;
+    }
+  }
+
   TileHashEntry *entry = get_hash_entry(x, y);
   if (entry) {
     switch(entry->type) {
@@ -1517,7 +1625,7 @@ static void update_local_tiles(void) {
  * Resets all stateful objects on the flooor (chests, doors, npc, levers, etc.)
  */
 static void reset_map_objects(void) {
-  reset_object_hash();
+  reset_hashtables();
 
   // Chests
   flags_chest_open = 0;
@@ -1589,7 +1697,8 @@ static void load_exit(void) {
   }
 
   active_map = maps + active_exit.to_map;
-  hero_direction = active_exit.heading;
+  if (active_exit.heading != HERE)
+    hero_direction = active_exit.heading;
 
   set_hero_position(active_exit.to_col, active_exit.to_row);
   update_local_tiles();
@@ -1617,12 +1726,23 @@ static bool handle_exit(void) {
     if (exit->col != x || exit->row != y)
       continue;
 
-    play_sound(sfx_stairs);
+    switch (exit->exit_type) {
+    case EXIT_HOLE:
+      play_sound(sfx_falling);
+      break;
+    case EXIT_PORTAL:
+      play_sound(sfx_no_no_square);
+      break;
+    default:
+      play_sound(sfx_stairs);
+    }
+
     active_exit.to_map = exit->to_map;
     active_exit.to_col = exit->to_col;
     active_exit.to_row = exit->to_row;
     active_exit.to_floor = exit->to_floor;
     active_exit.heading = exit->heading;
+    active_exit.exit_type = exit->exit_type;
     map_fade_out(MAP_STATE_LOAD_EXIT);
     return true;
   }
@@ -2015,6 +2135,54 @@ void update_door_graphics(void) {
 }
 
 /**
+ * Redraws the tile at the given location. Does nothing if the map isn't active,
+ * the tile isn't in the rendering view, or if the tile is out of bounds.
+ *
+ * Note: I am using this for scriptable tile and palette overrides in level
+ *       scripts, but I have this feeling I do something *like* this in various
+ *       ways throughout the map code. Might be a good place for a refactor?
+ *
+ * @param map_id Id of the map.
+ * @param x X-coordinate in the map.
+ * @param y X-coordinate in the map.
+ */
+static void redraw_tile(uint8_t map_id, int8_t x, int8_t y) {
+  // Only redraw active map tiles
+  if (map_id != active_map->id)
+    return;
+
+  // Bounds checking
+  if (x < 0 || y < 0)
+    return;
+  if (x >= active_map->width || y >= active_map->height)
+    return;
+
+  // Not in the render window
+  if (x < hero_x() - 6 || x > hero_x() + 7)
+    return;
+  if (y < hero_y() - 6 || y > hero_y() + 6)
+    return;
+
+  // Redraw the tile
+  uint8_t *vram = get_vram_at(x, y);
+  MapTile map_tile;
+  get_map_tile(&map_tile, x, y);
+  draw_map_tile(vram, &map_tile);
+}
+
+void set_palette_at(uint8_t map_id, int8_t x, int8_t y, uint8_t palette) BANKED {
+  TileOverrideHashEntry *entry = find_or_create_override_entry(map_id, x, y);
+  entry->palette = palette;
+  redraw_tile(map_id, x, y);
+}
+
+void set_tile_at(uint8_t map_id, int8_t x, int8_t y, uint8_t tile) BANKED {
+  TileOverrideHashEntry *entry = find_or_create_override_entry(map_id, x, y);
+  entry->tile = tile;
+  redraw_tile(map_id, x, y);
+}
+
+/**
  * Checks for a lever in front of the player and handles its logic.
  */
 static bool check_levers(void) {
@@ -2334,7 +2502,12 @@ void update_map(void) {
     load_exit();
     break;
   case MAP_STATE_EXIT_LOADED:
-    start_move(active_exit.heading);
+    if (active_exit.exit_type == EXIT_HOLE) {
+        map_state = MAP_STATE_WAITING;
+        hero_state = HERO_STILL;
+    } else {
+      start_move(active_exit.heading);
+    }
     break;
   case MAP_STATE_MENU:
     update_map_menu();
@@ -2383,4 +2556,14 @@ void update_world_map(void) NONBANKED {
 }
 
 void draw_world_map(void) {
+  if (
+    map_state == MAP_STATE_FADE_IN ||
+    map_state == MAP_STATE_FADE_OUT ||
+    map_state == MAP_STATE_START_BATTLE ||
+    map_state == MAP_STATE_INITIATE_BATTLE ||
+    map_state == MAP_STATE_FROM_BATTLE
+  ) {
+    return;
+  }
+  on_draw();
 }

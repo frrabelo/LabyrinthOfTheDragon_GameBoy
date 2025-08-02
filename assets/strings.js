@@ -246,6 +246,12 @@ addNamespace('floor5', 2, {
   'boss_not_yet': 'You are... unworthy.',
 });
 
+addNamespace('floor6', 2, {
+  'elite_attack': 'BZZZTTT!',
+  'boss': 'OH! What a delicious brain!',
+  'boss_not_yet': 'You have yet to ripen...',
+});
+
 addNamespace('floor_common', 2, {
   'growl': "GROWL!",
   'light_fires': "Light these fires to open this door!",
@@ -294,6 +300,7 @@ addNamespace('chest_item', 2, {
   '1pots': 'You get a potions!',
   'haste_pot': 'You get a haste potion!',
   'regen_pot': 'You get a regen potion!',
+  '3regen': 'You get 3 regens!',
   '2pots': 'You get 2 potions!',
   '1eth': 'You get an ether!',
   '1eths': 'You get an ethers!',

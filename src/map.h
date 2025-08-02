@@ -521,7 +521,7 @@ typedef struct Exit {
   /**
    * Type of exit.
    */
-  ExitType exit;
+  ExitType exit_type;
   /**
    * Floor for the destination (optional).
    */
@@ -914,6 +914,10 @@ typedef struct Floor {
    * Called when the floor is loaded.
    */
   const void (*on_load)(void);
+  /**
+   * Called on render frames to update graphics for the floor.
+   */
+  const void (*on_draw)(void);
 } Floor;
 
 /**
@@ -977,6 +981,35 @@ typedef struct TileHashEntry {
    */
   struct TileHashEntry *next;
 } TileHashEntry;
+
+
+typedef struct TileOverrideHashEntry {
+  /**
+   * Map id for the associated tile in the map.
+   */
+  uint8_t map_id;
+  /**
+   * Horizontal position for the associated tile in the map.
+   */
+  int8_t x;
+  /**
+   * Vertical positon for the associated tile in the map.
+   */
+  int8_t y;
+  /**
+   * Overrides the tile index.
+   */
+  uint8_t tile;
+  /**
+   * Override for the tile palette.
+   */
+  uint8_t palette;
+  /**
+   * Pointer to the next entry in the bucket. This will only be set if there is
+   * a hashing coflict between two positions.
+   */
+  struct TileOverrideHashEntry *next;
+} TileOverrideHashEntry;
 
 /**
  * Enumeration of map menu states.
@@ -1521,6 +1554,24 @@ inline void set_npc_invisible(NpcId id) {
   npc_visible &= ~id;
   refresh_local_tiles = true;
 }
+
+/**
+ * Sets the palette for a given map coordinate.
+ * @param map_id Id of the map.
+ * @param x X coordinate for the tile on the map.
+ * @param y Y coordinate for the tile on the map.
+ * @param palette Palette to set.
+ */
+void set_palette_at(uint8_t map_id, int8_t x, int8_t y, uint8_t palette) BANKED;
+
+/**
+ * Overrides the graphics tile for a given map coordinate.
+ * @param map_id Id of the map.
+ * @param x X coordinate for the tile on the map.
+ * @param y Y coordinate for the tile on the map.
+ * @param tile Tile to set.
+ */
+void set_tile_at(uint8_t map_id, int8_t x, int8_t y, uint8_t tile) BANKED;
 
 /**
  * Remaps an exit's destination.

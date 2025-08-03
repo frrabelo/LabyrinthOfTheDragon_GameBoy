@@ -2,7 +2,7 @@ ifndef GBDK_HOME
 	GBDK_HOME = ~/gbdk/
 endif
 
-PROJECTNAME = TheMonsterManual
+PROJECTNAME = LabyrinthOfTheDragon
 
 SRC_DIR = src
 DATA_DIR = data

@@ -26,7 +26,7 @@ ifdef GBDK_DEBUG
 endif
 
 # You can set the name of the .gb ROM file here
-PROJECTNAME    = TheMonsterManual
+PROJECTNAME    = LabyrinthOfTheDragon
 
 BINS = $(PROJECTNAME).gb
 CSOURCES := $(wildcard src/*.c)

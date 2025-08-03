@@ -15,5 +15,8 @@ An 8-bit Adventure RPG with D&D Monsters!
 Update the `MakeFile` or define a shell variable named `GBDK_HOME` pointing to
 the directory where you installed GBDK.
 
-Once the tools are installed and the home directory is defined, all you have
-to do is run `make` from the project's root directory.
+To build the ROM run the following commands:
+
+* `npm install`
+* `make assets`
+* `make`

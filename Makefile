@@ -39,7 +39,10 @@ TILEBIN := $(subst assets/,res/,$(patsubst %.png,%.bin,$(TILEPNG)))
 
 all: assets data $(BIN)
 
-assets: strings tables $(TILEBIN)
+assets: asset_dirs strings tables $(TILEBIN)
+
+asset_dirs:
+	mkdir -p res/tiles
 
 tables: assets/tables.csv
 	$(TABLES2C)

@@ -18,8 +18,6 @@ uint8_t cursor = 0;
 
 Timer menu_walk_timer;
 uint8_t menu_walk_frame;
-
-Tilemap title_screen_tilemap = { 20, 18, 1, tilemap_title_screen };
 Tilemap save_select_tilemap = { 20, 18, 1, tilemap_save_select };
 
 /**
@@ -183,21 +181,27 @@ void update_save_select_sprites(void) {
   set_sprite_tile(SPRITE_HERO3 + 3, 0x71 + hero3_offset);
 }
 
+
+
+
 void init_main_menu(void) {
   DISPLAY_OFF;
 
+
+  init_title_screen();
+
+  /*
   // Load tiles
   core.load_font();
   core.load_all_heros();
 
-  // Load tilesets and palettes
-  scroll_bkg(0, 0);
-  SWITCH_ROM(1);
-  core.draw_tilemap(title_screen_tilemap, VRAM_BACKGROUND);
-  set_bkg_palette(0, 8, main_menu_palettes);
 
   // Initialize menu state
   cursor = 0;
+
+  // init_fire_animation();
+  init_smoke_animation();
+  */
 
   DISPLAY_ON;
 }
@@ -205,10 +209,12 @@ void init_main_menu(void) {
 void update_main_menu(void) {
   switch (main_menu_state) {
   case TITLE:
-    if (was_pressed(J_A | J_B | J_START)) {
-      main_menu_state = SAVE_SELECT;
-      init_save_select();
-    }
+    update_title_screen();
+
+    // if (was_pressed(J_A | J_B | J_START)) {
+    //   main_menu_state = SAVE_SELECT;
+    //   init_save_select();
+    // }
     break;
   case SAVE_SELECT:
     move_save_select_cursor();

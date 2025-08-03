@@ -395,9 +395,10 @@ extern const palette_color_t blank_palette[4];
  */
 typedef enum GameState {
   GAME_STATE_TITLE,
+  GAME_STATE_HERO_SELECT,
   GAME_STATE_WORLD_MAP,
   GAME_STATE_BATTLE,
-  GAME_STATE_MAIN_MENU,
+  GAME_STATE_DEATH,
   GAME_STATE_TEST = 0xFF,
 } GameState;
 
@@ -573,6 +574,10 @@ typedef struct Core {
    * @param pos Position where the sprites should be loaded.
    */
   const void (*load_monster_tiles)(MonsterTiles tiles, MonsterTilePosition pos);
+  /**
+   * Loads tiles for the title screen.
+   */
+  const void (*load_title_tiles)(void);
 } Core;
 
 /**

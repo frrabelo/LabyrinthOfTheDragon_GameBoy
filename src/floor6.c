@@ -257,13 +257,13 @@ static const Sconce sconces[] = {
 // NPCs (IMPLS YET)
 //------------------------------------------------------------------------------
 
-static void on_boss_victory(void) NONBANKED {
+static void on_boss_victory(void) BANKED {
   open_door(DOOR_2);
   set_npc_invisible(NPC_1);
   play_sound(sfx_big_door_open);
 }
 
-static void on_elite_victory(void) NONBANKED {
+static void on_elite_victory(void) BANKED {
   set_npc_invisible(NPC_2);
   grant_ability(ABILITY_5);
   play_sound(sfx_big_powerup);
@@ -325,28 +325,50 @@ static const NPC npcs[] = {
 };
 
 //------------------------------------------------------------------------------
-// Scripting Callbacks
+// Palette Colors
 //------------------------------------------------------------------------------
 
-uint8_t portal_color_idx = 0;
-Timer portal_color_timer;
-#define MAX_PORTAL_COLOR_FRAMES 6
-
-const palette_color_t portal_color[MAX_PORTAL_COLOR_FRAMES] = {
-  RGB8(220, 0, 220),
-  RGB8(180, 0, 240),
-  RGB8(100, 120, 120),
-  RGB8(20, 240, 0),
-  RGB8(0, 200, 0),
-  RGB8(100, 0, 100),
-};
-
-palette_color_t portal_color_palette[4] = {
+static const palette_color_t palettes[] = {
+  // Palette 1 - Core background tiles
+  RGB8(100, 100, 0),
+  RGB8(30, 45, 30),
+  RGB8(40, 60, 40),
+  RGB8(0, 0, 24),
+  // Palette 2 - Treasure chests
+  RGB8(192, 138, 40),
+  RGB8(30, 45, 30),
+  RGB8(40, 60, 40),
+  RGB8(0, 0, 24),
+  // Palette 3 - Active portal
   RGB8(220, 0, 220),
   RGB8(30, 45, 30),
   RGB8(40, 60, 40),
   RGB8(0, 0, 24),
+  // Palette 4
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+  // Palette 5
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+  // Palette 6
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
+  // Palette 7
+  RGB_WHITE,
+  RGB8(120, 120, 120),
+  RGB8(60, 60, 60),
+  RGB_BLACK,
 };
+
+//------------------------------------------------------------------------------
+// Scripting Callbacks
+//------------------------------------------------------------------------------
 
 static const EncounterTable encounters_low[] = {
   {
@@ -393,10 +415,9 @@ static const EncounterTable encounters_high[] = {
   { END }
 };
 
-
 static bool on_init(void) {
   active_portal = 0;
-  init_timer(portal_color_timer, 4);
+  init_teleporter_animation(2, palettes);
   config_random_encounter(4, 1, 1, true);
   return false;
 }
@@ -406,25 +427,25 @@ static bool on_special(void) {
   case 0:
     if (player_at(1, 2)) {
       play_sound(sfx_no_no_square);
-      teleport(MAP_A, 2, 21, UP);
+      teleport(MAP_A, 2, 21, UP, EXIT_PORTAL);
     }
     break;
   case 1:
     if (player_at(3, 2)) {
       play_sound(sfx_no_no_square);
-      teleport(MAP_A, 26, 21, UP);
+      teleport(MAP_A, 26, 21, UP, EXIT_PORTAL);
     }
     break;
   case 2:
     if (player_at(13, 2)) {
       play_sound(sfx_no_no_square);
-      teleport(MAP_A, 22, 29, LEFT);
+      teleport(MAP_A, 22, 29, LEFT, EXIT_PORTAL);
     }
     break;
   case 3:
     if (player_at(15, 2)) {
       play_sound(sfx_no_no_square);
-      teleport(MAP_A, 12, 21, UP);
+      teleport(MAP_A, 12, 21, UP, EXIT_PORTAL);
     }
     break;
   }
@@ -448,59 +469,8 @@ static bool on_action(void) {
 }
 
 static void on_draw(void) {
-  if (!update_timer(portal_color_timer))
-    return;
-  reset_timer(portal_color_timer);
-
-  portal_color_idx++;
-  if (portal_color_idx >= MAX_PORTAL_COLOR_FRAMES)
-    portal_color_idx = 0;
-
-  portal_color_palette[0] = portal_color[portal_color_idx];
-  core.load_bg_palette(portal_color_palette, 2, 1);
+  animate_teleporter_colors(2);
 }
-
-//------------------------------------------------------------------------------
-// Palette Colors
-//------------------------------------------------------------------------------
-
-static const palette_color_t palettes[] = {
-  // Palette 1 - Core background tiles
-  RGB8(100, 100, 0),
-  RGB8(30, 45, 30),
-  RGB8(40, 60, 40),
-  RGB8(0, 0, 24),
-  // Palette 2 - Treasure chests
-  RGB8(192, 138, 40),
-  RGB8(30, 45, 30),
-  RGB8(40, 60, 40),
-  RGB8(0, 0, 24),
-  // Palette 3 - Active portal
-  RGB8(220, 0, 220),
-  RGB8(30, 45, 30),
-  RGB8(40, 60, 40),
-  RGB8(0, 0, 24),
-  // Palette 4
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 5
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 6
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-  // Palette 7
-  RGB_WHITE,
-  RGB8(120, 120, 120),
-  RGB8(60, 60, 60),
-  RGB_BLACK,
-};
 
 //------------------------------------------------------------------------------
 // Area Definition (shouldn't have to touch this)

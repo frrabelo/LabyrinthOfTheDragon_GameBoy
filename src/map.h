@@ -608,9 +608,10 @@ typedef struct Chest {
    */
   const Item *items;
   /**
-   * Custom callback to execute on open (for special scrited chests).
+   * Custom callback to execute on open. Allows for scripting chests.
    * @param chest The chest the player is attempting to open.
-   * @return `true` if the chest was opened.
+   * @return `true` if the default opening behavior for the chest should be
+   *   prevented.
    */
   const bool (*on_open)(const struct Chest *chest);
 } Chest;
@@ -1273,18 +1274,21 @@ void take_exit(Exit *exit);
  * @param col Column in the map.
  * @param row Row in the map.
  * @param heading Direction the player should "walk out" of the destination.
+ * @param exit_type Type for the exit (primarily handles SFX).
  */
 inline void teleport(
   MapId to_map,
   uint8_t col,
   uint8_t row,
-  Direction heading
+  Direction heading,
+  ExitType exit_type
 ) {
   active_exit.to_map = to_map;
   active_exit.to_col = col;
   active_exit.to_row = row;
   active_exit.to_floor = NULL;
   active_exit.heading = heading;
+  active_exit.exit_type = exit_type;
   map_state = MAP_STATE_TELEPORT;
 }
 

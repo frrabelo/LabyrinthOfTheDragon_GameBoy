@@ -5,11 +5,12 @@
 
 #include "battle.h"
 #include "core.h"
+#include "hero_select.h"
 #include "map.h"
-#include "main_menu.h"
 #include "sound.h"
 #include "stats.h"
 #include "test.h"
+#include "title_screen.h"
 
 GameState game_state = GAME_STATE_TITLE;
 uint8_t joypad_down;
@@ -27,17 +28,6 @@ uint8_t joypad_released;
  */
 #define RANDOM_SEED 50
 
-
-/**
- * Initializes the normal game. Abstracted out of `initialize` to make it easy
- * to switch between tests and the actual game while handling common setup.
- */
-static void initialize_game(void) {
-  init_player(CLASS_DRUID);
-  init_world_map();
-  game_state = GAME_STATE_WORLD_MAP;
-}
-
 /**
  * Initializes the core game engine.
  */
@@ -51,6 +41,10 @@ static inline void initialize(void) {
   // test_battle();
 
   init_title_screen();
+  game_state = GAME_STATE_TITLE;
+
+  // init_hero_select();
+  // game_state = GAME_STATE_HERO_SELECT;
 }
 
 /**
@@ -62,6 +56,7 @@ static inline void game_loop(void) {
     update_title_screen();
     break;
   case GAME_STATE_HERO_SELECT:
+    update_hero_select();
     break;
   case GAME_STATE_WORLD_MAP:
     update_world_map();

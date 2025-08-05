@@ -475,6 +475,7 @@ void update_main_title(void) NONBANKED {
 
     if (was_pressed(J_START)) {
       DISPLAY_OFF;
+      clear_sprites();
       game_state = GAME_STATE_HERO_SELECT;
       init_hero_select();
       return;

@@ -313,6 +313,7 @@ static void load_floor(FloorBank *f) NONBANKED {
   list_copy(floor->sconces, sconces, MAX_SCONCES, sizeof(Sconce));
   list_copy(floor->npcs, npcs, MAX_NPCS, sizeof(NPC));
 
+  core.load_bg_palette(floor->palettes, 0, 8);
   palette_color_t *color = floor->palettes;
   palette_color_t *local_color = floor_palettes;
   for (uint8_t k = 0; k < 7 * 4; k++, local_color++, color++)
@@ -2414,6 +2415,18 @@ void return_from_battle(void) NONBANKED {
     move_direction = HERE;
     set_move_vram_bg_priority(local_tiles->attr);
   }
+  map_fade_in(MAP_STATE_WAITING);
+}
+
+void return_from_death(void) NONBANKED {
+  SWITCH_ROM(MAP_SYSTEM_BANK);
+
+  player.hp = player.max_hp;
+  player.sp = player.max_sp;
+
+  set_active_floor(&bank_floor1);
+  initialize_world_map();
+
   map_fade_in(MAP_STATE_WAITING);
 }
 

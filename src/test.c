@@ -47,8 +47,9 @@ void fill_inventory(uint8_t amt) {
 }
 
 void test_level(void) {
-  init_test_player(CLASS_SORCERER, 4);
+  init_test_player(CLASS_SORCERER, 80);
   // grant_ability(ABILITY_0);
+
   grant_ability(
   // ABILITY_ALL
     ABILITY_0
@@ -60,10 +61,10 @@ void test_level(void) {
   );
   // fill_inventory(5);
 
-  // SET_HAS_TORCH;
-  // SET_MAGIC_KEYS(9);
+  SET_HAS_TORCH;
+  SET_MAGIC_KEYS(9);
   PASS_DOORS;
-  // DISABLE_ENCOUNTERS;
+  DISABLE_ENCOUNTERS;
 
   // set_active_floor(&bank_floor1);
   // set_active_floor(&bank_floor2);
@@ -80,10 +81,14 @@ void test_level(void) {
 }
 
 void test_battle(void) {
-  reset_encounter(MONSTER_LAYOUT_2);
+  init_test_player(CLASS_TEST, 90);
+  reset_encounter(MONSTER_LAYOUT_1);
+  fill_inventory(9);
+
   Monster *monster = encounter.monsters;
-  dragon_generator(monster++, 10, C_TIER);
-  dragon_generator(monster++, 10, B_TIER);
+  gelatinous_cube_generator(monster, 10, C_TIER);
+  monster->id = 'A';
+  monster++;
 
   test_battle_init();
 }

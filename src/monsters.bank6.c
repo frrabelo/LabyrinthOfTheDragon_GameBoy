@@ -254,8 +254,10 @@ static void bugbear_take_turn(Monster *monster) {
       apply_scared(encounter.player_status_effects, C_TIER, 2, 0);
       sprintf(battle_post_message, str_monster_bugbear_for_hruggek_hit);
       monster->parameter--;
+      SFX_MAGIC;
     } else {
       sprintf(battle_post_message, str_monster_bugbear_for_hruggek_miss);
+      SFX_FAIL;
     }
     return;
   }
@@ -288,8 +290,10 @@ static void bugbear_take_turn(Monster *monster) {
 
   if (roll_attack_monster(atk, player.def))
     damage_player(base_damage, DAMAGE_PHYSICAL);
-  else
+  else {
     sprintf(battle_post_message, str_monster_miss);
+    SFX_MISS;
+  }
 
 }
 
@@ -333,11 +337,13 @@ static void owlbear_take_turn(Monster *monster) {
         uint16_t dmg = damage_player(base_damage, DAMAGE_PHYSICAL);
         player.trip_turns = 1;
         sprintf(battle_post_message, str_monster_owlbear_pounce_topple, dmg);
+        SFX_SPECIAL_CRIT;
       } else {
         damage_player(base_damage, DAMAGE_PHYSICAL);
       }
     } else {
       sprintf(battle_post_message, str_monster_owlbear_pounce_miss);
+      SFX_FAIL;
     }
     return;
   }
@@ -353,8 +359,10 @@ static void owlbear_take_turn(Monster *monster) {
 
     if (damage > 0)
       damage_player(damage, DAMAGE_PHYSICAL);
-    else
+    else {
       sprintf(battle_post_message, str_monster_miss);
+      SFX_MISS;
+    }
   } else {
     // Beak only
     sprintf(battle_pre_message, str_monster_owlbear_beak, monster->id);
@@ -364,6 +372,7 @@ static void owlbear_take_turn(Monster *monster) {
         DAMAGE_PHYSICAL);
     } else {
       sprintf(battle_post_message, str_monster_miss);
+      SFX_MISS;
     }
   }
 }
@@ -400,6 +409,7 @@ static void gelatinous_cube_take_turn(Monster *monster) {
     // Search with feelers
     sprintf(battle_pre_message, str_monster_gcube_search, monster->id);
     SKIP_POST_MSG;
+    SFX_FAIL;
     return;
   }
 
@@ -415,13 +425,16 @@ static void gelatinous_cube_take_turn(Monster *monster) {
       apply_paralyzed(
         encounter.player_status_effects, C_TIER, 2, player.debuff_immune);
       sprintf(battle_pre_message, str_monster_gcube_paralyze);
+      SFX_MAGIC;
     } else if (d16() < poison_chance) {
       // Poison
       apply_poison(
         encounter.player_status_effects, C_TIER, 3, player.debuff_immune);
       sprintf(battle_pre_message, str_monster_gcube_poison);
+      SFX_MAGIC;
     } else {
       sprintf(battle_pre_message, str_monster_gcube_engulf_fail, monster->id);
+      SFX_FAIL;
     }
     SKIP_POST_MSG;
     return;
@@ -441,6 +454,7 @@ static void gelatinous_cube_take_turn(Monster *monster) {
     damage_player(base_damage, DAMAGE_PHYSICAL);
   } else {
     sprintf(battle_post_message, str_monster_miss);
+    SFX_MISS;
   }
 
   return;
@@ -493,11 +507,14 @@ static void displacer_beast_take_turn(Monster *monster) {
   if (hit1 && hit2) {
     const uint16_t result = damage_player(2 * base_damage, DAMAGE_DARK);
     sprintf(battle_post_message, str_monster_displacer_beast_2hit, result);
+    SFX_SPECIAL_CRIT;
   } else if (hit1 || hit2) {
     const uint16_t result = damage_player(base_damage, DAMAGE_DARK);
     sprintf(battle_post_message, str_monster_displacer_beast_1hit, result);
+    SFX_MELEE;
   } else {
     sprintf(battle_post_message, str_monster_displacer_beast_miss);
+    SFX_MISS;
   }
 }
 
@@ -548,6 +565,7 @@ static void will_o_wisp_take_turn(Monster *monster) {
       sprintf(battle_post_message, str_monster_will_o_wisp_siphon_hit, damage);
     } else {
       sprintf(battle_post_message, str_monster_miss);
+      SFX_FAIL;
     }
     return;
   }
@@ -560,8 +578,10 @@ static void will_o_wisp_take_turn(Monster *monster) {
       apply_scared(encounter.player_status_effects,
         A_TIER, scared_turns[monster->exp_tier], player.debuff_immune);
       sprintf(battle_post_message, str_monster_will_o_wisp_scare_hit);
+      SFX_MAGIC;
     } else {
       sprintf(battle_post_message, str_monster_will_o_wisp_scare_miss);
+      SFX_FAIL;
     }
     return;
   }
@@ -570,9 +590,9 @@ static void will_o_wisp_take_turn(Monster *monster) {
   sprintf(battle_pre_message, str_monster_will_o_wisp_lightning, monster->id);
   if (roll_attack_monster(monster->matk, player.mdef)) {
     damage_player(base_damage, DAMAGE_AIR);
-    // sprintf(battle_post_message, str_monster_will_o_wisp_hit, damage);
   } else {
     sprintf(battle_post_message, str_monster_miss);
+    SFX_MISS;
   }
 }
 
@@ -649,6 +669,7 @@ static void deathknight_take_turn(Monster *monster) {
     sprintf(battle_post_message, str_monster_deathknight_hit1, damage);
   } else {
     sprintf(battle_post_message, str_monster_miss);
+    SFX_MISS;
   }
 }
 

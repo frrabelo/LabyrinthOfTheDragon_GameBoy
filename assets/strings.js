@@ -412,12 +412,13 @@ addNamespace('monster', 6, {
 
 addNamespace('monster2', 7, {
   'does_nothing': '%monster %c does nothing.',
+  'monster_miss': 'But they miss!',
   // Mindflayer special
-  'mindflayer_mind_blast': 'Mind Flayer %c emits a wave of psychic energy!',
-  'mindflayer_mind_blast_miss': 'But you resist!',
-  'mindflayer_mind_blast_hit': 'You take %damage damage, and are confused!',
-  'mindflayer_tentacle': 'Mind Flayer %c lashes out with its tentacles!',
-  'mindflayer_extract_brain': 'Mind Flayer %c attempts to eat your brain!',
+  'mindflayer_mind_blast':        'Mind Flayer %c emits a wave of psychic energy!',
+  'mindflayer_mind_blast_miss':   'But you resist!',
+  'mindflayer_mind_blast_hit':    'You take %damage damage, and are confused!',
+  'mindflayer_tentacle':          'Mind Flayer %c lashes out with its tentacles!',
+  'mindflayer_extract_brain':     'Mind Flayer %c attempts to eat your brain!',
   'mindflayer_extract_brain_hit': 'Your brain is gobbled up!',
   // Beholder special
   'beholder_bite': 'Beholder %c chomps at you...',
@@ -429,7 +430,8 @@ addNamespace('monster2', 7, {
   'beholder_ray_trip': 'You take %damage damage and fall prone!',
   'beholder_ray_death': 'Your soul escapes your body...',
   'beholder_ray_miss': 'But you dodge the ray!',
-  'beholder_bit_miss': 'But their bite misses!',
+  'beholder_bite_miss': 'But their bite misses!',
+  'beholder_ray_resist': 'But you resist the ray!',
   // Dragon Specials
   'dragon_attack': 'Dragon %c swoops down and attacks!',
   'dragon_miss': 'But their attacks miss!',

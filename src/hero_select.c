@@ -10,6 +10,7 @@
 #include "hero_select.h"
 #include "player.h"
 #include "map.h"
+#include "sound.h"
 
 #define HERO_OFFSET_X 8 + 33
 #define HERO_OFFSET_Y 78 + 8
@@ -120,11 +121,14 @@ void change_hero(void) {
 void update_hero_select(void) NONBANKED {
   if (was_pressed(J_LEFT)) {
     selected_hero = selected_hero == 0 ? 3 : selected_hero - 1;
+    play_sound(sfx_menu_move);
     change_hero();
   } else if (was_pressed(J_RIGHT)) {
     selected_hero = (selected_hero + 1) & 0x03;
+    play_sound(sfx_menu_move);
     change_hero();
   } else if (was_pressed(J_START)) {
+    play_sound(sfx_hero_selected);
     start_game();
     return;
   }

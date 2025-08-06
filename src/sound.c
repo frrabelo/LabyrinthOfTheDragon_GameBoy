@@ -1061,6 +1061,43 @@ void sfx_neshacker_presents(void) {
   sfx_magic_missile();
 }
 
+const uint8_t noise_title_fire[] = {
+  4, noise_freq(8, 0, 1),
+  4, noise_freq(8, 0, 1),
+  4, noise_freq(8, 0, 1),
+  4, noise_freq(8, 0, 1),
+  4, noise_freq(8, 0, 1),
+  4, noise_freq(8, 0, 1),
+  4, noise_freq(7, 0, 1),
+  4, noise_freq(6, 0, 1),
+  4, noise_freq(5, 0, 1),
+  SOUND_END,
+};
+
+const uint8_t trigger_title_fire[] = {
+  10, 0x80,
+  10, 0x80,
+  10, 0x80,
+  10, 0x80,
+  10, 0x80,
+  10, 0x80,
+  4, 0x80,
+  4, 0x80,
+  4, 0x80,
+  SOUND_END,
+};
+
+void sfx_title_fire(void) {
+  NR41_REG = 0;
+  NR42_REG = envelope(12, 0, 7);
+  register_init(&nr43, noise_title_fire);
+  register_init(&nr44, trigger_title_fire);
+}
+
+void sfx_hero_selected(void) {
+  sfx_battle_success();
+}
+
 void sfx_test(void) {
   sfx_falling();
 

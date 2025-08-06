@@ -110,9 +110,6 @@ void update_title_screen(void) BANKED {
     update_main_title();
     break;
   }
-
-  // update_fire_animation();
-  // update_smoke_animation();
 }
 
 //------------------------------------------------------------------------------
@@ -450,6 +447,7 @@ void init_main_title(void) {
   core.load_bg_palette(main_bg_palettes, 0, 6);
   core.load_sprite_palette(main_fg_palettes, 0, 2);
 
+  play_sound(sfx_title_fire);
   main_title_state = MAIN_FIRE;
   init_fire_animation();
 
@@ -484,7 +482,6 @@ void update_main_title(void) NONBANKED {
     break;
   }
 }
-
 
 //------------------------------------------------------------------------------
 // Fire Animation

@@ -53,5 +53,7 @@ void sfx_evade(void);
 void sfx_magic_missile(void);
 void sfx_falling(void);
 void sfx_neshacker_presents(void);
+void sfx_title_fire(void);
+void sfx_hero_selected(void);
 
 #endif

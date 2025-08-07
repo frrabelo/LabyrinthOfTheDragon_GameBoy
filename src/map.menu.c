@@ -158,18 +158,9 @@ void update_map_menu(void) {
   if (map_menu.state == MAP_MENU_CLOSED)
     return;
 
-  if (was_pressed(J_START) || was_pressed(J_B)) {
+  if (was_pressed(J_START) || was_pressed(J_B) || was_pressed(J_A)) {
+    play_sound(sfx_menu_move);
     hide_map_menu();
     return;
   }
-
-  if (was_pressed(J_LEFT) || was_pressed(J_RIGHT)) {
-    if (map_menu.cursor == MAP_MENU_CURSOR_SAVE)
-      map_menu.cursor = MAP_MENU_CURSOR_QUIT;
-    else
-      map_menu.cursor = MAP_MENU_CURSOR_SAVE;
-    play_sound(sfx_menu_move);
-    update_cursor();
-  }
 }
-

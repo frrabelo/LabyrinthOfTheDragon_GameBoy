@@ -25,7 +25,7 @@ ifdef GBDK_DEBUG
 	LCCFLAGS += -debug -v
 endif
 
-BIN = $(PROJECTNAME).gb
+BIN = $(PROJECTNAME).gbc
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 DATA_FILES = $(wildcard $(DATA_DIR)/*.c)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES)) \

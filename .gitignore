@@ -1,5 +1,6 @@
 *.sav
 *.gb
+*.gbc
 data/strings_*.c
 src/strings.h
 res/tiles/*

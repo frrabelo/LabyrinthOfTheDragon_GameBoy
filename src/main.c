@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "battle.h"
+#include "credits.h"
 #include "core.h"
 #include "hero_select.h"
 #include "map.h"
@@ -26,6 +27,7 @@ typedef enum InitialGameMode {
   GAME_MODE_HERO_SELECT,
   GAME_MODE_TEST_LEVEL,
   GAME_MODE_TEST_BATTLE,
+  GAME_MODE_TEST_CREDITS,
 } InitialGameMode;
 
 /**
@@ -68,6 +70,9 @@ static inline void initialize(void) {
   case GAME_MODE_TEST_BATTLE:
     test_battle();
     break;
+  case GAME_MODE_TEST_CREDITS:
+    init_credits();
+    break;
   }
 }
 
@@ -88,10 +93,9 @@ static inline void game_loop(void) {
   case GAME_STATE_BATTLE:
     update_battle();
     break;
-  case GAME_STATE_DEATH:
+  case GAME_STATE_CREDITS:
+    update_credits();
     break;
-  case GAME_STATE_TEST:
-    return;
   }
 }
 

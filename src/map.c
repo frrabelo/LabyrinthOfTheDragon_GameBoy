@@ -2423,6 +2423,8 @@ void return_from_death(void) NONBANKED {
 
   player.hp = player.max_hp;
   player.sp = player.max_sp;
+  player.magic_keys = 0;
+  player.got_magic_key = true;
 
   set_active_floor(&bank_floor1);
   initialize_world_map();

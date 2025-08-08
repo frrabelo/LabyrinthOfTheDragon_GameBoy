@@ -115,7 +115,6 @@ addNamespace('battle', 3, {
   'player_confused_mumble': 'You mumble some gibberish and giggle a little.',
   'victory': 'Victory! You gain %exp XP!',
   'victory_no_xp': 'Victory! But you gain no XP...',
-  'level_up': 'LEVEL UP! You reach %level!',
 })
 
 addNamespace('player', 4, {

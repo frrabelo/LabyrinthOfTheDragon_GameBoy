@@ -213,6 +213,7 @@ addNamespace('floor1', 2, {
   'sign_empty_chest': "It's empty...",
   'sign_tunnel_cave_in': 'The tunnel has collapsed behind you!',
   'sign_skull_out_of_place': 'This skull seems out of place...',
+  'sign_hidden_passage_hint': 'Check behind you...',
   'sign_missing_elite': 'A powerful foe once lived here.',
   'boss_defeated': "Yawp! You won't beat my friends below!",
 });

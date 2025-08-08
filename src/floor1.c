@@ -116,8 +116,8 @@ static const Sign signs[] = {
   { MAP_A, 2, 30, DOWN, str_floor1_sign_empty_chest },
   // The tunnel has caved in!
   { MAP_A, 12, 17, DOWN, str_floor1_sign_tunnel_cave_in },
-  // Skull seemingly out of place
-  { MAP_A, 10, 23, UP, str_floor1_sign_skull_out_of_place },
+  // Hidden passage hint
+  { MAP_A, 10, 23, UP, str_floor1_sign_hidden_passage_hint },
   // A powerful foe once lived here.
   { MAP_A, 21, 25, UP, str_floor1_sign_missing_elite },
   { END },

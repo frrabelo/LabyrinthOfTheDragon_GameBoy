@@ -363,6 +363,7 @@ static const EncounterTable random_enc_lv12[] = {
     MONSTER_GOBLIN, 12, B_TIER,
     MONSTER_KOBOLD, 11, C_TIER,
   },
+  { END }
 };
 
 static const EncounterTable random_enc_lv16[] = {
@@ -389,6 +390,7 @@ static const EncounterTable random_enc_lv16[] = {
     ODDS_25P, MONSTER_LAYOUT_1,
     MONSTER_KOBOLD, 15, A_TIER,
   },
+  { END }
 };
 
 static bool on_init(void) {

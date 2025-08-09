@@ -20,4 +20,6 @@ To build the ROM run the following commands:
 * `npm install`
 * `make assets`
 * `make`
-Video Youtube: https://www.youtube.com/watch?v=APWrwn26Qts
+  <br>
+### Video Youtube: 
+* https://www.youtube.com/watch?v=APWrwn26Qts
